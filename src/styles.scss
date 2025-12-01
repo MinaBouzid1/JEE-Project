@@ -1,1 +1,117 @@
-/* You can add global styles to this file, and also import other style files */
+// ------------------------
+// On importe Angular Material et on l'appelle "mat"
+// Cela permet d'utiliser toutes les fonctions Material pour créer palettes, thèmes, typographie, etc.
+// ------------------------
+@use '@angular/material' as mat;
+
+// ------------------------
+// Couleurs personnalisées de l'application
+// ------------------------
+// Ces couleurs sont utilisées pour le fond, les cartes, le texte, les bordures, et les accents
+$dark-bg:       #16243e;    // Fond principal sombre (header, sections foncées)
+$dark-card:     #17243E;    // Fond des cartes dans les sections sombres
+$light-bg:      #d6d7db;    // Fond clair pour le corps de la page
+$light-card:    #d6d7dc;    // Fond des cartes dans les sections claires
+$text-primary:  #ffffff;    // Couleur principale du texte sur fond sombre
+$text-secondary:#888a8d;    // Couleur secondaire du texte
+$border:        #d3d4d8;    // Couleur des bordures
+$accent:        #687284;    // Couleur d'accentuation (boutons, hover, éléments importants)
+
+// ------------------------
+// Définition des palettes de couleurs Material
+// ------------------------
+// Une palette = différentes nuances d'une couleur (clair, normal, foncé…)
+// Angular Material l'utilise pour styliser tous les composants de manière cohérente
+$primary-palette: mat.m2-define-palette(mat.$m2-blue-gray-palette, 700); // Couleur principale
+$accent-palette:  mat.m2-define-palette(mat.$m2-grey-palette, 600);      // Couleur d'accent
+$warn-palette:    mat.m2-define-palette(mat.$m2-red-palette, 600);       // Couleur pour alertes / erreurs
+
+// ------------------------
+// Création du thème clair Angular Material
+// ------------------------
+// define-light-theme crée un thème clair pour l'application
+// On lui passe les couleurs, la typographie et la densité (espacement entre composants)
+$light-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $primary-palette,  // Couleur principale pour tous les composants Material
+    accent: $accent-palette,    // Couleur d'accentuation
+    warn: $warn-palette,        // Couleur pour warnings et alertes
+  ),
+  typography: mat.m2-define-typography-config(), // Typographie par défaut de Material
+  density: 0, // Espacement : 0 = normal, -1 = compact, 1 = plus espacé
+));
+
+// ------------------------
+// Création du thème sombre Angular Material (optionnel)
+// ------------------------
+// Peut être utilisé plus tard pour activer un mode sombre
+$dark-theme: mat.m2-define-dark-theme((
+  color: (
+    primary: $primary-palette,
+    accent: $accent-palette,
+    warn: $warn-palette,
+  )
+));
+
+// ------------------------
+// Appliquer le thème clair par défaut
+// ------------------------
+// Cette ligne applique le thème Material (couleurs, typographie, etc.) à tous les composants
+@include mat.all-component-themes($light-theme);
+
+// ------------------------
+// Variables CSS globales pour toute l'application
+// ------------------------
+// On peut utiliser ces variables dans n'importe quel fichier SCSS/CSS
+:root {
+  --color-bg-dark: #{$dark-bg};                 // Fond sombre
+  --color-bg-dark-card: #{$dark-card};         // Fond des cartes sombres
+  --color-bg-light: #{$light-bg};              // Fond clair
+  --color-bg-light-card: #{$light-card};       // Fond des cartes claires
+  --color-text-primary: #{$text-primary};      // Texte principal
+  --color-text-secondary: #{$text-secondary};  // Texte secondaire
+  --color-border: #{$border};                  // Bordures
+  --color-accent: #{$accent};                  // Accent global
+  --color-primary: #{mat.m2-get-color-from-palette($primary-palette, 700)};  // Couleur primaire Material
+  --color-accent-btn: #{mat.m2-get-color-from-palette($accent-palette, 600)}; // Accent pour boutons
+}
+
+// ------------------------
+// Styles globaux généraux
+// ------------------------
+* {
+  box-sizing: border-box; // Assure que padding et border sont inclus dans la largeur/hauteur
+}
+
+body {
+  margin: 0;                          // Supprime la marge par défaut
+  font-family: 'Roboto', sans-serif;  // Police globale
+  background-color: var(--color-bg-light); // Fond clair global
+  color: #333;                         // Couleur de texte par défaut
+}
+
+// ------------------------
+// Cartes annonces (style Homirx)
+// ------------------------
+.app-listing-card {
+  background: white;                   // Fond des cartes
+  border-radius: 16px;                 // Coins arrondis
+  overflow: hidden;                     // Pas de débordement du contenu
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08); // Ombre légère
+  transition: transform 0.3s ease, box-shadow 0.3s ease; // Animation hover
+
+  &:hover {
+    transform: translateY(-8px);            // Déplacement vers le haut au hover
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15); // Ombre plus prononcée
+  }
+}
+
+// ------------------------
+// Header sombre
+// ------------------------
+.app-header {
+  background: var(--color-bg-dark);    // Fond sombre
+  color: white;                         // Texte blanc
+  padding: 1rem 2rem;                   // Padding interne
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1); // Ombre légère
+}

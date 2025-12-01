@@ -1,0 +1,109 @@
+<!-- src/app/features/auth/login/login.component.html -->
+
+<div class="login-container">
+  <div class="login-card-wrapper">
+    <mat-card class="login-card">
+      <!-- Header -->
+      <mat-card-header class="login-header">
+        <div class="logo-container">
+          <mat-icon class="logo-icon">home</mat-icon>
+          <h1 class="app-title">Real Estate Rent</h1>
+        </div>
+        <p class="subtitle">Decentralized rental platform</p>
+      </mat-card-header>
+
+      <mat-card-content class="login-content">
+        <!-- Main Title -->
+        <h2 class="login-title">Login</h2>
+        <p class="login-description">
+          Connect your MetaMask wallet to access the platform
+        </p>
+
+        <!-- Message if MetaMask is not installed -->
+        <div class="warning-box" *ngIf="!metaMaskInstalled">
+          <mat-icon class="warning-icon">warning</mat-icon>
+          <div class="warning-content">
+            <h3>MetaMask Required</h3>
+            <p>
+              Please install the MetaMask extension to log in.
+            </p>
+            <a
+              href="https://metamask.io/download/"
+              target="_blank"
+              class="install-link"
+            >
+              <mat-icon>get_app</mat-icon>
+              Install MetaMask
+            </a>
+          </div>
+        </div>
+
+        <!-- MetaMask login button -->
+        <button
+          mat-raised-button
+          color="primary"
+          class="metamask-button"
+          (click)="loginWithMetaMask()"
+          [disabled]="!metaMaskInstalled || isConnecting || (loading$ | async)"
+        >
+          <mat-spinner
+            *ngIf="isConnecting || (loading$ | async)"
+            diameter="20"
+            class="button-spinner"
+          ></mat-spinner>
+
+          <span *ngIf="!(isConnecting || (loading$ | async))">
+            <img
+              src="assets/images/metamask_logo.png"
+              alt="MetaMask"
+              class="metamask-icon"
+              onerror="this.style.display='none'"
+            />
+            <mat-icon *ngIf="!metaMaskInstalled" class="button-icon">account_balance_wallet</mat-icon>
+            Login with MetaMask
+          </span>
+
+          <span *ngIf="isConnecting || (loading$ | async)">
+            Logging in...
+          </span>
+        </button>
+
+        <!-- Divider -->
+        <div class="divider">
+          <span class="divider-text">New to the platform?</span>
+        </div>
+
+        <!-- Link to register -->
+        <button
+          mat-stroked-button
+          color="primary"
+          class="register-button"
+          (click)="goToRegister()"
+          [disabled]="isConnecting || (loading$ | async)"
+        >
+          <mat-icon class="button-icon">person_add</mat-icon>
+          Create an account
+        </button>
+
+        <!-- Additional information -->
+        <div class="info-box">
+          <mat-icon class="info-icon">info</mat-icon>
+          <p class="info-text">
+            Logging in with MetaMask is <strong>secure</strong> and does not require a password.
+            Your wallet is your identity on the blockchain.
+          </p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <p class="footer-text">
+        By logging in, you agree to our
+        <a href="/terms" class="footer-link">Terms of Use</a>
+        and our
+        <a href="/privacy" class="footer-link">Privacy Policy</a>
+      </p>
+    </div>
+  </div>
+</div>

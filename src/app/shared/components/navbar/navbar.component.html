@@ -1,0 +1,158 @@
+<!-- src/app/shared/components/navbar/navbar.component.html -->
+
+<mat-toolbar class="navbar">
+  <div class="navbar-container">
+
+    <!-- ========================================
+         SECTION GAUCHE : LOGO
+    ========================================= -->
+    <div class="navbar-left">
+      <a routerLink="/" class="logo-link">
+        <mat-icon class="logo-icon">home</mat-icon>
+        <span class="logo-text">Rentopia</span>
+      </a>
+    </div>
+
+    <!-- ========================================
+         SECTION CENTRE : NAVIGATION (Desktop)
+    ========================================= -->
+    <div class="navbar-center">
+      <nav class="nav-links">
+        <a routerLink="/listings" routerLinkActive="active" class="nav-link">
+          <mat-icon>search</mat-icon>
+          Explorer
+        </a>
+        <a
+          *ngIf="isAuthenticated$ | async"
+          routerLink="/bookings"
+          routerLinkActive="active"
+          class="nav-link"
+        >
+          <mat-icon>event</mat-icon>
+          Réservations
+        </a>
+      </nav>
+    </div>
+
+    <!-- ========================================
+         SECTION DROITE : ACTIONS
+    ========================================= -->
+    <div class="navbar-right">
+
+      <!-- SI NON CONNECTÉ : Boutons Login/Signup -->
+      <div class="auth-buttons" *ngIf="!(isAuthenticated$ | async)">
+        <button
+          mat-button
+          class="login-btn"
+          (click)="navigateToLogin()"
+        >
+          Se connecter
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          class="signup-btn"
+          (click)="navigateToRegister()"
+        >
+          S'inscrire
+        </button>
+      </div>
+
+      <!-- SI CONNECTÉ : Menu Utilisateur -->
+      <div class="user-menu" *ngIf="isAuthenticated$ | async">
+
+        <!-- Bouton Messages (avec badge) -->
+        <button
+          mat-icon-button
+          class="icon-btn"
+          (click)="navigateToMessages()"
+          matTooltip="Messages"
+        >
+          <mat-icon matBadge="3" matBadgeColor="warn" matBadgeSize="small">
+            message
+          </mat-icon>
+        </button>
+
+        <!-- Menu Hamburger (3 lignes) -->
+        <button
+          mat-icon-button
+          class="menu-btn"
+          [matMenuTriggerFor]="userActionsMenu"
+        >
+          <mat-icon>menu</mat-icon>
+        </button>
+
+        <!-- Avatar Utilisateur (Première lettre email) -->
+        <button
+          mat-mini-fab
+          class="avatar-btn"
+          [matMenuTriggerFor]="userActionsMenu"
+        >
+          <span class="avatar-letter">{{ userInitial }}</span>
+        </button>
+
+        <!-- DROPDOWN MENU -->
+        <mat-menu #userActionsMenu="matMenu" class="user-dropdown">
+
+          <!-- Section Profile -->
+          <div class="menu-header">
+            <mat-icon>person</mat-icon>
+            <div class="user-info">
+              <p class="user-name">
+                {{ (currentUser$ | async)?.prenom }} {{ (currentUser$ | async)?.nom }}
+              </p>
+              <p class="user-email">{{ (currentUser$ | async)?.email }}</p>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <!-- Actions principales -->
+          <button mat-menu-item (click)="navigateToProfile()">
+            <mat-icon>account_circle</mat-icon>
+            <span>Mon profil</span>
+          </button>
+
+          <button mat-menu-item (click)="navigateToBookings()">
+            <mat-icon>event</mat-icon>
+            <span>Mes réservations</span>
+          </button>
+
+          <button mat-menu-item (click)="navigateToMessages()">
+            <mat-icon matBadge="3" matBadgeColor="warn" matBadgeSize="small">
+              message
+            </mat-icon>
+            <span>Messages</span>
+          </button>
+
+          <mat-divider></mat-divider>
+
+          <!-- Devenir hôte (si pas encore hôte) -->
+          <button
+            mat-menu-item
+            (click)="navigateToBecomeHost()"
+            *ngIf="!(isHost$ | async)"
+            class="become-host-item"
+          >
+            <mat-icon>home_work</mat-icon>
+            <span>Devenir hôte</span>
+          </button>
+
+          <!-- Paramètres -->
+          <button mat-menu-item (click)="navigateToSettings()">
+            <mat-icon>settings</mat-icon>
+            <span>Paramètres du compte</span>
+          </button>
+
+          <mat-divider></mat-divider>
+
+          <!-- Déconnexion -->
+          <button mat-menu-item (click)="logout()" class="logout-item">
+            <mat-icon>logout</mat-icon>
+            <span>Déconnexion</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+  </div>
+</mat-toolbar>
