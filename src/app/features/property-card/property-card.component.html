@@ -1,0 +1,66 @@
+<!-- src/app/features/listings/components/property-card/property-card.component.html -->
+
+<div class="property-card">
+
+  <!-- Image principale avec badge réduction si applicable -->
+  <div class="card-image">
+    <img [src]="getCoverImage()" [alt]="property.title" />
+
+    <!-- Badge réduction (mode search uniquement) -->
+    <div class="discount-badge" *ngIf="getDiscount()">
+      {{ getDiscount() }}% OFF
+    </div>
+
+    <!-- Bouton favori (futur) -->
+    <button class="favorite-btn" mat-icon-button>
+      <mat-icon>favorite_border</mat-icon>
+    </button>
+  </div>
+
+  <!-- Informations property -->
+  <div class="card-content">
+
+    <!-- Titre et localisation -->
+    <div class="card-header">
+      <h3 class="property-title">{{ property.title }}</h3>
+      <p class="property-location">
+        <mat-icon>location_on</mat-icon>
+        {{ property.city }}, {{ property.country }}
+      </p>
+    </div>
+
+    <!-- Caractéristiques -->
+    <!--
+    <div class="property-features" *ngIf="'maxGuests' in property">
+      <span class="feature">
+        <mat-icon>people</mat-icon>
+        {{ property.maxGuests }} guests
+      </span>
+      <span class="separator">•</span>
+      <span class="feature">
+        <mat-icon>bed</mat-icon>
+        {{ property.bedrooms }} bedrooms
+      </span>
+      <span class="separator">•</span>
+      <span class="feature">
+        <mat-icon>bathroom</mat-icon>
+        {{ property.bathrooms }} baths
+      </span>
+    </div>
+-->
+    <!-- Prix -->
+    <div class="card-footer">
+      <div class="price-section">
+        <span class="price-amount">${{ getDisplayPrice() }}</span>
+        <span class="price-label">/ {{ getPriceLabel() }}</span>
+      </div>
+
+      <!-- Info nuits (mode search) -->
+      <div class="nights-info" *ngIf="getNights()">
+        <mat-icon>nights_stay</mat-icon>
+        {{ getNights() }} night{{ getNights()! > 1 ? 's' : '' }}
+      </div>
+    </div>
+  </div>
+
+</div>

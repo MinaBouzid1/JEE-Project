@@ -1,0 +1,87 @@
+<!-- src/app/features/listings/listings.component.html -->
+
+<div class="listings-page">
+
+  <!-- ========================================
+       SECTION TOP BAR (Sticky)
+  ========================================= -->
+  <div class="top-bar">
+    <div class="top-bar-content">
+
+      <!-- Titre et compteur -->
+      <div class="title-section">
+        <h1 *ngIf="!isSearchMode">Explore amazing places</h1>
+        <h1 *ngIf="isSearchMode">Your search results</h1>
+        <p class="results-count" *ngIf="!(loading$ | async)">
+          {{ ((listings$ | async) || []).length }} properties found
+        </p>
+      </div>
+
+      <!-- Bouton Filtres -->
+      <button
+        mat-stroked-button
+        class="filters-btn"
+        (click)="openFiltersModal()">
+        <mat-icon>tune</mat-icon>
+        <span>Filters</span>
+        <span class="filter-badge" *ngIf="activeFiltersCount > 0">
+          {{ activeFiltersCount }}
+        </span>
+      </button>
+    </div>
+
+    <!-- Chips filtres actifs -->
+    <div class="active-filters-chips" *ngIf="activeFiltersCount > 0">
+      <mat-chip-set>
+        <mat-chip (removed)="clearFilters()">
+          {{ activeFiltersCount }} filter{{ activeFiltersCount > 1 ? 's' : '' }} active
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+      </mat-chip-set>
+    </div>
+  </div>
+
+  <!-- ========================================
+       SECTION CONTENU PRINCIPAL
+  ========================================= -->
+  <div class="listings-content">
+
+    <!-- Loading -->
+    <div class="loading-state" *ngIf="loading$ | async">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading properties...</p>
+    </div>
+
+    <!-- Erreur -->
+    <div class="error-state" *ngIf="(error$ | async) as error">
+      <mat-icon>error_outline</mat-icon>
+      <p>{{ error }}</p>
+      <button mat-raised-button color="primary" (click)="clearFilters()">
+        Try again
+      </button>
+    </div>
+
+    <!-- Liste vide -->
+    <div class="empty-state" *ngIf="!(loading$ | async) && ((listings$ | async) || []).length === 0">
+      <mat-icon>search_off</mat-icon>
+      <h2>No properties found</h2>
+      <p>Try adjusting your filters or search criteria</p>
+      <button mat-raised-button color="primary" (click)="clearFilters()">
+        Clear filters
+      </button>
+    </div>
+
+    <!-- Grille de properties -->
+    <div class="properties-grid" *ngIf="!(loading$ | async) && ((listings$ | async) || []).length > 0">
+      <app-property-card
+        *ngFor="let property of (listings$ | async) || []; trackBy: trackByPropertyId"
+        [property]="property"
+        [isSearchMode]="isSearchMode"
+        (click)="viewPropertyDetail(property.propertyId)">
+      </app-property-card>
+    </div>
+  </div>
+
+</div>

@@ -96,7 +96,7 @@ body {
 .app-listing-card {
   background: white;                   // Fond des cartes
   border-radius: 16px;                 // Coins arrondis
-  overflow: hidden;                     // Pas de débordement du contenu
+                       // Pas de débordement du contenu
   box-shadow: 0 4px 20px rgba(0,0,0,0.08); // Ombre légère
   transition: transform 0.3s ease, box-shadow 0.3s ease; // Animation hover
 
@@ -115,3 +115,5 @@ body {
   padding: 1rem 2rem;                   // Padding interne
   box-shadow: 0 2px 10px rgba(0,0,0,0.1); // Ombre légère
 }
+
+

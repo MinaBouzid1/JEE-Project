@@ -1,0 +1,230 @@
+// src/app/features/listings/listings.component.scss
+
+.listings-page {
+  min-height: 100vh;
+  background: #f7f7f7;
+  padding-top: 76px; // Pour la navbar fixe
+}
+
+// ==========================================
+// TOP BAR (Sticky avec filtres)
+// ==========================================
+.top-bar {
+  position: sticky;
+  top: 76px; // Juste sous la navbar
+  z-index: 100;
+  background: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 1.5rem 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.top-bar-content {
+  width: 92%;
+  max-width: 1800px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title-section {
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #222;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.02em;
+  }
+
+  .results-count {
+    font-size: 0.95rem;
+    color: #717171;
+    margin: 0;
+    font-weight: 500;
+  }
+}
+
+// ==========================================
+// BOUTON FILTRES (Style Airbnb)
+// ==========================================
+.filters-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 1px solid #ddd !important;
+  border-radius: 12px;
+  background: white;
+  color: #222;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.25s ease;
+  cursor: pointer;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .filter-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #222;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 50px;
+    min-width: 24px;
+    text-align: center;
+  }
+
+  &:hover {
+    border-color: #222 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+}
+
+// ==========================================
+// CHIPS FILTRES ACTIFS
+// ==========================================
+.active-filters-chips {
+  width: 92%;
+  max-width: 1800px;
+  margin: 1rem auto 0;
+
+  mat-chip-set {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  mat-chip {
+    background: #f0f0f0;
+    color: #222;
+    font-weight: 500;
+    border-radius: 20px;
+    padding: 8px 16px;
+
+    button {
+      color: #717171;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: #222;
+      }
+    }
+  }
+}
+
+// ==========================================
+// CONTENU PRINCIPAL
+// ==========================================
+.listings-content {
+  width: 92%;
+  max-width: 1800px;
+  margin: 2rem auto;
+  padding-bottom: 4rem;
+}
+
+// ==========================================
+// ÉTATS (Loading, Error, Empty)
+// ==========================================
+.loading-state,
+.error-state,
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #717171;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #222;
+    margin: 1rem 0 0.5rem;
+  }
+
+  p {
+    font-size: 1rem;
+    color: #717171;
+    margin: 0 0 1.5rem;
+  }
+
+  button {
+    margin-top: 1rem;
+  }
+}
+
+// ==========================================
+// GRILLE DE PROPERTIES (Responsive Masonry-style)
+// ==========================================
+.properties-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  animation: fadeIn 0.5s ease-out;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 1441px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// Animation d'apparition
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ==========================================
+// GLOBAL STYLES POUR LE MODAL
+// ==========================================
+::ng-deep {
+  .filters-modal-panel {
+    border-radius: 20px !important;
+    overflow: hidden;
+
+    .mat-mdc-dialog-container {
+      border-radius: 20px;
+      padding: 0;
+    }
+  }
+}

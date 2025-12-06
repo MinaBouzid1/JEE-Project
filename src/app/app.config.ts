@@ -9,6 +9,8 @@ import { routes } from './app.routes';
 import { authReducer } from './store/auth/auth.reducer';
 import { AuthEffects } from './store/auth/auth.effects';
 import { environment } from '../environments/environment';
+import {listingsReducer} from "./store/listings/listing.reducer";
+import {ListingsEffects} from "./store/listings/listing.effects";
 
 /**
  * ============================
@@ -43,15 +45,16 @@ export const appConfig: ApplicationConfig = {
     // State management global de l'application
     // On enregistre ici tous les reducers
     provideStore({
-      auth: authReducer  // État 'auth' géré par authReducer
-      // Plus tard : listings: listingsReducer, bookings: bookingsReducer, etc.
+      auth: authReducer  ,// État 'auth' géré par authReducer
+      listings: listingsReducer
     }),
 
 
     // NGRX EFFECTS
     // Enregistre tous les effects (side effects)
     provideEffects([
-      AuthEffects  // Effects d'authentification
+      AuthEffects , // Effects d'authentification
+      ListingsEffects,
 
     ]),
 

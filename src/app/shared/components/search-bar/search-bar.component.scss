@@ -1,0 +1,505 @@
+// src/app/shared/components/search-bar/search-bar.component.scss
+
+// ============================
+// CONTAINER PRINCIPAL
+// ============================
+.search-bar-container {
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: 90%;
+  max-width: 1100px;
+}
+
+// ============================
+// BARRE DE RECHERCHE
+// ============================
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 60px;
+  padding: 0.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+
+  &:hover {
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.08);
+  }
+}
+
+// ============================
+// CHAMPS DE RECHERCHE
+// ============================
+.search-field {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-radius: 50px;
+  transition: background-color 0.2s ease;
+  position: relative;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+
+  .field-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+}
+
+// ============================
+// MATERIAL FORM FIELDS CUSTOM
+// ============================
+.custom-field {
+  width: 100%;
+
+  ::ng-deep {
+    .mat-mdc-text-field-wrapper {
+      padding: 0 !important;
+      background: transparent !important;
+    }
+
+    .mat-mdc-form-field-flex {
+      padding: 0 !important;
+      align-items: center;
+    }
+
+    .mat-mdc-form-field-infix {
+      padding: 0 !important;
+      border: none !important;
+      min-height: unset !important;
+      width: 100%;
+    }
+
+    .mdc-notched-outline {
+      display: none !important;
+    }
+
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+
+    // Cacher le toggle du datepicker (on gère l'ouverture manuellement)
+    .mat-datepicker-toggle {
+      display: none !important;
+    }
+  }
+
+  .field-input {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #222;
+    border: none;
+    outline: none;
+    padding: 0;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &::placeholder {
+      color: #717171;
+      font-weight: 400;
+    }
+  }
+
+  .field-icon {
+    color: #717171;
+    margin-right: 0.5rem;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+}
+
+// ============================
+// DIVIDER VERTICAL
+// ============================
+.divider-vertical {
+  width: 1px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+// ============================
+// GUESTS FIELD (Bouton trigger)
+// ============================
+.guests-field {
+  position: relative;
+
+  .guests-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+    padding: 0;
+    min-height: unset;
+    background: transparent;
+    border: none;
+    text-transform: none;
+    font-size: 0.95rem;
+    min-width: 0;
+
+    .field-icon {
+      color: #717171;
+      margin-right: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .guests-text {
+      flex: 1;
+      font-weight: 500;
+      color: #222;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .arrow-icon {
+      color: #717171;
+      margin-left: 0.5rem;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+
+    &:hover .arrow-icon {
+      transform: translateY(2px);
+    }
+  }
+}
+
+// ============================
+// BOUTON SEARCH
+// ============================
+.search-button {
+  flex-shrink: 0;
+  width: 56px !important;
+  height: 56px !important;
+  background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%) !important;
+  box-shadow: 0 8px 20px rgba(79, 195, 247, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 12px 30px rgba(79, 195, 247, 0.4) !important;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  mat-icon {
+    font-size: 1.5rem;
+  }
+}
+
+// ============================
+// GLOBAL OVERLAYS (DATEPICKER & MENU)
+// ============================
+::ng-deep {
+  // ========== OVERLAY CONTAINER ==========
+  .cdk-overlay-container {
+    z-index: 9999 !important;
+  }
+
+  // ========== GUESTS MENU PANEL ==========
+  .guests-menu-panel {
+    // Positionnement style Airbnb
+    .mat-mdc-menu-panel {
+      margin-top: 8px !important;
+      min-width: 400px !important;
+      max-width: 400px !important;
+      border-radius: 20px !important;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.06) !important;
+      background: white !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .mat-mdc-menu-content {
+      padding: 0 !important;
+    }
+  }
+
+  // ========== GUESTS MENU CONTENT ==========
+  .guests-menu-content {
+    padding: 1.5rem;
+    width: 100%;
+    background-color: white;
+
+    // ❌ SUPPRIMER COMPLÈTEMENT LE SCROLLBAR
+    overflow-y: visible !important;
+    max-height: none !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+
+    &::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+  }
+
+  .guest-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 1rem;
+    border-radius: 12px;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s ease;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &:hover {
+      background-color: #f5f5f5;
+    }
+
+    .guest-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+
+      .guest-label {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #222;
+        letter-spacing: -0.01em;
+      }
+
+      .guest-desc {
+        font-size: 0.875rem;
+        color: #717171;
+        font-weight: 400;
+      }
+    }
+
+    .counter {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+
+      button {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        min-width: unset;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        background-color: white;
+
+        mat-icon {
+          font-size: 24px;
+          width: 24px;
+          height: 24px;
+          color: #717171;
+        }
+
+        &:not(:disabled):hover {
+          background-color: #222;
+          transform: scale(1.1);
+
+          mat-icon {
+            color: white;
+          }
+        }
+
+        &:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+          background-color: white;
+
+          mat-icon {
+            color: #b0b0b0;
+          }
+        }
+      }
+
+      .counter-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #222;
+        min-width: 30px;
+        text-align: center;
+        letter-spacing: -0.01em;
+      }
+    }
+  }
+
+  // Dividers
+  .guests-menu-content mat-divider {
+    margin: 0.75rem 0;
+    border-top-color: rgba(0, 0, 0, 0.08);
+  }
+
+  // ============================
+  //   DATEPICKER STYLE AIRBNB
+  // ============================
+  .mat-datepicker-popup,
+  .mat-date-range-picker-popup {
+    z-index: 9999 !important;
+
+    .mat-datepicker-content,
+    .mat-date-range-picker-content {
+      width: 600px !important;     // largeur du popup = 600px
+      height:450px!important;
+      border-radius: 20px;
+      background: #fff;
+      padding: 0 !important;
+      display: flex;
+      flex-direction: column;
+      align-items: center;         // centre tout le contenu
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    // HEADER centré
+    .mat-calendar-header {
+      width: 100%;
+      text-align: center;
+      padding: 1rem;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      background: #fff;
+
+      .mat-calendar-controls {
+        justify-content: center !important;
+        gap: 20px;
+      }
+    }
+
+    // CONTENU DU CALENDRIER CENTRÉ
+    .mat-calendar-content {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      padding: 1.2rem 0 !important;
+    }
+
+    .mat-calendar-content-container {
+      display: flex;
+      width: 100%;
+    }
+
+
+    // Hover
+    .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover
+    .mat-calendar-body-cell-content {
+      background: rgba(0, 132, 137, 0.12);
+    }
+
+    // Today
+    .mat-calendar-body-today .mat-calendar-body-cell-content {
+      border: 1px solid #bde6ee;
+    }
+
+    // Selected
+    .mat-calendar-body-selected .mat-calendar-body-cell-content {
+      background: #008489 !important;
+      color: white !important;
+      transform: scale(1.07);
+    }
+
+
+  }
+
+
+  // Animation
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+// ============================
+// RESPONSIVE
+// ============================
+@media (max-width: 1024px) {
+  .search-bar-container {
+    width: 95%;
+  }
+
+  .search-bar {
+    flex-wrap: wrap;
+    border-radius: 30px;
+    padding: 1rem;
+  }
+
+  .divider-vertical {
+    display: none;
+  }
+
+  .search-field {
+    flex: 1 1 45%;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .search-button {
+    flex: 1 1 100%;
+    width: 100% !important;
+    border-radius: 24px !important;
+    height: 52px !important;
+    margin-top: 0.5rem;
+  }
+
+  ::ng-deep {
+    .guests-menu-panel .mat-mdc-menu-panel {
+      min-width: 320px !important;
+      max-width: 320px !important;
+    }
+
+    .mat-datepicker-popup .mat-datepicker-content,
+    .mat-date-range-picker-popup .mat-date-range-picker-content {
+      width: 320px !important;
+    }
+
+    .mat-calendar {
+      width: 100% !important;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .search-bar-container {
+    position: relative;
+    bottom: unset;
+    margin-top: 2rem;
+  }
+
+  .search-field {
+    flex: 1 1 100%;
+  }
+
+  ::ng-deep {
+    .guests-menu-panel .mat-mdc-menu-panel {
+      min-width: 300px !important;
+      max-width: 300px !important;
+    }
+
+    .mat-datepicker-popup .mat-datepicker-content,
+    .mat-date-range-picker-popup .mat-date-range-picker-content {
+      width: 280px !important;
+    }
+  }
+}

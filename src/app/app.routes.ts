@@ -17,11 +17,11 @@ export const routes: Routes = [
   // ========================================
   // PAGE D'ACCUEIL  : Redirige vers /listings par défaut
   // ========================================
-  {
-    path: '',
-    redirectTo: '/listings',
-    pathMatch: 'full'
-  },
+    {
+      path: '',
+      loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent),
+      data: { title: 'Accueil' }
+    },
 
   // ========================================
   // ROUTES PUBLIQUES (AUTH) : cad Accessibles SEULEMENT si NON connecté (noAuthGuard)
@@ -64,17 +64,18 @@ export const routes: Routes = [
        canActivate: [authGuard],
        data: { title: 'Mes Messages' }
      },
-
+*/
      // ========================================
      // ROUTES SEMI-PUBLIQUES (LISTINGS)
      // Accessibles à tous, mais certaines actions nécessitent authentification
      // Lazy loading des routes listings (performance)
      // ========================================
-     {
-       path: 'listings',
-       loadChildren: () => import('./features/listings/listings.routes').then(m => m.LISTINGS_ROUTES)
-     },
-
+    {
+      path: 'listings',
+      loadComponent: () => import('./features/listing/listings.component').then(m => m.ListingsComponent),
+      data: { title: 'Explore Properties' }
+    },
+/*
      // ========================================
      // PAGE 404 (NOT FOUND)
      // Catch-all route : toutes les URLs non définies arrivent ici

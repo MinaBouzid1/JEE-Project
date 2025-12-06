@@ -1,0 +1,164 @@
+.hero {
+  width: 100%;
+  height: 800px;
+  max-width: 100vw;
+  position: relative;
+  overflow: visible;
+  background: #0a0e1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 80px;
+
+}
+
+.hero-content {
+  width: 92%;
+  max-width: 1800px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* === TEXTE GAUCHE – Identique à ta capture === */
+.left-text {
+  width: 50%;
+  max-width: 680px;
+  padding-left: 5rem;
+  margin-top: -50px;
+  z-index: 10;
+
+  h1 {
+    font-size: 5.8rem;
+    font-weight: 900;
+    line-height: 1.02;
+    margin-bottom: 1.2rem;
+    color: #ffffff;
+    // Plus de gradient → blanc pur comme dans ta capture
+  }
+
+  p {
+    font-size: 1.5rem;
+    line-height: 1.7;
+    color: #d0e0ff;
+    opacity: 0.95;
+    margin-bottom: 3rem;
+  }
+
+
+  .cta-buttons {
+    .btn-secondary {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 1.1rem 2.8rem;
+      margin-left: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      background: transparent;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border-radius: 60px;
+      cursor: pointer;
+
+      transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+
+      /* Flèche toujours visible */
+      .btn-arrow {
+        font-size: 1.4rem;
+        transition: transform 0.45s ease;
+      }
+
+      /* Effet de remplissage liquide au hover */
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 60px;
+        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: -1;
+      }
+
+      /* Hover : remplissage + flèche avance + bordure pleine */
+      &:hover {
+        border-color: rgba(255, 255, 255, 0.9);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+
+        &::before {
+          width: 100%;
+        }
+
+        .btn-arrow {
+          transform: translateX(8px);
+        }
+
+        .btn-text {
+          transform: translateX(-4px);
+        }
+      }
+
+      &:active {
+        transform: translateY(-1px);
+      }
+    }
+  }
+}
+
+/* === IMAGE DROITE – LA CLÉ DU RENDU PARFAIT === */
+.right-image {
+  position: absolute;
+  right: -5%;
+  bottom: -12%;
+  width: 97%;                      // un peu plus large pour couvrir tout
+  height: 115%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.right-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 0;                 // Plus de bord arrondi → comme ta photo
+  box-shadow: none;                 // Pas d’ombre portée → la maison a déjà son éclairage naturel
+}
+
+/* === LE SECRET : Fade ultra doux et large qui suit exactement le ciel noir de la photo === */
+.right-image::before {
+  content: '';
+  position: absolute;
+  left: -600px;                     // très loin à gauche
+  top: 0;
+  width: 1200px;                    // zone de fondu énorme
+  height: 100%;
+  background: linear-gradient(to right,
+    #0a0e1a 0%,         // même couleur que background hero
+    #0a0e1a 30%,
+    rgba(10, 14, 26, 0.7) 60%,
+    rgba(10, 14, 26, 0.3) 85%,
+    transparent 100%
+  );
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Option bonus : léger voile sombre global pour plus de profondeur */
+.right-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+}
