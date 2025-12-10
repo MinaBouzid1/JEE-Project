@@ -1,5 +1,5 @@
 .navbar {
-  position: fixed !important;
+  position: absolute !important;
   top: 0;
   left: 0;
   right: 0;
@@ -9,13 +9,108 @@
   border-bottom: none !important;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
-  // État initial : 100% transparent sur le hero
+  // 👇 État par défaut : PAGE HOME (transparent)
   background: transparent !important;
   backdrop-filter: none;
   box-shadow: none;
 
-  // Au scroll → fond flou + bordure douce
-  &.scrolled {
+  // 👇 NOUVEAU : Si on est sur une autre page → fond BLANC
+  &.other-page {
+    background: #ffffff !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(16, 52, 91, 0.1) !important;
+
+    // Logo et texte en #10345B
+    .navbar-left {
+      .logo-link {
+        color: #10345B;
+
+        .logo-icon {
+          color: #10345B;
+        }
+
+        .logo-text {
+          color: #10345B;
+        }
+      }
+    }
+
+    // Liens de navigation en #10345B
+    .navbar-center {
+      .nav-links {
+        .nav-link {
+          color: #10345B;
+
+          mat-icon {
+            color: #10345B;
+          }
+
+          &.active,
+          &:hover {
+            color: #0d2a47; // Une nuance plus foncée au hover
+
+            &::after {
+              background: #10345B;
+            }
+          }
+
+          &::after {
+            background: #10345B;
+          }
+        }
+      }
+    }
+
+    // Boutons auth en #10345B
+    .navbar-right {
+      .auth-buttons {
+        .login-btn {
+          color: #10345B;
+          font-weight: 600;
+
+          &:hover {
+            color: #0d2a47;
+          }
+        }
+
+        .signup-btn {
+          background: #10345B !important;
+          color: white !important;
+          font-weight: 700;
+          border-radius: 50px;
+          padding: 8px 24px;
+          box-shadow: 0 6px 20px rgba(16, 52, 91, 0.3);
+
+          &:hover {
+            background: #0d2a47 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(16, 52, 91, 0.4);
+          }
+        }
+      }
+
+      // Menu utilisateur en #10345B
+      .user-menu {
+        .icon-btn {
+          color: #10345B;
+        }
+
+        .menu-btn {
+          color: #10345B;
+        }
+
+        .avatar-btn {
+          background: #10345B;
+          color: white;
+        }
+      }
+    }
+  }
+
+  // 👇 Au scroll sur la page HOME → fond flou
+  &.scrolled:not(.other-page) {
     background: rgba(10, 14, 26, 0.82) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -42,12 +137,14 @@
     gap: 10px;
     text-decoration: none;
     color: white;
+    transition: color 0.3s ease;
 
     .logo-icon {
       font-size: 32px;
       width: 32px;
       height: 32px;
       color: #ffffff;
+      transition: color 0.3s ease;
     }
 
     .logo-text {
@@ -56,6 +153,7 @@
       letter-spacing: -0.5px;
       color: #ffffff;
       text-transform: uppercase;
+      transition: color 0.3s ease;
     }
   }
 }
@@ -86,6 +184,7 @@
         font-size: 20px;
         width: 20px;
         height: 20px;
+        transition: color 0.3s ease;
       }
 
       &.active,
@@ -126,7 +225,11 @@
     .login-btn {
       color: rgba(255, 255, 255, 0.9);
       font-weight: 600;
-      &:hover { color: white; }
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: white;
+      }
     }
 
     .signup-btn {
@@ -135,10 +238,12 @@
       font-weight: 700;
       border-radius: 50px;
       padding: 8px 24px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+
       &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
       }
     }
   }
@@ -151,10 +256,12 @@
 
     .icon-btn {
       color: white;
+      transition: color 0.3s ease;
     }
 
     .menu-btn {
       color: white;
+      transition: color 0.3s ease;
     }
 
     .avatar-btn {
@@ -165,6 +272,7 @@
       font-weight: 700;
       text-transform: uppercase;
       backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
 
       .avatar-letter {
         font-size: 1.1rem;

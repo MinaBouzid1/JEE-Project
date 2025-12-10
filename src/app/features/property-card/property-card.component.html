@@ -30,8 +30,9 @@
     </div>
 
     <!-- Caractéristiques -->
-    <!--
-    <div class="property-features" *ngIf="'maxGuests' in property">
+
+     <div class="property-features" *ngIf="property?.maxGuests">
+
       <span class="feature">
         <mat-icon>people</mat-icon>
         {{ property.maxGuests }} guests
@@ -47,7 +48,7 @@
         {{ property.bathrooms }} baths
       </span>
     </div>
--->
+
     <!-- Prix -->
     <div class="card-footer">
       <div class="price-section">

@@ -117,6 +117,16 @@ export const listingsReducer = createReducer(
     loading: false,
     error
   })),
+  // FILTER PROPERTIES SUCCESS
+  on(ListingsActions.filterPropertiesSuccess, (state, { properties }) => ({
+    ...state,
+    properties: properties,              // ✅ Stocke les properties filtrées
+    totalProperties: properties.length,  // ✅ Met à jour le total
+    isSearchMode: false,                 // ✅ Reste en mode browse
+    loading: false,
+    error: null
+
+  })),
 
   // ========================================
   // LOAD PROPERTY DETAIL

@@ -42,7 +42,7 @@ export interface Property {
   beds: number;
   bathrooms: number;
   weekendPricePerNight: number;
-  PricePerNight: number;
+  pricePerNight: number;
   cleaningFee?: number;
   petFee?: number;
   platformFeePercentage?: number;
@@ -88,7 +88,11 @@ export interface PropertySearchResultDTO {
   discountType: string;           // Type de réduction
   checkIn: string;                // Date ISO
   checkOut: string;               // Date ISO
-  nights: number;                 // Nombre de nuits
+  nights: number;
+  maxGuests: number;
+  bedrooms: number;
+  beds: number;
+  bathrooms: number;
 }
 
 /**

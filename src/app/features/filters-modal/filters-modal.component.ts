@@ -16,11 +16,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 // Models
-import { PropertySearchFilters } from '../../core/models/property.model';
-import { Amenity } from '../../core/models/amenity.model';
+import { PropertySearchFilters } from './../../core/models/property.model';
+import { Amenity } from './../../core/models/amenity.model';
 
 // Services
-import { AmenityService } from '../../core/services/amenity.service';
+import { AmenityService } from './../../core/services/amenity.service';
 
 /**
  * ============================
@@ -53,14 +53,62 @@ export class FiltersModalComponent implements OnInit {
   amenities: Amenity[] = [];
   selectedAmenities: number[] = [];
 
-  // Property types
-  propertyTypes = [
+  // Affichage des property types
+  showAllPropertyTypes = false;
+
+  // Affichage des amenities
+  showAllAmenities = false;
+  amenitiesDisplayLimit = 8; // Nombre d'amenities à afficher par défaut
+
+  // Property types de base (affichés par défaut)
+  basicPropertyTypes = [
     { value: 'house', label: 'House', icon: 'home' },
     { value: 'apartment', label: 'Apartment', icon: 'apartment' },
     { value: 'villa', label: 'Villa', icon: 'villa' },
     { value: 'studio', label: 'Studio', icon: 'meeting_room' },
-    { value: 'loft', label: 'Loft', icon: 'layers' }
+    { value: 'loft', label: 'Loft', icon: 'layers' },
+    { value: 'private_room', label: 'Private Room', icon: 'room' }
   ];
+
+  // Property types additionnels (affichés seulement si "Show more")
+  additionalPropertyTypes = [
+    { value: 'entire_place', label: 'Entire Place', icon: 'holiday_village' },
+    { value: 'shared_room', label: 'Shared Room', icon: 'bed' },
+    { value: 'bungalow', label: 'Bungalow', icon: 'cottage' },
+    { value: 'townhouse', label: 'Townhouse', icon: 'other_houses' },
+    { value: 'penthouse', label: 'Penthouse', icon: 'pentagon' },
+    { value: 'duplex', label: 'Duplex', icon: 'house_siding' },
+    { value: 'guest_house', label: 'Guest House', icon: 'houseboat' },
+    { value: 'hotel_room', label: 'Hotel Room', icon: 'king_bed' },
+    { value: 'cabin', label: 'Cabin', icon: 'cabin' },
+    { value: 'chalet', label: 'Chalet', icon: 'house' },
+    { value: 'farm', label: 'Farm', icon: 'agriculture' },
+    { value: 'riad', label: 'Riad', icon: 'mosque' },
+    { value: 'residence', label: 'Residence', icon: 'domain' },
+    { value: 'condo', label: 'Condominium', icon: 'location_city' },
+    { value: 'room_in_riad', label: 'Room in Riad', icon: 'bedroom_child' },
+    { value: 'guest_suite', label: 'Guest Suite', icon: 'bedroom_parent' }
+  ];
+
+  // Tous les types (pour la recherche)
+  get allPropertyTypes() {
+    return [...this.basicPropertyTypes, ...this.additionalPropertyTypes];
+  }
+
+  // Types affichés actuellement
+  get displayedPropertyTypes() {
+    return this.showAllPropertyTypes ? this.allPropertyTypes : this.basicPropertyTypes;
+  }
+
+  // Amenities affichées actuellement
+  get displayedAmenities() {
+    return this.showAllAmenities ? this.amenities : this.amenities.slice(0, this.amenitiesDisplayLimit);
+  }
+
+  // Vérifier s'il y a plus d'amenities à afficher
+  get hasMoreAmenities() {
+    return this.amenities.length > this.amenitiesDisplayLimit;
+  }
 
   // Prix min/max
   minPrice = 0;
@@ -141,7 +189,7 @@ export class FiltersModalComponent implements OnInit {
       this.filtersForm.patchValue({ bedrooms: filters.bedrooms });
     }
     if (filters.amenityIds) {
-      this.selectedAmenities = filters.amenityIds;
+      this.selectedAmenities = [...filters.amenityIds];
     }
   }
 
@@ -212,6 +260,24 @@ export class FiltersModalComponent implements OnInit {
 
   /**
    * ============================
+   * TOGGLE AFFICHAGE DES TYPES ADDITIONNELS
+   * ============================
+   */
+  togglePropertyTypes(): void {
+    this.showAllPropertyTypes = !this.showAllPropertyTypes;
+  }
+
+  /**
+   * ============================
+   * TOGGLE AFFICHAGE DES AMENITIES
+   * ============================
+   */
+  toggleAmenities(): void {
+    this.showAllAmenities = !this.showAllAmenities;
+  }
+
+  /**
+   * ============================
    * RÉINITIALISER LES FILTRES
    * ============================
    */
@@ -230,14 +296,38 @@ export class FiltersModalComponent implements OnInit {
   /**
    * ============================
    * APPLIQUER LES FILTRES
+   * ✅ CORRECTION : Ne pas envoyer false/0/null, envoyer undefined
    * ============================
    */
   applyFilters(): void {
+    const formValues = this.filtersForm.value;
+
     const filters: PropertySearchFilters = {
       adults: 1, // Valeur par défaut
-      ...this.filtersForm.value,
+      propertyType: formValues.propertyType || undefined,
+      placeType: formValues.placeType || undefined,
+      minPrice: formValues.minPrice > 0 ? formValues.minPrice : undefined,
+      maxPrice: formValues.maxPrice < this.maxPrice ? formValues.maxPrice : undefined,
+      bedrooms: formValues.bedrooms > 0 ? formValues.bedrooms : undefined,
+      bathrooms: formValues.bathrooms > 0 ? formValues.bathrooms : undefined,
+      beds: formValues.beds > 0 ? formValues.beds : undefined,
+
+      // ✅ CORRECTION : Seulement si true, sinon undefined
+      instantBooking: formValues.instantBooking === true ? true : undefined,
+      smokingAllowed: formValues.smokingAllowed === true ? true : undefined,
+      eventsAllowed: formValues.eventsAllowed === true ? true : undefined,
+
       amenityIds: this.selectedAmenities.length > 0 ? this.selectedAmenities : undefined
     };
+
+    // Supprimer les valeurs undefined pour nettoyer l'objet
+    Object.keys(filters).forEach(key => {
+      if (filters[key as keyof PropertySearchFilters] === undefined) {
+        delete filters[key as keyof PropertySearchFilters];
+      }
+    });
+
+    console.log('✅ Filtres nettoyés à envoyer:', filters);
 
     this.dialogRef.close(filters);
   }

@@ -1,10 +1,11 @@
 // src/app/shared/components/navbar/navbar.component.ts
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 // Material Imports
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -25,12 +26,6 @@ import {
 // Models
 import { User } from '../../../core/models/user.model';
 
-/**
- * ============================
- * COMPOSANT NAVBAR
- * Barre de navigation principale de l'application
- * ============================
- */
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -55,6 +50,8 @@ export class NavbarComponent implements OnInit {
 
   // État local
   userInitial = '';
+  isHomePage = true;  // 👈 NOUVEAU : Détecte si on est sur la page d'accueil
+  isScrolled = false; // 👈 NOUVEAU : Détecte le scroll
 
   constructor(
     private store: Store,
@@ -72,6 +69,29 @@ export class NavbarComponent implements OnInit {
         this.userInitial = user.email.charAt(0).toUpperCase();
       }
     });
+
+    // 👇 NOUVEAU : Écouter les changements de route
+    this.checkIfHomePage();
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.checkIfHomePage();
+      });
+  }
+
+  /**
+   * 👇 NOUVEAU : Vérifie si on est sur la page d'accueil
+   */
+  private checkIfHomePage(): void {
+    this.isHomePage = this.router.url === '/' || this.router.url === '';
+  }
+
+  /**
+   * 👇 NOUVEAU : Détecte le scroll pour ajouter la classe .scrolled
+   */
+  @HostListener('window:scroll', [])
+  onWindowScroll(): void {
+    this.isScrolled = window.scrollY > 50;
   }
 
   /**

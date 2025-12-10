@@ -1,13 +1,36 @@
 <!-- src/app/shared/components/search-bar/search-bar.component.html -->
-<div class="search-bar-container">
+
+<div class="search-bar-container" [class.compact]="compact" [class.light-theme]="theme === 'light'">
   <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="search-bar">
 
     <!-- WHERE -->
     <div class="search-field location-field">
       <div class="field-label">Where</div>
       <mat-form-field appearance="outline" class="custom-field">
-        <input matInput formControlName="location" placeholder="Search destinations" class="field-input" />
+        <input
+          matInput
+          formControlName="location"
+          placeholder="Search destinations"
+          class="field-input"
+          [matAutocomplete]="locationAuto" />
         <mat-icon matPrefix class="field-icon">location_on</mat-icon>
+
+        <!-- Autocomplete Panel -->
+        <mat-autocomplete
+          #locationAuto="matAutocomplete"
+          [displayWith]="displayLocation.bind(this)"
+          (optionSelected)="onLocationSelected($event.option.value)"
+          class="location-autocomplete">
+          <mat-option *ngFor="let location of filteredLocations$ | async" [value]="location">
+            <div class="location-option">
+              <mat-icon>location_city</mat-icon>
+              <div class="location-text">
+                <span class="city">{{ location.city }}</span>
+                <span class="country">{{ location.country }}</span>
+              </div>
+            </div>
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
     </div>
 
@@ -36,7 +59,6 @@
 
         <mat-icon matPrefix class="field-icon">event</mat-icon>
 
-        <!-- Date Picker (sans toggle visible) -->
         <mat-date-range-picker
           #dateRangePicker
           (closed)="onDatePickerClosed()">
@@ -67,14 +89,13 @@
   </form>
 </div>
 
-<!-- Guests Menu -->
+<!-- Guests Menu (reste identique) -->
 <mat-menu
   #guestsMenu="matMenu"
   class="guests-menu-panel"
   [hasBackdrop]="false"
   (closed)="onGuestsMenuClosed()">
 
-  <!-- Trigger invisible attaché au bouton -->
   <ng-template matMenuContent>
     <div class="guests-menu-content" (click)="$event.stopPropagation()">
 
@@ -152,7 +173,7 @@
   </ng-template>
 </mat-menu>
 
-<!-- Menu trigger invisible (pour Material) -->
+<!-- Menu trigger invisible -->
 <button
   #guestsMenuTrigger="matMenuTrigger"
   [matMenuTriggerFor]="guestsMenu"

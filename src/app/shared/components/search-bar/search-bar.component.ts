@@ -1,8 +1,10 @@
 // src/app/shared/components/search-bar/search-bar.component.ts
-import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
+import {  Component, OnInit, ViewChild, HostListener, Input  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Observable, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, startWith } from 'rxjs/operators';
 
 // Material Imports
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,6 +15,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+
+// Services
+import { LocationService, Location } from '../../../core/services/location.service';
 
 /**
  * ============================
@@ -33,17 +39,28 @@ import { MatDividerModule } from '@angular/material/divider';
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
-    MatDividerModule
+    MatDividerModule,
+    MatAutocompleteModule
   ],
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.scss'
 })
 export class SearchBarComponent implements OnInit {
 
+
+  @Input() compact = false; // 👈 NOUVEAU : Mode compact pour la page listings
+  @Input() theme: 'light' | 'dark' = 'dark'; // 👈 NOUVEAU : Thème de couleur
+
+
+
   @ViewChild('guestsMenuTrigger') guestsMenuTrigger!: MatMenuTrigger;
   @ViewChild('dateRangePicker') dateRangePicker!: MatDatepicker<any>;
 
   searchForm!: FormGroup;
+
+  // Autocomplete locations
+  filteredLocations$!: Observable<Location[]>;
+  selectedLocation: Location | null = null;
 
   // État des compteurs
   adults = 1;
@@ -60,11 +77,13 @@ export class SearchBarComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private locationService: LocationService
   ) {}
 
   ngOnInit(): void {
     this.initForm();
+    this.setupLocationAutocomplete();
   }
 
   /**
@@ -102,6 +121,24 @@ export class SearchBarComponent implements OnInit {
       checkIn: ['', Validators.required],
       checkOut: ['', Validators.required]
     }, { validators: this.dateRangeValidator });
+  }
+
+  /**
+   * ============================
+   * CONFIGURER L'AUTOCOMPLETE DES LOCATIONS
+   * ============================
+   */
+  private setupLocationAutocomplete(): void {
+    this.filteredLocations$ = this.searchForm.get('location')!.valueChanges.pipe(
+      startWith(''),
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(value => {
+        // Si c'est un objet Location, extraire le displayName
+        const searchTerm = typeof value === 'string' ? value : (value?.displayName || '');
+        return this.locationService.searchLocations(searchTerm);
+      })
+    );
   }
 
   /**
@@ -265,6 +302,28 @@ export class SearchBarComponent implements OnInit {
 
   /**
    * ============================
+   * LOCATION SÉLECTIONNÉE DEPUIS L'AUTOCOMPLETE
+   * ============================
+   */
+  onLocationSelected(location: Location): void {
+    this.selectedLocation = location;
+    this.searchForm.patchValue({ location: location.displayName });
+  }
+
+  /**
+   * ============================
+   * AFFICHER LE NOM DE LA LOCATION DANS L'AUTOCOMPLETE
+   * ============================
+   */
+  displayLocation(location: Location | string): string {
+    if (typeof location === 'string') {
+      return location;
+    }
+    return location?.displayName || '';
+  }
+
+  /**
+   * ============================
    * SOUMETTRE LA RECHERCHE
    * ============================
    */
@@ -274,17 +333,32 @@ export class SearchBarComponent implements OnInit {
       return;
     }
 
-    const location = this.searchForm.value.location;
     const checkIn = this.formatDate(this.searchForm.value.checkIn);
     const checkOut = this.formatDate(this.searchForm.value.checkOut);
 
-    // Construire les query params
+    // Construire les query params avec city et country séparés
     const queryParams: any = {
-      location,
       checkIn,
       checkOut,
       adults: this.adults
     };
+
+    // Si une location a été sélectionnée depuis l'autocomplete
+    if (this.selectedLocation) {
+      queryParams.city = this.selectedLocation.city;
+      queryParams.country = this.selectedLocation.country;
+    } else {
+      // Sinon, essayer de parser le texte saisi
+      const locationText = this.searchForm.value.location;
+      const parsed = this.locationService.parseLocationString(locationText);
+      if (parsed) {
+        queryParams.city = parsed.city;
+        queryParams.country = parsed.country;
+      } else {
+        // Si pas au bon format, utiliser comme city uniquement
+        queryParams.city = locationText;
+      }
+    }
 
     if (this.children > 0) queryParams.children = this.children;
     if (this.babies > 0) queryParams.babies = this.babies;

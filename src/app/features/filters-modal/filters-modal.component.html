@@ -27,7 +27,7 @@
       <h3 class="section-title">Property type</h3>
       <div class="property-types-grid">
         <button
-          *ngFor="let type of propertyTypes"
+          *ngFor="let type of displayedPropertyTypes"
           type="button"
           class="property-type-btn"
           [class.selected]="filtersForm.value.propertyType === type.value"
@@ -36,6 +36,17 @@
           <span>{{ type.label }}</span>
         </button>
       </div>
+
+      <!-- Bouton Show more / Show less -->
+      <button
+        type="button"
+        class="show-more-btn"
+        (click)="togglePropertyTypes()">
+        <span>{{ showAllPropertyTypes ? 'Show less' : 'Show more' }}</span>
+        <mat-icon class="expand-icon" [class.expanded]="showAllPropertyTypes">
+          expand_more
+        </mat-icon>
+      </button>
     </div>
 
     <mat-divider></mat-divider>
@@ -134,7 +145,7 @@
       <h3 class="section-title">Amenities</h3>
       <div class="amenities-grid">
         <button
-          *ngFor="let amenity of amenities"
+          *ngFor="let amenity of displayedAmenities"
           type="button"
           class="amenity-btn"
           [class.selected]="isAmenitySelected(amenity.amenityId)"
@@ -143,6 +154,18 @@
           <span>{{ amenity.name }}</span>
         </button>
       </div>
+
+      <!-- Bouton Show more / Show less (affiché seulement s'il y a plus de 8 amenities) -->
+      <button
+        *ngIf="hasMoreAmenities"
+        type="button"
+        class="show-more-btn"
+        (click)="toggleAmenities()">
+        <span>{{ showAllAmenities ? 'Show less' : 'Show more' }}</span>
+        <mat-icon class="expand-icon" [class.expanded]="showAllAmenities">
+          expand_more
+        </mat-icon>
+      </button>
     </div>
 
     <mat-divider></mat-divider>

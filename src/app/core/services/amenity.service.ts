@@ -27,7 +27,7 @@ export class AmenityService {
    * ============================
    */
   getAllAmenities(): Observable<Amenity[]> {
-    return this.apiService.get<Amenity[]>(`${this.baseUrl}/amenities`);
+    return this.apiService.get<Amenity[]>(`${this.baseUrl}/amenities/all`);
   }
 
   /**

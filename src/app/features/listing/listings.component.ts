@@ -16,6 +16,7 @@ import { MatChipsModule } from '@angular/material/chips';
 // Components
 import { PropertyCardComponent } from '../property-card/property-card.component';
 import { FiltersModalComponent } from '../filters-modal/filters-modal.component';
+import { SearchBarComponent } from '../../shared/components/search-bar/search-bar.component';
 
 // Store
 import * as ListingsActions from '../../store/listings/listing.actions';
@@ -24,11 +25,13 @@ import {
   selectListingsLoading,
   selectListingsError,
   selectFilters,
-  selectHasSearchResults
+  selectHasSearchResults,
+
 } from '../../store/listings/listing.selectors';
 
 // Models
 import { PropertySearchFilters } from '../../core/models/property.model';
+import {take} from "rxjs/operators";
 
 /**
  * ============================
@@ -38,6 +41,8 @@ import { PropertySearchFilters } from '../../core/models/property.model';
  * Mode 2: Depuis search bar → affiche properties avec prix total calculé
  * ============================
  */
+
+
 @Component({
   selector: 'app-listings',
   standalone: true,
@@ -48,7 +53,8 @@ import { PropertySearchFilters } from '../../core/models/property.model';
     MatProgressSpinnerModule,
     MatDialogModule,
     MatChipsModule,
-    PropertyCardComponent
+    PropertyCardComponent,
+    SearchBarComponent
   ],
   templateUrl: './listings.component.html',
   styleUrl: './listings.component.scss'
@@ -65,6 +71,7 @@ export class ListingsComponent implements OnInit, OnDestroy {
   // État local
   isSearchMode = false; // true si venu depuis search bar
   activeFiltersCount = 0;
+  currentQueryParams: any = {}; // ✅ Stocker les query params
 
   private destroy$ = new Subject<void>();
 
@@ -84,6 +91,8 @@ export class ListingsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Écouter les query params (venant de search bar)
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      this.currentQueryParams = { ...params }; // ✅ Sauvegarder les params
+
       if (this.hasSearchParams(params)) {
         // Mode recherche : avec filtres
         this.isSearchMode = true;
@@ -113,7 +122,7 @@ export class ListingsComponent implements OnInit, OnDestroy {
    * ============================
    */
   private hasSearchParams(params: any): boolean {
-    return !!(params.location || params.checkIn || params.checkOut);
+    return !!(params.city || params.country || params.checkIn || params.checkOut);
   }
 
   /**
@@ -129,10 +138,9 @@ export class ListingsComponent implements OnInit, OnDestroy {
       pets: parseInt(params.pets) || 0
     };
 
-    if (params.location) {
-      // Parser location (peut contenir city, country)
-      filters.city = params.location;
-    }
+    // Parser city et country
+    if (params.city) filters.city = params.city;
+    if (params.country) filters.country = params.country;
     if (params.checkIn) filters.checkIn = params.checkIn;
     if (params.checkOut) filters.checkOut = params.checkOut;
 
@@ -150,8 +158,11 @@ export class ListingsComponent implements OnInit, OnDestroy {
     if (filters.minPrice || filters.maxPrice) count++;
     if (filters.bedrooms) count++;
     if (filters.bathrooms) count++;
+    if (filters.beds) count++;
     if (filters.amenityIds && filters.amenityIds.length > 0) count += filters.amenityIds.length;
     if (filters.instantBooking) count++;
+    if (filters.smokingAllowed) count++;
+    if (filters.eventsAllowed) count++;
     return count;
   }
 
@@ -161,6 +172,19 @@ export class ListingsComponent implements OnInit, OnDestroy {
    * ============================
    */
   openFiltersModal(): void {
+    // ✅ Récupérer les filtres actuels de manière synchrone
+    let currentFilters: PropertySearchFilters = {
+      adults: 1,
+      children: 0,
+      babies: 0,
+      pets: 0
+    };
+
+    // ✅ Utiliser take(1) pour obtenir une seule valeur
+    this.filters$.pipe(take(1)).subscribe(filters => {
+      currentFilters = { ...filters };
+    });
+
     const dialogRef = this.dialog.open(FiltersModalComponent, {
       width: '100%',
       maxWidth: '780px',
@@ -168,13 +192,13 @@ export class ListingsComponent implements OnInit, OnDestroy {
       maxHeight: '90vh',
       panelClass: 'filters-modal-panel',
       data: {
-        currentFilters: this.filters$
+        currentFilters: currentFilters // ✅ Passer les filtres actuels
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Appliquer les nouveaux filtres
+        console.log('✅ Filtres reçus du modal:', result);
         this.applyFilters(result);
       }
     });
@@ -186,12 +210,35 @@ export class ListingsComponent implements OnInit, OnDestroy {
    * ============================
    */
   applyFilters(filters: PropertySearchFilters): void {
-    this.store.dispatch(ListingsActions.updateFilters({ filters }));
+    console.log('🔍 Application des filtres...', filters);
 
-    // Re-lancer la recherche avec les nouveaux filtres
-    this.filters$.pipe(takeUntil(this.destroy$)).subscribe(currentFilters => {
-      this.store.dispatch(ListingsActions.searchProperties({ filters: currentFilters }));
-    });
+    // ✅ Fusionner avec les filtres de recherche existants (dates, location, guests)
+    const finalFilters: PropertySearchFilters = {
+      ...filters
+    };
+
+    // Si on est en mode recherche, garder les dates et location
+    if (this.isSearchMode && this.currentQueryParams) {
+      if (this.currentQueryParams.city) finalFilters.city = this.currentQueryParams.city;
+      if (this.currentQueryParams.country) finalFilters.country = this.currentQueryParams.country;
+      if (this.currentQueryParams.checkIn) finalFilters.checkIn = this.currentQueryParams.checkIn;
+      if (this.currentQueryParams.checkOut) finalFilters.checkOut = this.currentQueryParams.checkOut;
+      if (this.currentQueryParams.adults) finalFilters.adults = parseInt(this.currentQueryParams.adults);
+      if (this.currentQueryParams.children) finalFilters.children = parseInt(this.currentQueryParams.children);
+      if (this.currentQueryParams.babies) finalFilters.babies = parseInt(this.currentQueryParams.babies);
+      if (this.currentQueryParams.pets) finalFilters.pets = parseInt(this.currentQueryParams.pets);
+    }
+
+    console.log('🎯 Filtres finaux à appliquer:', finalFilters);
+
+    // ✅ Mettre à jour les filtres dans le store
+    this.store.dispatch(ListingsActions.updateFilters({ filters: finalFilters }));
+    if (finalFilters.checkIn && finalFilters.checkOut) {
+      this.store.dispatch(ListingsActions.searchProperties({ filters: finalFilters }));
+    } else {
+      this.store.dispatch(ListingsActions.filterProperties({ filters: finalFilters }));
+      console.log("action  de filter est appelee ");
+    }
   }
 
   /**

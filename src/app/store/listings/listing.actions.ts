@@ -1,4 +1,4 @@
-// src/app/store/listings/listings.actions.ts
+// src/app/store/listings/listing.actions.ts
 
 import { createAction, props } from '@ngrx/store';
 import {
@@ -29,7 +29,7 @@ export const loadAllPropertiesFailure = createAction(
 
 /**
  * ============================
- * ACTIONS SEARCH PROPERTIES (Page /listings avec filtres)
+ * ACTIONS SEARCH PROPERTIES (Page /listings avec filtres + DATES)
  * ============================
  */
 export const searchProperties = createAction(
@@ -44,6 +44,26 @@ export const searchPropertiesSuccess = createAction(
 
 export const searchPropertiesFailure = createAction(
   '[Listings] Search Properties Failure',
+  props<{ error: string }>()
+);
+
+/**
+ * ============================
+ * ACTIONS FILTER PROPERTIES (Page /listings avec filtres SANS dates)
+ * ============================
+ */
+export const filterProperties = createAction(
+  '[Listings] Filter Properties',
+  props<{ filters: PropertySearchFilters }>()
+);
+
+export const filterPropertiesSuccess = createAction(
+  '[Listings] Filter Properties Success',
+  props<{ properties: Property[] }>()
+);
+
+export const filterPropertiesFailure = createAction(
+  '[Listings] Filter Properties Failure',
   props<{ error: string }>()
 );
 

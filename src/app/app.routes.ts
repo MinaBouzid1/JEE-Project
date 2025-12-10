@@ -3,7 +3,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { noAuthGuard } from './core/guards/no-auth.guard';
-
+import { PropertyDetailComponent } from './features/property-detail/property-detail.component';
 /**
  * ============================
  * CONFIGURATION DES ROUTES (STANDALONE)
@@ -72,6 +72,11 @@ export const routes: Routes = [
      // ========================================
     {
       path: 'listings',
+      loadComponent: () => import('./features/listing/listings.component').then(m => m.ListingsComponent),
+      data: { title: 'Explore Properties' }
+    },
+    {
+      path: 'property/:id',
       loadComponent: () => import('./features/listing/listings.component').then(m => m.ListingsComponent),
       data: { title: 'Explore Properties' }
     },

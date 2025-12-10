@@ -13,7 +13,7 @@
         that fits your lifestyle.
       </p>
       <div class="cta-buttons">
-        <button class="btn-secondary">
+        <button class="btn-secondary" [routerLink]="'/listings'">
           <span class="btn-text">Explore Properties</span>
           <span class="btn-arrow">→</span>
         </button>
@@ -33,4 +33,36 @@
 </section>
 
 
+<section class="why-section">
+  <h2 class="section-title">Why Choose Us</h2>
+  <p class="section-subtitle">
+    A modern rental experience powered by transparency, security, and innovative Web3 technology — designed for everyone.
+  </p>
+  <div class="why-container">
+    <mat-card class="why-card">
+
+      <mat-icon>verified</mat-icon>
+      <h3>Secure Payments</h3>
+      <p>Blockchain-powered transactions that are safe and transparent.</p>
+    </mat-card>
+
+    <mat-card class="why-card">
+      <mat-icon>search</mat-icon>
+      <h3>Smart Search</h3>
+      <p>Find the perfect property using intelligent filters.</p>
+    </mat-card>
+
+    <mat-card class="why-card">
+      <mat-icon>bolt</mat-icon>
+      <h3>Fast Booking</h3>
+      <p>Reserve instantly with decentralized verification.</p>
+    </mat-card>
+
+    <mat-card class="why-card">
+      <mat-icon>home_work</mat-icon>
+      <h3>Quality Listings</h3>
+      <p>Every listing is verified for authenticity and trust.</p>
+    </mat-card>
+  </div>
+</section>
 

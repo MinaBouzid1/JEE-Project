@@ -11,6 +11,115 @@
   z-index: 100;
   width: 90%;
   max-width: 1100px;
+
+  // 👇 MODE COMPACT (pour la page listings)
+  // Ajoutez/modifiez la section MODE COMPACT dans votre fichier existant
+
+  &.compact {
+    position: static;
+    transform: none;
+    width: 100%;
+    max-width: 100%;
+    bottom: unset;
+    left: unset;
+
+    .search-bar {
+      border-radius: 50px;
+      padding: 0.25rem;
+      box-shadow: 0 2px 12px rgba(16, 52, 91, 0.12);
+      max-width: 720px; // 👈 Largeur optimale
+      margin: 0 auto; // 👈 Centrage automatique
+      border: 2px solid #10345B;
+      transition: all 0.3s ease;
+
+      &:hover {
+        box-shadow: 0 4px 20px rgba(16, 52, 91, 0.18);
+        border-color: #0d2a47;
+      }
+
+      &:focus-within {
+        box-shadow: 0 6px 24px rgba(16, 52, 91, 0.22);
+        border-color: #0d2a47;
+      }
+    }
+
+    .search-field {
+      padding: 0.35rem 0.75rem;
+
+      .field-label {
+        font-size: 0.7rem;
+        margin-bottom: 0.1rem;
+        font-weight: 800;
+      }
+
+      .field-input {
+        font-size: 0.85rem;
+      }
+    }
+
+    .search-button {
+      width: 42px !important;
+      height: 42px !important;
+
+      mat-icon {
+        font-size: 1.3rem;
+        color : black;
+      }
+    }
+
+    .divider-vertical {
+      height: 32px;
+    }
+  }
+
+  // 👇 THÈME CLAIR (pour s'harmoniser avec navbar blanche)
+  &.light-theme {
+    .search-bar {
+      background: white;
+      border: 2px solid #10345B;
+    }
+
+    .field-label {
+      color: #10345B !important;
+    }
+
+    .field-input {
+      color: #222 !important;
+
+      &::placeholder {
+        color: #999 !important;
+      }
+    }
+
+    .field-icon {
+      color: #10345B !important;
+    }
+
+    .guests-trigger {
+      .field-icon,
+      .arrow-icon {
+        color: #10345B !important;
+      }
+
+      .guests-text {
+        color: #222 !important;
+      }
+    }
+
+    .search-button {
+      background: #10345B !important;
+      box-shadow: 0 6px 20px rgba(16, 52, 91, 0.3);
+
+      &:hover:not(:disabled) {
+        background: #0d2a47 !important;
+        box-shadow: 0 10px 30px rgba(16, 52, 91, 0.4) !important;
+      }
+    }
+
+    .divider-vertical {
+      background: rgba(16, 52, 91, 0.15);
+    }
+  }
 }
 
 // ============================
@@ -91,7 +200,6 @@
       display: none;
     }
 
-    // Cacher le toggle du datepicker (on gère l'ouverture manuellement)
     .mat-datepicker-toggle {
       display: none !important;
     }
@@ -134,7 +242,7 @@
 }
 
 // ============================
-// GUESTS FIELD (Bouton trigger)
+// GUESTS FIELD
 // ============================
 .guests-field {
   position: relative;
@@ -208,17 +316,14 @@
 }
 
 // ============================
-// GLOBAL OVERLAYS (DATEPICKER & MENU)
+// GLOBAL OVERLAYS
 // ============================
 ::ng-deep {
-  // ========== OVERLAY CONTAINER ==========
   .cdk-overlay-container {
     z-index: 9999 !important;
   }
 
-  // ========== GUESTS MENU PANEL ==========
   .guests-menu-panel {
-    // Positionnement style Airbnb
     .mat-mdc-menu-panel {
       margin-top: 8px !important;
       min-width: 400px !important;
@@ -235,13 +340,10 @@
     }
   }
 
-  // ========== GUESTS MENU CONTENT ==========
   .guests-menu-content {
     padding: 1.5rem;
     width: 100%;
     background-color: white;
-
-    // ❌ SUPPRIMER COMPLÈTEMENT LE SCROLLBAR
     overflow-y: visible !important;
     max-height: none !important;
     scrollbar-width: none !important;
@@ -342,38 +444,34 @@
     }
   }
 
-  // Dividers
   .guests-menu-content mat-divider {
     margin: 0.75rem 0;
     border-top-color: rgba(0, 0, 0, 0.08);
   }
 
-  // ============================
-  //   DATEPICKER STYLE AIRBNB
-  // ============================
+  // DATEPICKER
   .mat-datepicker-popup,
   .mat-date-range-picker-popup {
     z-index: 9999 !important;
 
     .mat-datepicker-content,
     .mat-date-range-picker-content {
-      width: 600px !important;     // largeur du popup = 600px
-      height:450px!important;
+      width: 600px !important;
+      height: 450px !important;
       border-radius: 20px;
       background: #fff;
       padding: 0 !important;
       display: flex;
       flex-direction: column;
-      align-items: center;         // centre tout le contenu
+      align-items: center;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
     }
 
-    // HEADER centré
     .mat-calendar-header {
       width: 100%;
       text-align: center;
       padding: 1rem;
-      border-bottom: 1px solid rgba(0,0,0,0.08);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
       background: #fff;
 
       .mat-calendar-controls {
@@ -382,7 +480,6 @@
       }
     }
 
-    // CONTENU DU CALENDRIER CENTRÉ
     .mat-calendar-content {
       display: flex;
       justify-content: center;
@@ -395,30 +492,22 @@
       width: 100%;
     }
 
-
-    // Hover
     .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover
     .mat-calendar-body-cell-content {
       background: rgba(0, 132, 137, 0.12);
     }
 
-    // Today
     .mat-calendar-body-today .mat-calendar-body-cell-content {
       border: 1px solid #bde6ee;
     }
 
-    // Selected
     .mat-calendar-body-selected .mat-calendar-body-cell-content {
       background: #008489 !important;
       color: white !important;
       transform: scale(1.07);
     }
-
-
   }
 
-
-  // Animation
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -437,6 +526,10 @@
 @media (max-width: 1024px) {
   .search-bar-container {
     width: 95%;
+
+    &.compact {
+      width: 100%;
+    }
   }
 
   .search-bar {
@@ -482,9 +575,11 @@
 
 @media (max-width: 768px) {
   .search-bar-container {
-    position: relative;
-    bottom: unset;
-    margin-top: 2rem;
+    &:not(.compact) {
+      position: relative;
+      bottom: unset;
+      margin-top: 2rem;
+    }
   }
 
   .search-field {

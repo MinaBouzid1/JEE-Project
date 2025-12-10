@@ -65,7 +65,7 @@ export class PropertyCardComponent {
     if (this.isSearchMode && this.isSearchResult(this.property)) {
       return this.property.totalPrice;
     }
-    return (this.property as Property).PricePerNight || 0;
+    return (this.property as Property).pricePerNight || 0;
   }
 
   /**

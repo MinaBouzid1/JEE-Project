@@ -1,6 +1,9 @@
 <!-- src/app/shared/components/navbar/navbar.component.html -->
 
-<mat-toolbar class="navbar">
+<mat-toolbar
+  class="navbar"
+  [class.scrolled]="isScrolled"
+  [class.other-page]="!isHomePage">
   <div class="navbar-container">
 
     <!-- ========================================
@@ -23,13 +26,13 @@
           Explorer
         </a>
         <a
-          *ngIf="isAuthenticated$ | async"
-          routerLink="/bookings"
-          routerLinkActive="active"
-          class="nav-link"
+        *ngIf="isAuthenticated$ | async"
+        routerLink="/bookings"
+        routerLinkActive="active"
+        class="nav-link"
         >
-          <mat-icon>event</mat-icon>
-          Réservations
+        <mat-icon>event</mat-icon>
+        Réservations
         </a>
       </nav>
     </div>

@@ -86,7 +86,7 @@ $dark-theme: mat.m2-define-dark-theme((
 body {
   margin: 0;                          // Supprime la marge par défaut
   font-family: 'Roboto', sans-serif;  // Police globale
-  background-color: var(--color-bg-light); // Fond clair global
+  background-color: white; // Fond clair global
   color: #333;                         // Couleur de texte par défaut
 }
 
