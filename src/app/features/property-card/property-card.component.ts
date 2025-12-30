@@ -4,9 +4,11 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
 
 // Models
-import { Property, PropertySearchResultDTO } from '../../core/models/property.model';
+import { PropertyCard } from './../../core/models/property-card.model';
+import { PropertySearchResultDTO } from './../../core/models/property.model';
 
 /**
  * ============================
@@ -14,8 +16,8 @@ import { Property, PropertySearchResultDTO } from '../../core/models/property.mo
  * Carte affichant une property (style Airbnb)
  *
  * Deux modes d'affichage :
- * - Mode browse : affiche pricePerNight
- * - Mode search : affiche totalPrice et discountPercentage
+ * - Mode browse (PropertyCard) : affiche pricePerNight + photo principale
+ * - Mode search (PropertySearchResultDTO) : affiche totalPrice et discountPercentage
  * ============================
  */
 @Component({
@@ -24,14 +26,15 @@ import { Property, PropertySearchResultDTO } from '../../core/models/property.mo
   imports: [
     CommonModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    RouterLink
   ],
   templateUrl: './property-card.component.html',
   styleUrl: './property-card.component.scss'
 })
 export class PropertyCardComponent {
 
-  @Input() property!: Property | PropertySearchResultDTO;
+  @Input() property!: PropertyCard | PropertySearchResultDTO;
   @Input() isSearchMode = false;
 
   /**
@@ -49,11 +52,22 @@ export class PropertyCardComponent {
    * ============================
    */
   getCoverImage(): string {
-    if ('photos' in this.property && this.property.photos && this.property.photos.length > 0) {
-      const coverPhoto = this.property.photos.find(p => p.isCover);
-      return coverPhoto ? coverPhoto.photoUrl : this.property.photos[0].photoUrl;
+    // PropertyCard a mainPhotoUrl
+    if ('mainPhotoUrl' in this.property && this.property.mainPhotoUrl) {
+      return this.property.mainPhotoUrl;
     }
-    return 'assets/images/placeholder-property.jpg';
+
+    return 'assets/images/hero.jpg';
+  }
+
+  /**
+   * ============================
+   * GESTION ERREUR IMAGE
+   * ============================
+   */
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = 'assets/images/placeholder-property.jpg';
   }
 
   /**
@@ -65,7 +79,7 @@ export class PropertyCardComponent {
     if (this.isSearchMode && this.isSearchResult(this.property)) {
       return this.property.totalPrice;
     }
-    return (this.property as Property).pricePerNight || 0;
+    return (this.property as PropertyCard).pricePerNight || 0;
   }
 
   /**
@@ -100,6 +114,30 @@ export class PropertyCardComponent {
   getNights(): number | null {
     if (this.isSearchMode && this.isSearchResult(this.property)) {
       return this.property.nights;
+    }
+    return null;
+  }
+
+  /**
+   * ============================
+   * OBTENIR LA NOTE MOYENNE (si disponible)
+   * ============================
+   */
+  getAverageRating(): number | null {
+    if ('averageRating' in this.property) {
+      return this.property.averageRating || null;
+    }
+    return null;
+  }
+
+  /**
+   * ============================
+   * OBTENIR LE NOMBRE D'AVIS (si disponible)
+   * ============================
+   */
+  getReviewCount(): number | null {
+    if ('reviewCount' in this.property) {
+      return this.property.reviewCount || null;
     }
     return null;
   }

@@ -1,9 +1,12 @@
 // src/app/features/property-detail/property-detail.component.ts
+// ✅ VERSION FINALE avec Reviews intégrés
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, forkJoin, of, Observable } from 'rxjs';
+import { switchMap, catchError } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 
 // Material
 import { MatButtonModule } from '@angular/material/button';
@@ -17,15 +20,25 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import * as L from 'leaflet';
 
 // Models & Services
-import { Property } from '../../core/models/property.model';
+import { PropertyDetail } from '../../core/models/property-detail.model';
+import { UserResponseDTO } from '../../core/models/user.model';
 import { PropertyService } from '../../core/services/property.service';
+import { UserService } from '../../core/services/user.service';
 
-/**
- * ============================
- * COMPOSANT PROPERTY DETAIL
- * Page de détails d'une propriété
- * ============================
- */
+// Reviews
+import { Review } from '../../core/models/review.model';
+import { PropertyReviewStats } from '../../core/models/review-stats.model';
+import * as ReviewActions from '../../store/review/review.actions';
+import {
+  selectAllReviews,
+  selectReviewStats,
+  selectReviewsLoading
+} from '../../store/review/review.selectors';
+
+// Components
+import { PhotoGalleryDialogComponent } from './photo-gallery-dialog/photo-gallery-dialog.component';
+import { ReviewListComponent } from '../reviews/components/review-list/review-list.component';
+import { BookingCardComponent } from './booking-card/booking-card.component';
 @Component({
   selector: 'app-property-detail',
   standalone: true,
@@ -36,14 +49,17 @@ import { PropertyService } from '../../core/services/property.service';
     MatChipsModule,
     MatDividerModule,
     MatDialogModule,
-    LeafletModule
+    LeafletModule,
+    ReviewListComponent,
+    BookingCardComponent
   ],
   templateUrl: './property-detail.component.html',
   styleUrl: './property-detail.component.scss'
 })
 export class PropertyDetailComponent implements OnInit, OnDestroy {
 
-  property: Property | null = null;
+  property: PropertyDetail | null = null;
+  host: UserResponseDTO | null = null;
   loading = true;
   error: string | null = null;
 
@@ -52,28 +68,43 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   visiblePhotos: string[] = [];
   allPhotos: string[] = [];
 
-  // Map Leaflet
+  // Map
   map!: L.Map;
   mapOptions: any;
   mapLayers: L.Layer[] = [];
 
+  // ✅ Reviews
+  reviews$!: Observable<Review[]>;
+  reviewStats$!: Observable<PropertyReviewStats | null>;
+  reviewsLoading$!: Observable<boolean>;
+
+  propertyId: number = 0; // ✅ AJOUTER
   private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private propertyService: PropertyService,
-    private dialog: MatDialog
+    private userService: UserService,
+    private dialog: MatDialog,
+    private store: Store
   ) {}
 
   ngOnInit(): void {
+    // Initialiser les observables reviews
+    this.reviews$ = this.store.select(selectAllReviews);
+    this.reviewStats$ = this.store.select(selectReviewStats);
+    this.reviewsLoading$ = this.store.select(selectReviewsLoading);
+
     const propertyId = this.route.snapshot.paramMap.get('id');
     if (propertyId) {
+      this.propertyId = +propertyId;
       this.loadProperty(+propertyId);
     } else {
       this.error = 'Invalid property ID';
       this.loading = false;
     }
+
   }
 
   ngOnDestroy(): void {
@@ -81,21 +112,34 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  /**
-   * ============================
-   * CHARGER LA PROPRIÉTÉ
-   * ============================
-   */
   private loadProperty(id: number): void {
     this.loading = true;
-    this.propertyService.getPropertyById(id)
-      .pipe(takeUntil(this.destroy$))
+
+    this.propertyService.getPropertyDetails(id)
+      .pipe(
+        switchMap(property =>
+          forkJoin({
+            property: of(property),
+            host: this.userService.getUserById(property.userId).pipe(
+              catchError(error => {
+                console.warn('Failed to load host info:', error);
+                return of(null);
+              })
+            )
+          })
+        ),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
-        next: (property) => {
+        next: ({ property, host }) => {
           this.property = property;
+          this.host = host;
           this.preparePhotos();
           this.initMap();
           this.loading = false;
+
+          // ✅ Charger les reviews
+          this.loadReviews(id);
         },
         error: (error) => {
           console.error('Error loading property:', error);
@@ -105,33 +149,27 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
       });
   }
 
-  /**
-   * ============================
-   * PRÉPARER LES PHOTOS
-   * ============================
-   */
+  // ✅ Charger les reviews
+  private loadReviews(propertyId: number): void {
+    console.log('✅ Loading reviews for property:', propertyId);
+    this.store.dispatch(ReviewActions.loadPropertyReviews({ propertyId }));
+    this.store.dispatch(ReviewActions.loadPropertyStats({ propertyId }));
+  }
+
   private preparePhotos(): void {
     if (!this.property?.photos || this.property.photos.length === 0) {
       return;
     }
 
-    // Trier par ordre
     const sortedPhotos = [...this.property.photos].sort((a, b) =>
       (a.displayOrder || 0) - (b.displayOrder || 0)
     );
 
     this.allPhotos = sortedPhotos.map(p => p.photoUrl);
     this.mainPhoto = this.allPhotos[0] || '';
-
-    // Afficher 5 photos max dans la grille (1 principale + 4 secondaires)
     this.visiblePhotos = this.allPhotos.slice(0, 5);
   }
 
-  /**
-   * ============================
-   * INITIALISER LA MAP
-   * ============================
-   */
   private initMap(): void {
     if (!this.property?.latitude || !this.property?.longitude) {
       return;
@@ -151,7 +189,6 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
       center: L.latLng(lat, lng)
     };
 
-    // Marker
     const marker = L.marker([lat, lng], {
       icon: L.icon({
         iconSize: [25, 41],
@@ -164,21 +201,42 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
     this.mapLayers = [marker];
   }
 
-  /**
-   * ============================
-   * OUVRIR GALERIE COMPLÈTE
-   * ============================
-   */
   openPhotoGallery(): void {
-    // TODO: Ouvrir un dialog avec toutes les photos en carousel
-    console.log('Opening photo gallery with', this.allPhotos.length, 'photos');
+    this.dialog.open(PhotoGalleryDialogComponent, {
+      data: {
+        photos: this.allPhotos,
+        startIndex: 0,
+        propertyTitle: this.property?.title || 'Property Photos'
+      },
+      width: '90vw',
+      maxWidth: '1200px',
+      height: '85vh',
+      maxHeight: '800px',
+      panelClass: 'photo-gallery-dialog-container',
+      hasBackdrop: true,
+      backdropClass: 'photo-gallery-backdrop',
+      disableClose: false
+    });
   }
 
-  /**
-   * ============================
-   * GETTERS POUR L'AFFICHAGE
-   * ============================
-   */
+  // ✅ Getters pour les reviews
+  get averageRating(): number {
+    let rating = 0;
+    this.reviewStats$.pipe(takeUntil(this.destroy$)).subscribe(stats => {
+      rating = stats?.averageRating || 0;
+    });
+    return rating;
+  }
+
+  get totalReviews(): number {
+    let total = 0;
+    this.reviewStats$.pipe(takeUntil(this.destroy$)).subscribe(stats => {
+      total = stats?.totalReviews || 0;
+    });
+    return total;
+  }
+
+  // Autres getters
   get hasMorePhotos(): boolean {
     return this.allPhotos.length > 5;
   }
@@ -199,11 +257,27 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
     return !!this.weekendPrice && this.weekendPrice !== this.pricePerNight;
   }
 
-  /**
-   * ============================
-   * RETOUR À LA LISTE
-   * ============================
-   */
+  get hostFullName(): string {
+    if (!this.host) return 'Host';
+    return `${this.host.prenom} ${this.host.nom}`;
+  }
+
+  get hostPhotoUrl(): string {
+    return this.host?.photoUrl || 'assets/default-avatar.png';
+  }
+
+  get hostLanguages(): string {
+    if (!this.host?.languages || this.host.languages.length === 0) {
+      return 'Not specified';
+    }
+    return this.host.languages.map(l => l.languageName).join(', ');
+  }
+
+  get hostJoinedYear(): string {
+    if (!this.host?.createdAt) return '';
+    return new Date(this.host.createdAt).getFullYear().toString();
+  }
+
   goBack(): void {
     this.router.navigate(['/listings']);
   }

@@ -6,6 +6,7 @@ import {
   PropertySearchResultDTO,
   PropertySearchFilters
 } from '../../core/models/property.model';
+import {PropertyCard} from "../../core/models/property-card.model";
 
 /**
  * ============================
@@ -14,12 +15,12 @@ import {
  */
 export const loadAllProperties = createAction(
   '[Listings] Load All Properties',
-  props<{ page?: number; size?: number }>()
+  props<{ page: number; size: number }>()
 );
 
 export const loadAllPropertiesSuccess = createAction(
   '[Listings] Load All Properties Success',
-  props<{ properties: Property[]; total: number }>()
+  props<{ properties: PropertyCard[]; total: number }>()  // ✅ PropertyCard au lieu de Property
 );
 
 export const loadAllPropertiesFailure = createAction(
@@ -59,7 +60,7 @@ export const filterProperties = createAction(
 
 export const filterPropertiesSuccess = createAction(
   '[Listings] Filter Properties Success',
-  props<{ properties: Property[] }>()
+  props<{ properties: PropertyCard[] }>()  // ✅ PropertyCard au lieu de Property
 );
 
 export const filterPropertiesFailure = createAction(

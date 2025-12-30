@@ -186,11 +186,13 @@ export class ListingsComponent implements OnInit, OnDestroy {
     });
 
     const dialogRef = this.dialog.open(FiltersModalComponent, {
-      width: '100%',
-      maxWidth: '780px',
-      height: 'auto',
-      maxHeight: '90vh',
-      panelClass: 'filters-modal-panel',
+      width: '680px',              // Largeur fixe professionnelle
+      maxWidth: '90vw',            // Max 90% de la largeur sur mobile
+      maxHeight: '90vh',           // Max 90% de la hauteur
+      panelClass: 'filters-modal-container',  // ✅ Classe custom
+      backdropClass: 'filters-modal-backdrop', // ✅ Backdrop custom
+      disableClose: false,         // Peut fermer en cliquant dehors
+      autoFocus: false,
       data: {
         currentFilters: currentFilters // ✅ Passer les filtres actuels
       }
@@ -203,6 +205,8 @@ export class ListingsComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+
 
   /**
    * ============================

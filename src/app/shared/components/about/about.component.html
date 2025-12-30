@@ -1,0 +1,212 @@
+<!-- src/app/features/about/about.component.html -->
+<!-- VERSION MODERNE AVEC VRAIES PHOTOS -->
+
+<div class="about-page">
+
+  <!-- HERO SECTION -->
+  <section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="container">
+      <div class="hero-content">
+        <div class="badge">
+          <mat-icon>link</mat-icon>
+          <span>Powered by Blockchain</span>
+        </div>
+        <h1>Revolutionizing Real Estate Rentals</h1>
+        <p class="subtitle">
+          We're building the future of property rentals on Ethereum blockchain,
+          eliminating intermediaries and empowering hosts and guests worldwide.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MISSION SECTION (avec vraie photo) -->
+  <section class="mission-section">
+    <div class="container">
+      <div class="mission-content">
+        <div class="mission-image">
+          <img src="/assets/images/our_mission.jpg"
+               alt="Team Collaboration">
+        </div>
+        <div class="mission-text">
+          <h2>Our Mission</h2>
+          <p>
+            To democratize real estate rentals through blockchain technology, creating a
+            transparent, secure, and fair marketplace where hosts and guests connect directly
+            without unnecessary fees or intermediaries.
+          </p>
+          <p>
+            We believe everyone deserves access to affordable housing and the opportunity to
+            earn from their properties without paying exorbitant platform fees. By leveraging
+            Ethereum smart contracts, we're making this vision a reality.
+          </p>
+
+          <!-- Stats intégrés -->
+          <div class="mission-stats">
+            <div class="stat-item" *ngFor="let stat of stats.slice(0, 2)">
+              <div class="stat-value">{{ stat.value }}</div>
+              <div class="stat-label">{{ stat.label }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES SECTION -->
+  <section class="values-section">
+    <div class="container">
+      <h2 class="section-title">Our Core Values</h2>
+      <p class="section-subtitle">The principles that guide everything we do</p>
+
+      <div class="values-grid">
+        <div class="value-card" *ngFor="let value of values">
+          <div class="value-icon">
+            <mat-icon>{{ value.icon }}</mat-icon>
+          </div>
+          <h3>{{ value.title }}</h3>
+          <p>{{ value.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE SECTION -->
+  <section class="timeline-section">
+    <div class="container">
+      <h2 class="section-title">Our Journey</h2>
+      <p class="section-subtitle">From vision to reality</p>
+
+      <div class="timeline">
+        <div class="timeline-item" *ngFor="let milestone of milestones; let i = index">
+          <div class="timeline-marker">
+            <div class="marker-dot"></div>
+            <div class="marker-line" *ngIf="i !== milestones.length - 1"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-year">{{ milestone.year }}</div>
+            <h3>{{ milestone.title }}</h3>
+            <p>{{ milestone.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM SECTION (avec vraies photos) -->
+  <section class="team-section">
+    <div class="container">
+      <h2 class="section-title">Meet Our Team</h2>
+      <p class="section-subtitle">
+        Passionate builders dedicated to decentralizing real estate
+      </p>
+
+      <div class="team-grid">
+        <!-- Team Member 1 -->
+        <div class="team-card">
+          <div class="team-image">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop"
+                 alt="Sarah Johnson">
+          </div>
+          <h3>Sarah Johnson</h3>
+          <p class="team-role">CEO & Co-Founder</p>
+          <p class="team-bio">Blockchain expert with 10+ years in real estate technology</p>
+        </div>
+
+        <!-- Team Member 2 -->
+        <div class="team-card">
+          <div class="team-image">
+            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop"
+                 alt="Michael Chen">
+          </div>
+          <h3>Michael Chen</h3>
+          <p class="team-role">CTO & Co-Founder</p>
+          <p class="team-bio">Smart contract developer and Ethereum core contributor</p>
+        </div>
+
+        <!-- Team Member 3 -->
+        <div class="team-card">
+          <div class="team-image">
+            <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=400&fit=crop"
+                 alt="Emma Davis">
+          </div>
+          <h3>Emma Davis</h3>
+          <p class="team-role">Head of Product</p>
+          <p class="team-bio">Product designer focused on Web3 user experience</p>
+        </div>
+
+        <!-- Team Member 4 -->
+        <div class="team-card">
+          <div class="team-image">
+            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop"
+                 alt="James Wilson">
+          </div>
+          <h3>James Wilson</h3>
+          <p class="team-role">Head of Community</p>
+          <p class="team-bio">Building trust and engagement in our decentralized community</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECHNOLOGY SECTION (avec image) -->
+  <section class="technology-section">
+    <div class="container">
+      <div class="tech-content">
+        <div class="tech-text">
+          <h2>Built on Ethereum</h2>
+          <p>
+            Our platform leverages the power and security of Ethereum blockchain to create
+            a trustless, transparent rental ecosystem.
+          </p>
+
+          <ul class="tech-features">
+            <li>
+              <mat-icon>check_circle</mat-icon>
+              <span><strong>Smart Contracts:</strong> Automated escrow and payments</span>
+            </li>
+            <li>
+              <mat-icon>check_circle</mat-icon>
+              <span><strong>Decentralized Storage:</strong> Reviews and ratings on-chain</span>
+            </li>
+            <li>
+              <mat-icon>check_circle</mat-icon>
+              <span><strong>Zero Fees:</strong> No platform commission, only gas costs</span>
+            </li>
+            <li>
+              <mat-icon>check_circle</mat-icon>
+              <span><strong>Open Source:</strong> Transparent and auditable code</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="tech-visual">
+          <img src="/assets/images/eth.jpg"
+               alt="Blockchain Technology">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA SECTION -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Join the Revolution</h2>
+        <p>Be part of the decentralized future of real estate rentals</p>
+        <div class="cta-buttons">
+          <button mat-raised-button class="btn-primary" routerLink="/become-host">
+            <mat-icon>home_work</mat-icon>
+            Become a Host
+          </button>
+          <button mat-stroked-button class="btn-secondary" routerLink="/listings">
+            <mat-icon>search</mat-icon>
+            Explore Properties
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

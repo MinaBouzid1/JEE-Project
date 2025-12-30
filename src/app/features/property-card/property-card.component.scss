@@ -8,12 +8,15 @@
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
   &:hover {
     transform: translateY(-6px);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
 
-    .card-image img {
+    .property-image img {
       transform: scale(1.05);
     }
 
@@ -26,12 +29,13 @@
 // ==========================================
 // IMAGE PRINCIPALE
 // ==========================================
-.card-image {
+.property-image {
   position: relative;
   width: 100%;
   height: 280px;
   overflow: hidden;
   background: #f0f0f0;
+  flex-shrink: 0;  // ✅ Important pour garder la hauteur fixe
 
   img {
     width: 100%;
@@ -54,7 +58,15 @@
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
     z-index: 2;
-    animation: pulse 2s infinite;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
   }
 
   // Bouton favori
@@ -89,17 +101,18 @@
 // ==========================================
 // CONTENU DE LA CARTE
 // ==========================================
-.card-content {
+.property-info {
   padding: 1rem 1.25rem 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  flex: 1;  // ✅ Prend l'espace restant
 }
 
 // ==========================================
 // HEADER (Titre + Localisation)
 // ==========================================
-.card-header {
+.property-header {
   .property-title {
     font-size: 1.05rem;
     font-weight: 600;
@@ -123,7 +136,7 @@
     margin: 0;
     font-weight: 500;
 
-    mat-icon {
+    .location-icon {
       font-size: 16px;
       width: 16px;
       height: 16px;
@@ -133,9 +146,9 @@
 }
 
 // ==========================================
-// CARACTÉRISTIQUES
+// CARACTÉRISTIQUES (guests, bedrooms, etc.)
 // ==========================================
-.property-features {
+.property-details {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -143,7 +156,7 @@
   color: #717171;
   flex-wrap: wrap;
 
-  .feature {
+  .detail-item {
     display: flex;
     align-items: center;
     gap: 4px;
@@ -164,18 +177,45 @@
 }
 
 // ==========================================
+// RATING (note + avis)
+// ==========================================
+.property-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.9rem;
+
+  .star-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #ffc107;
+  }
+
+  .rating-value {
+    font-weight: 600;
+    color: #222;
+  }
+
+  .review-count {
+    color: #717171;
+    font-size: 0.85rem;
+  }
+}
+
+// ==========================================
 // FOOTER (Prix + Info nuits)
 // ==========================================
-.card-footer {
+.property-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-top: 0.75rem;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
-  margin-top: auto;
+  margin-top: auto;  // ✅ Pousse le footer en bas
 }
 
-.price-section {
+.property-price {
   display: flex;
   align-items: baseline;
   gap: 4px;
@@ -194,7 +234,7 @@
   }
 }
 
-.nights-info {
+.property-nights {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -202,7 +242,7 @@
   color: #717171;
   font-weight: 500;
 
-  mat-icon {
+  .nights-icon {
     font-size: 16px;
     width: 16px;
     height: 16px;
@@ -211,22 +251,10 @@
 }
 
 // ==========================================
-// ANIMATION PULSE POUR LE BADGE RÉDUCTION
-// ==========================================
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
-// ==========================================
 // RESPONSIVE
 // ==========================================
 @media (max-width: 768px) {
-  .card-image {
+  .property-image {
     height: 240px;
   }
 

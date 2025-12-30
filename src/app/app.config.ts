@@ -1,82 +1,147 @@
+// src/app/app.config.ts
 
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import {APP_INITIALIZER, ApplicationConfig, provideZoneChangeDetection} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { provideHttpClient } from '@angular/common/http';
+import { Store } from '@ngrx/store';
+
+// Routes
 import { routes } from './app.routes';
+import { environment } from '../environments/environment';
+
+// Auth
 import { authReducer } from './store/auth/auth.reducer';
 import { AuthEffects } from './store/auth/auth.effects';
-import { environment } from '../environments/environment';
-import {listingsReducer} from "./store/listings/listing.reducer";
-import {ListingsEffects} from "./store/listings/listing.effects";
+import * as AuthActions from './store/auth/auth.actions';
+
+// Listings
+import { listingsReducer } from "./store/listings/listing.reducer";
+import { ListingsEffects } from "./store/listings/listing.effects";
+
+// Reviews
+import { reviewReducer } from "./store/review/review.reducer";
+import { ReviewEffects } from "./store/review/review.effects";
+
+// ✅ NOUVEAU - Booking
+import { bookingReducer } from "./store/booking/booking.reducer";
+import { BookingEffects } from "./store/booking/booking.effects";
+
+// ✅ NOUVEAU - Payment
+import { paymentReducer } from "./store/payment/payment.reducer";
+import { PaymentEffects } from "./store/payment/payment.effects";
+
+/**
+ * ============================
+ * FONCTION D'INITIALISATION
+ * Exécutée au démarrage de l'app AVANT le rendu
+ * Restaure la session si un token existe
+ * ============================
+ */
+export function initializeAuth(store: Store) {
+  return () => {
+    store.dispatch(AuthActions.initAuth());
+    return Promise.resolve();
+  };
+}
 
 /**
  * ============================
  * CONFIGURATION DE L'APPLICATION (STANDALONE)
  *
- * Ici on configure tous les providers globaux :
+ * Providers globaux :
  * - Routing
+ * - HTTP Client
  * - Animations Material
  * - NgRx Store + Effects
- * - DevTools (seulement en développement)
+ * - DevTools (dev only)
+ * - Auth Initializer
  * ============================
  */
-
-
 export const appConfig: ApplicationConfig = {
   providers: [
 
-    // ZONE.JS: Angular utilise pour détecter les changements automatiquement.
-    // Améliore les performances en regroupant les changements
+    // ========================================
+    // ZONE.JS
+    // Détection automatique des changements Angular
+    // eventCoalescing: regroupe les changements pour performance
+    // ========================================
     provideZoneChangeDetection({ eventCoalescing: true }),
 
-
-    // Configuration du routage Angular
+    // ========================================
+    // ROUTING
+    // ========================================
     provideRouter(routes),
 
+    // ========================================
+    // HTTP CLIENT
+    // Nécessaire pour les appels API
+    // ========================================
+    provideHttpClient(),
 
-    // ANGULAR MATERIAL ANIMATIONS : Active les animations Material (obligatoire pour Material UI)
+    // ========================================
+    // ANGULAR MATERIAL ANIMATIONS
+    // Active les animations Material UI
+    // ========================================
     provideAnimationsAsync(),
 
-
+    // ========================================
     // NGRX STORE
-    // State management global de l'application
-    // On enregistre ici tous les reducers
+    // State management global
+    // Tous les reducers de l'application
+    // ========================================
     provideStore({
-      auth: authReducer  ,// État 'auth' géré par authReducer
-      listings: listingsReducer
+      auth: authReducer,           // État d'authentification
+      listings: listingsReducer,   // État des propriétés
+      reviews: reviewReducer,       // État des avis
+      booking: bookingReducer,      // ✅ NOUVEAU - État des réservations
+      payment: paymentReducer       // ✅ NOUVEAU - État des paiements
     }),
 
-
+    // ========================================
     // NGRX EFFECTS
-    // Enregistre tous les effects (side effects)
+    // Side effects (appels API, navigation, etc.)
+    // ========================================
     provideEffects([
-      AuthEffects , // Effects d'authentification
-      ListingsEffects,
-
+      AuthEffects,        // Effects d'authentification
+      ListingsEffects,    // Effects des propriétés
+      ReviewEffects,      // Effects des avis
+      BookingEffects,     // ✅ NOUVEAU - Effects des réservations
+      PaymentEffects      // ✅ NOUVEAU - Effects des paiements
     ]),
 
     // ========================================
-    // NGRX DEVTOOLS (Redux DevTools Extension) ; DevTools c'etst une extension dans le navigateur pour déboguer le store.
-
-    //Pour déboguer le store dans le navigateur
+    // NGRX DEVTOOLS (Redux DevTools Extension)
+    // Pour déboguer le store dans le navigateur
     //
-    // Installation : https://github.com/reduxjs/redux-devtools
-    // Chrome : https://chrome.google.com/webstore/detail/redux-devtools
-    // Firefox : https://addons.mozilla.org/firefox/addon/reduxdevtools/
+    // Installation :
+    // Chrome: https://chrome.google.com/webstore/detail/redux-devtools
+    // Firefox: https://addons.mozilla.org/firefox/addon/reduxdevtools/
     //
+    // Options:
     // - maxAge: nombre d'actions à garder en mémoire (25 max)
-    // - logOnly:
-    //Si true (en production) → DevTools ne permet que de lire, pas de modifier le store.
-    // Si false (en dev) → tu peux interagir avec le store (rejouer actions, annuler...).
+    // - logOnly: en production, lecture seule (pas de time-travel)
+    // - connectInZone: nécessaire pour Angular 18+
     // ========================================
     provideStoreDevtools({
       maxAge: 25,
       logOnly: environment.production,
-
       connectInZone: true
-    })
+    }),
+
+    // ========================================
+    // APP INITIALIZER
+    // Restaure la session au démarrage
+    // CRITIQUE: résout le problème de déconnexion au refresh
+    // ========================================
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeAuth,
+      deps: [Store],
+      multi: true
+    }
   ]
 };

@@ -1,101 +1,42 @@
-// src/app/store/listings/listings.selectors.ts
+// src/app/store/listings/listing.selectors.ts
 
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { ListingsState } from './listing.reducer';
+import { PropertyCard } from '../../core/models/property-card.model';
+import { PropertySearchResultDTO } from '../../core/models/property.model';
 
 /**
  * ============================
- * SELECTOR DE FEATURE
+ * SÉLECTEUR RACINE
  * ============================
  */
 export const selectListingsState = createFeatureSelector<ListingsState>('listings');
 
 /**
  * ============================
- * SÉLECTEURS : PROPERTIES (liste complète)
+ * SÉLECTEURS DE BASE
  * ============================
  */
 export const selectAllProperties = createSelector(
   selectListingsState,
-  (state: ListingsState) => state.properties
+  (state: ListingsState) => state.allProperties  // ✅ Corrigé
 );
 
-export const selectTotalProperties = createSelector(
-  selectListingsState,
-  (state: ListingsState) => state.totalProperties
-);
-
-/**
- * ============================
- * SÉLECTEURS : SEARCH RESULTS (avec filtres)
- * ============================
- */
 export const selectSearchResults = createSelector(
   selectListingsState,
   (state: ListingsState) => state.searchResults
 );
 
-export const selectHasSearchResults = createSelector(
-  selectSearchResults,
-  (results) => results.length > 0
-);
-
-/**
- * ============================
- * SÉLECTEUR : PROPERTY DETAIL
- * ============================
- */
-export const selectSelectedProperty = createSelector(
-  selectListingsState,
-  (state: ListingsState) => state.selectedProperty
-);
-
-/**
- * ============================
- * SÉLECTEURS : FILTERS
- * ============================
- */
 export const selectFilters = createSelector(
   selectListingsState,
   (state: ListingsState) => state.filters
 );
 
-export const selectHasActiveFilters = createSelector(
-  selectFilters,
-  (filters) => {
-    return !!(
-      filters.city ||
-      filters.country ||
-      filters.checkIn ||
-      filters.checkOut ||
-      filters.propertyType ||
-      filters.minPrice ||
-      filters.maxPrice ||
-      (filters.amenityIds && filters.amenityIds.length > 0)
-    );
-  }
-);
-
-/**
- * ============================
- * SÉLECTEURS : LOADING STATES
- * ============================
- */
 export const selectListingsLoading = createSelector(
   selectListingsState,
   (state: ListingsState) => state.loading
 );
 
-export const selectPropertyDetailLoading = createSelector(
-  selectListingsState,
-  (state: ListingsState) => state.loadingDetail
-);
-
-/**
- * ============================
- * SÉLECTEUR : ERROR
- * ============================
- */
 export const selectListingsError = createSelector(
   selectListingsState,
   (state: ListingsState) => state.error
@@ -103,14 +44,63 @@ export const selectListingsError = createSelector(
 
 /**
  * ============================
- * SÉLECTEUR : DISPLAY MODE
- * Détermine quel contenu afficher (properties vs searchResults)
+ * SÉLECTEUR : LISTINGS AFFICHÉES
+ * Retourne PropertyCard[] OU PropertySearchResultDTO[]
+ * selon le mode (browse ou search)
  * ============================
  */
-
 export const selectDisplayedListings = createSelector(
   selectListingsState,
-  (state: ListingsState) => {
-    return state.isSearchMode ? state.searchResults : state.properties;
+  (state: ListingsState): (PropertyCard | PropertySearchResultDTO)[] => {
+    // Si searchResults existe → mode search
+    if (state.searchResults && state.searchResults.length > 0) {
+      return state.searchResults;
+    }
+    // Sinon → mode browse
+    return state.allProperties;  // ✅ Corrigé
+  }
+);
+
+/**
+ * ============================
+ * SÉLECTEUR : Y A-T-IL DES RÉSULTATS DE RECHERCHE ?
+ * ============================
+ */
+export const selectHasSearchResults = createSelector(
+  selectListingsState,
+  (state: ListingsState) => state.searchResults.length > 0
+);
+
+/**
+ * ============================
+ * SÉLECTEUR : NOMBRE TOTAL DE RÉSULTATS
+ * ============================
+ */
+export const selectTotalResults = createSelector(
+  selectDisplayedListings,
+  (listings) => listings.length
+);
+
+/**
+ * ============================
+ * SÉLECTEUR : Y A-T-IL DES FILTRES ACTIFS ?
+ * ============================
+ */
+export const selectHasActiveFilters = createSelector(
+  selectFilters,
+  (filters) => {
+    return !!(
+      filters.propertyType ||
+      filters.placeType ||
+      filters.minPrice ||
+      filters.maxPrice ||
+      filters.bedrooms ||
+      filters.bathrooms ||
+      filters.beds ||
+      filters.instantBooking ||
+      (filters.amenityIds && filters.amenityIds.length > 0) ||
+      filters.smokingAllowed ||
+      filters.eventsAllowed
+    );
   }
 );

@@ -11,6 +11,9 @@ import {
   CreatePropertyDTO,
   PriceHistory
 } from '../models/property.model';
+import {PropertyDetail} from "../models/property-detail.model";
+import {PropertyCard} from "../models/property-card.model";
+
 
 /**
  * ============================
@@ -21,6 +24,8 @@ import {
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class PropertyService {
   private readonly baseUrl = environment.services.listing; // '/listings'
 
@@ -32,12 +37,13 @@ export class PropertyService {
    * GET /listings/properties/all
    * ============================
    */
-  getAllProperties(page: number = 0, size: number = 20): Observable<any> {
-    return this.apiService.get<any>(`${this.baseUrl}/properties/all`, {
+  getAllProperties(page: number = 0, size: number = 20): Observable<Page<PropertyCard>> {
+    return this.apiService.get<Page<PropertyCard>>(`${this.baseUrl}/properties/all`, {
       page,
       size
     });
   }
+
 
   /**
    * ============================
@@ -59,7 +65,15 @@ export class PropertyService {
    * Retourne des Property[] normales
    * ============================
    */
-  filterProperties(filters: PropertySearchFilters): Observable<Property[]> {
+  /**
+   * ============================
+   * FILTRER LES PROPERTIES (SANS DATES)
+   * GET /listings/properties/filter
+   *
+   * Retourne PropertyCard[] (avec mainPhotoUrl)
+   * ============================
+   */
+  filterProperties(filters: PropertySearchFilters): Observable<PropertyCard[]> {
     const params: any = {
       adults: filters.adults || 1,
       children: filters.children || 0,
@@ -67,7 +81,6 @@ export class PropertyService {
       pets: filters.pets || 0
     };
 
-    // Ajouter les filtres optionnels
     if (filters.city) params.city = filters.city;
     if (filters.country) params.country = filters.country;
     if (filters.propertyType) params.propertyType = filters.propertyType;
@@ -78,24 +91,19 @@ export class PropertyService {
     if (filters.bathrooms) params.bathrooms = filters.bathrooms;
     if (filters.beds) params.beds = filters.beds;
     if (filters.instantBooking !== undefined) params.instantBooking = filters.instantBooking;
-
-    // ✅ CORRECTION : Garder amenityIds comme tableau
-    // Angular HttpClient va créer: amenityIds=8&amenityIds=2&amenityIds=7
-    // Spring Boot va recevoir: List<Integer> amenityIds = [8, 2, 7]
     if (filters.amenityIds && filters.amenityIds.length > 0) {
       params.amenityIds = filters.amenityIds;
     }
-
     if (filters.smokingAllowed !== undefined) params.smokingAllowed = filters.smokingAllowed;
     if (filters.eventsAllowed !== undefined) params.eventsAllowed = filters.eventsAllowed;
 
-    console.log('🔍 Params envoyés au backend:', params);
-
-    return this.apiService.get<Property[]>(
+    return this.apiService.get<PropertyCard[]>(
       `${this.baseUrl}/properties/filter`,
       params
     );
   }
+
+
 
   /**
    * ============================
@@ -207,4 +215,16 @@ export class PropertyService {
       `${this.baseUrl}/properties/${propertyId}/price-history`
     );
   }
+
+  getPropertyDetails(id: number): Observable<PropertyDetail> {
+    return this.apiService.get<PropertyDetail>(`${this.baseUrl}/properties/${id}/details`);
+  }
+
+}
+export interface Page<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
 }

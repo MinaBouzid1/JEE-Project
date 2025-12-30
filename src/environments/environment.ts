@@ -33,6 +33,6 @@ export const environment = {
   allowedImageTypes: ['image/jpeg', 'image/png', 'image/webp'],
 
   // Autres configs
-  tokenKey: 'auth_token', // le token jwt
+  tokenKey: 'authToken', // le token jwt
   userKey: 'current_user'
 };

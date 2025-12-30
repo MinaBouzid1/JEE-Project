@@ -1,32 +1,67 @@
 <!-- src/app/features/auth/login/login.component.html -->
 
 <div class="login-container">
-  <div class="login-card-wrapper">
-    <mat-card class="login-card">
-      <!-- Header -->
-      <mat-card-header class="login-header">
+
+  <!-- ========================================
+       LEFT SIDE: IMAGE HERO
+  ========================================= -->
+
+
+
+  <div class="login-hero" >
+
+
+    <div class="hero-overlay">
+      <div class="hero-content">
+        <h1 class="hero-title">Welcome back to Rentopia</h1>
+        <p class="hero-subtitle">
+          Your decentralized rental marketplace powered by blockchain
+        </p>
+        <div class="hero-features">
+          <div class="feature-item">
+            <mat-icon>verified_user</mat-icon>
+            <span>Secure & Transparent</span>
+          </div>
+          <div class="feature-item">
+            <mat-icon>account_balance_wallet</mat-icon>
+            <span>Powered  by  Web3</span>
+          </div>
+          <div class="feature-item">
+            <mat-icon>handshake</mat-icon>
+            <span>Direct Connections</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================
+       RIGHT SIDE: LOGIN FORM
+  ========================================= -->
+  <div class="login-form-side">
+    <div class="login-card-wrapper">
+
+      <!-- Logo & Title -->
+      <div class="login-header">
         <div class="logo-container">
           <mat-icon class="logo-icon">home</mat-icon>
-          <h1 class="app-title">Real Estate Rent</h1>
+          <h1 class="app-title">Rentopia</h1>
         </div>
-        <p class="subtitle">Decentralized rental platform</p>
-      </mat-card-header>
-
-      <mat-card-content class="login-content">
-        <!-- Main Title -->
-        <h2 class="login-title">Login</h2>
+        <h2 class="login-title">Sign in to your account</h2>
         <p class="login-description">
-          Connect your MetaMask wallet to access the platform
+          Connect your MetaMask wallet to continue
         </p>
+      </div>
 
-        <!-- Message if MetaMask is not installed -->
+      <!-- Main Content -->
+      <div class="login-content">
+
+        <!-- Warning if MetaMask is not installed -->
         <div class="warning-box" *ngIf="!metaMaskInstalled">
           <mat-icon class="warning-icon">warning</mat-icon>
           <div class="warning-content">
             <h3>MetaMask Required</h3>
-            <p>
-              Please install the MetaMask extension to log in.
-            </p>
+            <p>Please install MetaMask extension to continue</p>
             <a
               href="https://metamask.io/download/"
               target="_blank"
@@ -53,30 +88,23 @@
           ></mat-spinner>
 
           <span *ngIf="!(isConnecting || (loading$ | async))">
-            <img
-              src="assets/images/metamask_logo.png"
-              alt="MetaMask"
-              class="metamask-icon"
-              onerror="this.style.display='none'"
-            />
-            <mat-icon *ngIf="!metaMaskInstalled" class="button-icon">account_balance_wallet</mat-icon>
-            Login with MetaMask
+            <mat-icon class="button-icon">account_balance_wallet</mat-icon>
+            Connect with MetaMask
           </span>
 
           <span *ngIf="isConnecting || (loading$ | async)">
-            Logging in...
+            Connecting...
           </span>
         </button>
 
         <!-- Divider -->
         <div class="divider">
-          <span class="divider-text">New to the platform?</span>
+          <span class="divider-text">New to Rentopia?</span>
         </div>
 
         <!-- Link to register -->
         <button
           mat-stroked-button
-          color="primary"
           class="register-button"
           (click)="goToRegister()"
           [disabled]="isConnecting || (loading$ | async)"
@@ -85,25 +113,26 @@
           Create an account
         </button>
 
-        <!-- Additional information -->
+        <!-- Info Box -->
         <div class="info-box">
           <mat-icon class="info-icon">info</mat-icon>
           <p class="info-text">
-            Logging in with MetaMask is <strong>secure</strong> and does not require a password.
-            Your wallet is your identity on the blockchain.
+            Your wallet is your identity. No passwords, no data breaches.
+            <strong>Simple, secure, decentralized.</strong>
           </p>
         </div>
-      </mat-card-content>
-    </mat-card>
+      </div>
 
-    <!-- Footer -->
-    <div class="login-footer">
-      <p class="footer-text">
-        By logging in, you agree to our
-        <a href="/terms" class="footer-link">Terms of Use</a>
-        and our
-        <a href="/privacy" class="footer-link">Privacy Policy</a>
-      </p>
+      <!-- Footer -->
+      <div class="login-footer">
+        <p class="footer-text">
+          By continuing, you agree to our
+          <a href="/terms" class="footer-link">Terms</a>
+          and
+          <a href="/privacy" class="footer-link">Privacy Policy</a>
+        </p>
+      </div>
     </div>
   </div>
+
 </div>

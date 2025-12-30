@@ -11,6 +11,15 @@ import { User } from '../../core/models/user.model';
  * ============================
  */
 
+export const initAuth = createAction('[Auth] Init Auth');
+
+export const initAuthSuccess = createAction(
+  '[Auth] Init Auth Success',
+  props<{ user: User; token: string }>()
+);
+
+export const initAuthFailure = createAction('[Auth] Init Auth Failure');
+
 // Action déclenchée quand l'utilisateur soumet le formulaire d'inscription
 export const register = createAction(
   '[Auth] Register',

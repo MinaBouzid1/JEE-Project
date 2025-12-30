@@ -1,72 +1,137 @@
 // src/app/features/auth/login/login.component.scss
 
 // ============================
-// UTILISATION DES VARIABLES GLOBALES
-// On réutilise les couleurs définies dans styles.scss
-// ============================
-
-// ============================
-// CONTAINER PRINCIPAL
+// CONTAINER PRINCIPAL - SPLIT SCREEN
 // ============================
 .login-container {
   min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ============================
+// LEFT SIDE: IMAGE HERO
+// ============================
+.login-hero {
+  position: relative;
+  background-image: url('/assets/images/login-hero2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
-  // Utilise le fond sombre de ton thème
-  background: linear-gradient(135deg, var(--color-bg-dark) 0%, #1a2942 100%);
-  padding: 2rem 1rem;
-  position: relative;
+  padding: 3rem;
 
-  // Animation de fond subtile
-  &::before {
-    content: '';
+  @media (max-width: 1024px) {
+    display: none;
+  }
+
+  // Overlay sombre pour lisibilité
+  .hero-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="none"/><path d="M0 0L50 50L100 0" stroke="rgba(255,255,255,0.03)" fill="none"/></svg>');
-    background-size: 100px 100px;
-    opacity: 0.5;
-    pointer-events: none;
+    inset: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.5) 100%
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    color: white;
+    max-width: 500px;
+    text-align: center;
+
+  }
+
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+    letter-spacing: -1px;
+
+    @media (max-width: 1280px) {
+      font-size: 2.5rem;
+    }
+  }
+
+  .hero-subtitle {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    margin: 0 0 3rem 0;
+    opacity: 0.95;
+    font-weight: 300;
+  }
+
+  .hero-features {
+
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;        // centre les lignes dans le div par
+
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 1rem;
+      font-weight: 500;
+
+      align-items: center;        // centre icône + texte
+
+      mat-icon {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+        color: #ff385c;
+      }
+    }
   }
 }
 
 // ============================
-// WRAPPER DE LA CARTE
+// RIGHT SIDE: LOGIN FORM
 // ============================
-.login-card-wrapper {
-  width: 100%;
-  max-width: 550px;
-  position: relative;
-  z-index: 1;
-  animation: slideUp 0.5s ease-out;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-// ============================
-// CARTE PRINCIPALE
-// Utilise le style des cartes Material
-// ============================
-.login-card {
-  padding: 2.5rem;
-  border-radius: 16px !important;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+.login-form-side {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
   background: white;
 
   @media (max-width: 600px) {
     padding: 1.5rem;
+  }
+}
+
+.login-card-wrapper {
+  width: 100%;
+  max-width: 460px;
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -76,8 +141,6 @@
 .login-header {
   text-align: center;
   margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 2px solid var(--color-border);
 }
 
 .logo-container {
@@ -85,86 +148,79 @@
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 2rem;
 }
 
 .logo-icon {
-  font-size: 3rem;
-  width: 3rem;
-  height: 3rem;
-  color: var(--color-primary); // Utilise la couleur primaire de ton thème
+  font-size: 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: #10345B;
 }
 
 .app-title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #212121;
+  color: #222;
   margin: 0;
-  font-family: 'Roboto', sans-serif;
+  letter-spacing: -0.5px;
 }
 
-.subtitle {
-  font-size: 0.875rem;
-  color: var(--color-text-secondary); // Utilise ta couleur de texte secondaire
-  margin: 0.5rem 0 0;
+.login-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #222;
+  margin: 0 0 0.5rem 0;
+}
+
+.login-description {
+  font-size: 0.95rem;
+  color: #717171;
+  margin: 0;
+  line-height: 1.5;
 }
 
 // ============================
 // CONTENU
 // ============================
 .login-content {
-  padding: 0 !important;
-}
-
-.login-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #212121;
-  margin-bottom: 0.5rem;
-  text-align: center;
-}
-
-.login-description {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
-  text-align: center;
-  margin-bottom: 2rem;
-  line-height: 1.5;
+  margin-top: 2rem;
 }
 
 // ============================
-// WARNING BOX (MetaMask non installé)
+// WARNING BOX
 // ============================
 .warning-box {
   display: flex;
-  align-items: flex-start;
   gap: 1rem;
   padding: 1rem;
-  background-color: #fff3e0;
-  border: 1px solid #ffb74d;
+  background-color: #fff8e1;
+  border: 1px solid #ffc107;
   border-radius: 8px;
   margin-bottom: 1.5rem;
 
   .warning-icon {
-    color: #ff9800;
-    font-size: 1.5rem;
+    color: #f57c00;
+    font-size: 1.25rem;
     flex-shrink: 0;
+    margin-top: 2px;
   }
 
   .warning-content {
     flex: 1;
 
     h3 {
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
-      color: #212121;
+      color: #222;
       margin: 0 0 0.5rem;
     }
 
     p {
-      font-size: 0.875rem;
-      color: var(--color-text-secondary);
-      margin: 0 0 1rem;
+      font-size: 0.85rem;
+      color: #717171;
+      margin: 0 0 0.75rem;
+      line-height: 1.5;
     }
   }
 
@@ -172,46 +228,45 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    color: #ff9800;
-    text-decoration: none;
-    font-weight: 500;
+    color: #222;
+    text-decoration: underline;
+    font-weight: 600;
     font-size: 0.875rem;
-    transition: opacity 0.2s;
+    transition: color 0.2s;
 
     &:hover {
-      opacity: 0.8;
+      color: #000;
     }
 
     mat-icon {
-      font-size: 1.25rem;
-      width: 1.25rem;
-      height: 1.25rem;
+      font-size: 1.125rem;
+      width: 1.125rem;
+      height: 1.125rem;
     }
   }
 }
 
 // ============================
 // BOUTON METAMASK
-// Utilise les couleurs Material de ton thème
 // ============================
 .metamask-button {
   width: 100%;
-  height: 56px;
+  height: 52px;
   font-size: 1rem;
   font-weight: 600;
   border-radius: 8px !important;
   text-transform: none;
   margin-bottom: 1.5rem;
-  position: relative;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all 0.2s ease;
+  background: linear-gradient(to right, #10345B, #10345B) !important;
 
   &:not(:disabled):hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25) !important;
+    box-shadow: 0 4px 16px rgba(255, 56, 92, 0.3) !important;
   }
 
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
@@ -219,15 +274,11 @@
     margin-right: 0.5rem;
   }
 
-  .metamask-icon {
-    width: 24px;
-    height: 24px;
-    margin-right: 0.5rem;
-    vertical-align: middle;
-  }
-
   .button-icon {
     margin-right: 0.5rem;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
     vertical-align: middle;
   }
 }
@@ -245,13 +296,14 @@
     content: '';
     flex: 1;
     height: 1px;
-    background: var(--color-border); // Utilise ta couleur de bordure
+    background: #ebebeb;
   }
 
   .divider-text {
     padding: 0 1rem;
     font-size: 0.875rem;
-    color: var(--color-text-secondary);
+    color: #717171;
+    font-weight: 400;
   }
 }
 
@@ -262,48 +314,54 @@
   width: 100%;
   height: 48px;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: 8px !important;
   text-transform: none;
-  transition: transform 0.2s;
+  transition: all 0.2s ease;
+  border: 1px solid #222 !important;
+  color: #222 !important;
 
   &:not(:disabled):hover {
-    transform: translateY(-1px);
+    background: #222 !important;
+    color: white !important;
+    transform: translateY(-2px);
   }
 
   .button-icon {
     margin-right: 0.5rem;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
   }
 }
 
 // ============================
 // INFO BOX
-// Utilise la couleur primaire de ton thème
 // ============================
 .info-box {
   display: flex;
-  align-items: flex-start;
   gap: 1rem;
   padding: 1rem;
-  background-color: rgba(var(--color-primary-rgb, 25, 118, 210), 0.08);
+  background-color: #f7f7f7;
   border-radius: 8px;
   margin-top: 1.5rem;
-  border-left: 3px solid var(--color-primary);
+  border: 1px solid #ebebeb;
 
   .info-icon {
-    color: var(--color-primary);
+    color: #717171;
     font-size: 1.25rem;
     flex-shrink: 0;
+    margin-top: 2px;
   }
 
   .info-text {
-    font-size: 0.875rem;
-    color: #424242;
+    font-size: 0.85rem;
+    color: #717171;
     margin: 0;
-    line-height: 1.5;
+    line-height: 1.6;
 
     strong {
-      color: #212121;
+      color: #222;
       font-weight: 600;
     }
   }
@@ -314,33 +372,34 @@
 // ============================
 .login-footer {
   text-align: center;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #ebebeb;
 
   .footer-text {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.8rem;
+    color: #717171;
     margin: 0;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 
     .footer-link {
-      color: rgba(255, 255, 255, 1);
+      color: #222;
       text-decoration: underline;
-      transition: opacity 0.2s;
+      transition: color 0.2s;
       font-weight: 500;
 
       &:hover {
-        opacity: 0.8;
+        color: #000;
       }
     }
   }
 }
 
 // ============================
-// SNACKBAR STYLES (Custom)
+// SNACKBAR STYLES
 // ============================
 ::ng-deep {
   .error-snackbar {
-    background-color: #f44336 !important;
+    background-color: #d93025 !important;
     color: white !important;
 
     .mat-mdc-button {
@@ -349,7 +408,7 @@
   }
 
   .info-snackbar {
-    background-color: var(--color-primary) !important;
+    background-color: #222 !important;
     color: white !important;
 
     .mat-mdc-button {
@@ -361,12 +420,14 @@
 // ============================
 // RESPONSIVE
 // ============================
-@media (max-width: 600px) {
-  .login-container {
-    padding: 1rem;
+@media (max-width: 1024px) {
+  .login-form-side {
+    min-height: 100vh;
   }
+}
 
-  .login-card {
+@media (max-width: 600px) {
+  .login-form-side {
     padding: 1.5rem;
   }
 
@@ -378,8 +439,9 @@
     font-size: 1.25rem;
   }
 
-  .metamask-button {
-    height: 52px;
+  .metamask-button,
+  .register-button {
+    height: 48px;
     font-size: 0.95rem;
   }
 }

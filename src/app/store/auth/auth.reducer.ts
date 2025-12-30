@@ -4,6 +4,9 @@ import { createReducer, on } from '@ngrx/store';
 import * as AuthActions from './auth.actions';
 import { User } from '../../core/models/user.model';
 
+
+
+
 /**
  * ÉTAT D'AUTHENTIFICATION (AuthState)
  */
@@ -32,6 +35,36 @@ export const initialState: AuthState = {
 export const authReducer = createReducer(
   initialState,
   // On dit au reducer , Quand cette action arrive =>  voici comment tu dois modifier le state."
+
+
+  // ========================================
+// INIT AUTH (RESTAURATION AU DÉMARRAGE)
+// ========================================
+
+// Quand on initialise l'auth au démarrage
+  on(AuthActions.initAuth, (state) => ({
+    ...state,
+    loading: true
+  })),
+
+// Quand l'initialisation réussit (token valide + user chargé)
+  on(AuthActions.initAuthSuccess, (state, { user, token }) => ({
+    ...state,
+    user,
+    isAuthenticated: true,
+    loading: false,
+    error: null
+  })),
+
+// Quand l'initialisation échoue (pas de token ou token invalide)
+  on(AuthActions.initAuthFailure, (state) => ({
+    ...state,
+    user: null,
+    isAuthenticated: false,
+    loading: false
+  })),
+
+
 
   // ========================================
   // REGISTER (INSCRIPTION)

@@ -1,3 +1,6 @@
+// src/app/shared/components/navbar/navbar.component.scss
+// VERSION FINALE - IMAGE CARRÉE AVEC BORDER-RADIUS
+
 .navbar {
   position: absolute !important;
   top: 0;
@@ -8,114 +11,40 @@
   padding: 0 !important;
   border-bottom: none !important;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-
-  // 👇 État par défaut : PAGE HOME (transparent)
   background: transparent !important;
   backdrop-filter: none;
   box-shadow: none;
 
-  // 👇 NOUVEAU : Si on est sur une autre page → fond BLANC
   &.other-page {
     background: #ffffff !important;
     backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     border-bottom: 1px solid rgba(16, 52, 91, 0.1) !important;
 
-    // Logo et texte en #10345B
-    .navbar-left {
-      .logo-link {
-        color: #10345B;
-
-        .logo-icon {
-          color: #10345B;
-        }
-
-        .logo-text {
-          color: #10345B;
-        }
-      }
+    .navbar-left .logo-link {
+      color: #10345B;
+      .logo-icon { color: #10345B; }
+      .logo-text { color: #10345B; }
     }
 
-    // Liens de navigation en #10345B
-    .navbar-center {
-      .nav-links {
-        .nav-link {
-          color: #10345B;
-
-          mat-icon {
-            color: #10345B;
-          }
-
-          &.active,
-          &:hover {
-            color: #0d2a47; // Une nuance plus foncée au hover
-
-            &::after {
-              background: #10345B;
-            }
-          }
-
-          &::after {
-            background: #10345B;
-          }
-        }
-      }
+    .navbar-center .nav-links .nav-link {
+      color: #10345B;
+      mat-icon { color: #10345B; }
     }
 
-    // Boutons auth en #10345B
     .navbar-right {
-      .auth-buttons {
-        .login-btn {
-          color: #10345B;
-          font-weight: 600;
-
-          &:hover {
-            color: #0d2a47;
-          }
-        }
-
-        .signup-btn {
-          background: #10345B !important;
-          color: white !important;
-          font-weight: 700;
-          border-radius: 50px;
-          padding: 8px 24px;
-          box-shadow: 0 6px 20px rgba(16, 52, 91, 0.3);
-
-          &:hover {
-            background: #0d2a47 !important;
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(16, 52, 91, 0.4);
-          }
-        }
-      }
-
-      // Menu utilisateur en #10345B
+      .auth-buttons .login-btn { color: #10345B; }
       .user-menu {
-        .icon-btn {
-          color: #10345B;
-        }
-
-        .menu-btn {
-          color: #10345B;
-        }
-
-        .avatar-btn {
-          background: #10345B;
-          color: white;
-        }
+        .icon-btn, .menu-btn { color: #10345B; }
+        .avatar-btn { background: #10345B; }
       }
     }
   }
 
-  // 👇 Au scroll sur la page HOME → fond flou
   &.scrolled:not(.other-page) {
     background: rgba(10, 14, 26, 0.82) !important;
     backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
   }
 }
 
@@ -129,7 +58,6 @@
   height: 100%;
 }
 
-/* ======================================== LOGO GAUCHE ======================================== */
 .navbar-left {
   .logo-link {
     display: flex;
@@ -137,99 +65,313 @@
     gap: 10px;
     text-decoration: none;
     color: white;
-    transition: color 0.3s ease;
 
     .logo-icon {
       font-size: 32px;
       width: 32px;
       height: 32px;
-      color: #ffffff;
-      transition: color 0.3s ease;
     }
 
     .logo-text {
       font-size: 1.85rem;
       font-weight: 900;
-      letter-spacing: -0.5px;
-      color: #ffffff;
       text-transform: uppercase;
-      transition: color 0.3s ease;
     }
   }
 }
 
-/* ======================================== NAV CENTRE ======================================== */
 .navbar-center {
   flex: 1;
   display: flex;
   justify-content: center;
 
-  .nav-links {
+  .nav-link {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    font-size: 1.05rem;
+    padding: 8px 0;
+    position: relative;
+
+    &::after {
+      content: '';
+      width: 0;
+      height: 2px;
+      background: white;
+      transition: width 0.3s ease;
+    }
+
+    &:hover::after {
+      width: 100%;
+    }
+  }
+
+}
+
+// ============================
+// 🔥 MEGA MENU
+// ============================
+.mega-menu-wrapper {
+
+    position: static;
     display: flex;
-    gap: 2.5rem;
+    align-items: center;
+    gap: 2rem;
 
-    .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: rgba(255, 255, 255, 0.9);
-      font-weight: 500;
-      font-size: 1.05rem;
-      text-decoration: none;
-      padding: 8px 0;
-      position: relative;
-      transition: color 0.3s ease;
 
-      mat-icon {
-        font-size: 20px;
-        width: 20px;
-        height: 20px;
-        transition: color 0.3s ease;
-      }
+  &:hover {
+    .mega-trigger .chevron {
+      transform: rotate(180deg);
+    }
 
-      &.active,
-      &:hover {
-        color: #a8c9ff;
+    .mega-backdrop {
+      opacity: 1;
+      visibility: visible;
+    }
 
-        &::after {
-          width: 100%;
-        }
-      }
-
-      &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: #ffffff;
-        transition: width 0.4s ease;
-      }
+    .mega-menu-panel {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
     }
   }
 }
 
-/* ======================================== DROITE : ACTIONS ======================================== */
+.mega-backdrop {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 998;
+
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  pointer-events: none;
+
+  .mega-menu-wrapper:hover & {
+    pointer-events: auto;
+  }
+}
+
+.mega-menu-panel {
+  position: fixed;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  margin-top: 20px;
+  width: 1300px;
+  max-width: 95vw;
+  height:400px;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  border: 1px solid #e9ecef;
+  overflow: hidden;
+  z-index: 999;
+
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+
+  .mega-menu-wrapper:hover & {
+    pointer-events: auto;
+  }
+}
+
+.mega-menu-container {
+  display: grid;
+  grid-template-columns: 350px repeat(3, 1fr);
+  gap: 0;
+  min-height: 500px;
+}
+
+// ============================
+// IMAGE À GAUCHE - CARRÉE AVEC BORDER-RADIUS
+// ============================
+.mega-visual {
+  // ✅ Container avec padding pour créer l'espace
+  padding: 20px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+
+  // ✅ Container de l'image (carrée avec border-radius)
+  .image-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    aspect-ratio: 1; // Force le carré
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    margin-bottom: 80px;
+
+
+
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+
+  }
+
+  .visual-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.85) 0%,
+        rgba(0, 0, 0, 0.4) 50%,
+        transparent 100%
+    );
+    color: white;
+
+    h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 0 0 6px 0;
+      line-height: 1.2;
+    }
+
+    p {
+      font-size: 0.85rem;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.4;
+    }
+  }
+
+  &:hover {
+    img {
+      transform: scale(1.08);
+    }
+  }
+}
+
+// ============================
+// COLONNES DE LIENS
+// ============================
+.mega-content {
+  display: contents;
+}
+
+.mega-column {
+  padding: 35px 25px;
+  background: white;
+
+  &:not(:last-child) {
+    border-right: 1px solid #f0f0f0;
+  }
+
+  h4 {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin: 0 0 20px 0;
+  }
+}
+
+.mega-link {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #333;
+  transition: all 0.2s ease;
+  margin-bottom: 6px;
+
+  // ✅ AVEC IMAGE (colonne 1 uniquement)
+  &.with-image {
+    gap: 14px;
+
+    img {
+      width: 65px;
+      height: 65px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid #e9ecef;
+      transition: all 0.2s ease;
+    }
+
+    &:hover img {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  // ✅ TEXTE UNIQUEMENT (colonnes 2 et 3)
+  &.text-only {
+    padding: 14px 12px;
+
+    div {
+      width: 100%;
+    }
+  }
+
+  div {
+    flex: 1;
+    min-width: 0;
+
+    strong {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #111;
+      margin-bottom: 4px;
+      transition: color 0.2s ease;
+    }
+
+    span {
+      display: block;
+      font-size: 0.85rem;
+      color: #666;
+      line-height: 1.4;
+    }
+  }
+
+  &:hover {
+    background: #fafafa;
+
+    div strong {
+      color: #e67e22;
+    }
+  }
+}
+
+// ============================
+// NAVBAR RIGHT
+// ============================
 .navbar-right {
   display: flex;
   align-items: center;
   gap: 12px;
 
-  // Boutons Se connecter / S'inscrire
   .auth-buttons {
     display: flex;
     gap: 12px;
-    align-items: center;
 
     .login-btn {
       color: rgba(255, 255, 255, 0.9);
       font-weight: 600;
-      transition: color 0.3s ease;
-
-      &:hover {
-        color: white;
-      }
     }
 
     .signup-btn {
@@ -238,30 +380,15 @@
       font-weight: 700;
       border-radius: 50px;
       padding: 8px 24px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-      }
     }
   }
 
-  // Utilisateur connecté
   .user-menu {
     display: flex;
-    align-items: center;
     gap: 8px;
 
-    .icon-btn {
+    .icon-btn, .menu-btn {
       color: white;
-      transition: color 0.3s ease;
-    }
-
-    .menu-btn {
-      color: white;
-      transition: color 0.3s ease;
     }
 
     .avatar-btn {
@@ -269,10 +396,7 @@
       color: white;
       width: 40px;
       height: 40px;
-      font-weight: 700;
-      text-transform: uppercase;
       backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
 
       .avatar-letter {
         font-size: 1.1rem;
@@ -281,41 +405,97 @@
   }
 }
 
-/* ======================================== MENU DROPDOWN ======================================== */
-::ng-deep .user-dropdown {
-  margin-top: 12px !important;
-  background: rgba(20, 25, 40, 0.95) !important;
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  overflow: hidden;
+// ============================
+// USER DROPDOWN
+// ============================
+::ng-deep {
+  .user-dropdown {
+    margin-top: 8px !important;
+    background: rgba(20, 25, 40, 0.98) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+    min-width: 280px !important;
 
-  .mat-menu-item {
-    color: #e0e0e0;
-    font-size: 0.95rem;
-    height: 48px;
+    .mat-mdc-menu-item {
+      color: #e0e0e0 !important;
+      height: 48px !important;
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.1);
+      &:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+      }
+    }
+
+    .menu-header {
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.05);
+
+      .user-name {
+        color: white;
+        font-weight: 600;
+      }
+
+      .user-email {
+        color: rgba(255, 255, 255, 0.6);
+      }
+    }
+
+    .become-host-item {
+      color: #90caf9 !important;
+    }
+
+    .logout-item {
+      color: #ff6b6b !important;
     }
   }
-
-  .menu-header {
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: rgba(255, 255, 255, 0.05);
-
-    .user-name { margin: 0; font-weight: 600; color: white; }
-    .user-email { margin: 0; font-size: 0.85rem; opacity: 0.8; }
-  }
-
-  .become-host-item { color: #90caf9; font-weight: 600; }
-  .logout-item { color: #ff6b6b; }
 }
 
-/* Responsive : cacher centre + montrer burger si besoin (optionnel) */
+// ============================
+// RESPONSIVE
+// ============================
+@media (max-width: 1400px) {
+  .mega-menu-panel {
+    width: 1200px;
+  }
+
+  .mega-menu-container {
+    grid-template-columns: 320px repeat(3, 1fr);
+  }
+
+  .mega-visual {
+    padding: 25px;
+
+    .image-container {
+      max-width: 270px;
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .mega-menu-panel {
+    width: 1000px;
+  }
+
+  .mega-menu-container {
+    grid-template-columns: 280px repeat(3, 1fr);
+  }
+
+  .mega-column {
+    padding: 30px 20px;
+  }
+
+  .mega-visual {
+    padding: 20px;
+
+    .image-container {
+      max-width: 240px;
+    }
+  }
+}
+
 @media (max-width: 1100px) {
-  .navbar-center { display: none; }
+  .navbar-center {
+    display: none;
+  }
 }

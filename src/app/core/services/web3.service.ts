@@ -11,9 +11,9 @@ import { environment } from '../../../environments/environment';
 
 /**
  * Déclaration globale pour TypeScript
- * declare = dire à TypeScript “cette chose existe quelque part, fais-moi confiance, ne vérifie pas”.
+ * declare = dire à TypeScript "cette chose existe quelque part, fais-moi confiance, ne vérifie pas".
  * global = permet de modifier les types globaux du navigateur, comme window
- * on étend cette interface qui représente l’objet global du navigateur pour ajouter une nouvelle propriété.
+ * on étend cette interface qui représente l'objet global du navigateur pour ajouter une nouvelle propriété.
  */
 declare global {
   interface Window {
@@ -60,7 +60,7 @@ export class Web3Service {
       ));
     }
 
-    return from(this.connectMetaMask()).pipe( // from sert a transformer quelque chose qui n’est pas un Observable en Observable.
+    return from(this.connectMetaMask()).pipe( // from sert a transformer quelque chose qui n'est pas un Observable en Observable.
       catchError(error => {
         console.error('❌ Erreur connexion MetaMask:', error);
 
@@ -135,7 +135,7 @@ export class Web3Service {
    * Sans demander de nouvelle connexion
    * ============================
    */
-  //Récupérer l’adresse actuellement connectée dans MetaMask
+  //Récupérer l'adresse actuellement connectée dans MetaMask
   getCurrentAccount(): Observable<string | null> {
     if (!this.isMetaMaskInstalled()) {
       return throwError(() => new Error('MetaMask non installé'));
@@ -176,10 +176,10 @@ export class Web3Service {
    * Appelé automatiquement quand l'utilisateur change de réseau dans MetaMask
    * ============================
    */
-  // On passe une fonction callback=> MetaMask va appeler cette callback automatiquement quand l’utilisateur change de réseau.
+  // On passe une fonction callback=> MetaMask va appeler cette callback automatiquement quand l'utilisateur change de réseau.
   onChainChanged(callback: (chainId: string) => void): void { //  fonction prend un argument chainId: stringcette fonction ne retourne rien :=> void
     if (this.isMetaMaskInstalled()) {
-      window.ethereum.on('chainChanged', callback); // 'chainChanged' = nom de l’événement MetaMask => Quand MetaMask change de réseau, exécute la callback.
+      window.ethereum.on('chainChanged', callback); // 'chainChanged' = nom de l'événement MetaMask => Quand MetaMask change de réseau, exécute la callback.
     }
   }
 
@@ -253,5 +253,29 @@ Timestamp: ${timestamp}`;
         rpcUrls: [environment.blockchain.rpcUrl]
       }]
     });
+  }
+
+  /**
+   * ============================
+   * ✅ NOUVEAU : CONVERTIR ETH EN WEI
+   * 1 ETH = 1,000,000,000,000,000,000 Wei (10^18)
+   * Utilisé pour préparer les transactions MetaMask
+   * ============================
+   */
+  ethToWei(eth: number): string {
+    // 1 ETH = 10^18 Wei
+    const wei = eth * 1e18;
+    return '0x' + wei.toString(16); // Convertir en hexadécimal pour MetaMask
+  }
+
+  /**
+   * ============================
+   * ✅ NOUVEAU : CONVERTIR WEI EN ETH
+   * Pour afficher les montants de manière lisible
+   * ============================
+   */
+  weiToEth(wei: string | number): number {
+    const weiValue = typeof wei === 'string' ? parseFloat(wei) : wei;
+    return weiValue / 1e18;
   }
 }

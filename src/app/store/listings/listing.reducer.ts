@@ -7,35 +7,23 @@ import {
   PropertySearchResultDTO,
   PropertySearchFilters
 } from '../../core/models/property.model';
+import {PropertyCard} from "../../core/models/property-card.model";
 
+//
 /**
  * ============================
- * STATE LISTINGS
+ * ÉTAT LISTINGS
  * ============================
  */
 export interface ListingsState {
-
-  isSearchMode: boolean; // true si searchResults actifs
-
-  // Liste des properties (accès direct /listings)
-  properties: Property[];
-  totalProperties: number;
-
-  // Résultats de recherche (avec filtres)
+  allProperties: PropertyCard[];  // ← Changé de Property[] à PropertyCard[]
   searchResults: PropertySearchResultDTO[];
-
-  // Property sélectionnée (page détail)
-  selectedProperty: Property | null;
-
-  // Filtres actifs
   filters: PropertySearchFilters;
-
-  // États de chargement
   loading: boolean;
-  loadingDetail: boolean;
-
-  // Erreurs
   error: string | null;
+  currentPage: number;
+  totalPages: number;
+  totalElements: number;
 }
 
 /**
@@ -44,11 +32,8 @@ export interface ListingsState {
  * ============================
  */
 export const initialState: ListingsState = {
-  isSearchMode : false,
-  properties: [],
-  totalProperties: 0,
+  allProperties: [],
   searchResults: [],
-  selectedProperty: null,
   filters: {
     adults: 1,
     children: 0,
@@ -56,34 +41,32 @@ export const initialState: ListingsState = {
     pets: 0
   },
   loading: false,
-  loadingDetail: false,
-  error: null
+  error: null,
+  currentPage: 0,
+  totalPages: 0,
+  totalElements: 0
 };
 
 /**
  * ============================
- * REDUCER LISTINGS
+ * REDUCER
  * ============================
  */
 export const listingsReducer = createReducer(
   initialState,
 
-  // ========================================
-  // LOAD ALL PROPERTIES (sans filtres)
-  // ========================================
+  // Load All Properties
   on(ListingsActions.loadAllProperties, (state) => ({
     ...state,
     loading: true,
     error: null
   })),
 
-  on(ListingsActions.loadAllPropertiesSuccess, (state, { properties, total }) => ({
+  on(ListingsActions.loadAllPropertiesSuccess, (state, { properties }) => ({
     ...state,
-    properties,
-    totalProperties: total,
-    isSearchMode: false, // ✅ Mode browse activé
-    loading: false,
-    error: null
+    allProperties: properties,  // Directement properties, pas response.content
+    searchResults: [],
+    loading: false
   })),
 
   on(ListingsActions.loadAllPropertiesFailure, (state, { error }) => ({
@@ -92,83 +75,61 @@ export const listingsReducer = createReducer(
     error
   })),
 
-  // ========================================
-  // SEARCH PROPERTIES (avec filtres)
-  // ========================================
-  on(ListingsActions.searchProperties, (state, { filters }) => ({
+  // Filter Properties (sans dates)
+  on(ListingsActions.filterProperties, (state) => ({
     ...state,
-    filters: { ...state.filters, ...filters },
+    loading: true,
+    error: null
+  })),
+
+  on(ListingsActions.filterPropertiesSuccess, (state, { properties }) => ({
+    ...state,
+    allProperties: properties,  // ✅ PropertyCard[]
+    searchResults: [],  // Clear search results
+    loading: false
+  })),
+
+  on(ListingsActions.filterPropertiesFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error
+  })),
+
+  // Search Properties (avec dates)
+  on(ListingsActions.searchProperties, (state) => ({
+    ...state,
     loading: true,
     error: null
   })),
 
   on(ListingsActions.searchPropertiesSuccess, (state, { results }) => ({
     ...state,
-    searchResults: results,
-    isSearchMode: true, // ✅ Mode recherche activé
-    loading: false,
-    error: null
+    searchResults: results,  // ✅ PropertySearchResultDTO[]
+    allProperties: [],  // Clear browse properties
+    loading: false
   })),
-
-
 
   on(ListingsActions.searchPropertiesFailure, (state, { error }) => ({
     ...state,
     loading: false,
     error
   })),
-  // FILTER PROPERTIES SUCCESS
-  on(ListingsActions.filterPropertiesSuccess, (state, { properties }) => ({
-    ...state,
-    properties: properties,              // ✅ Stocke les properties filtrées
-    totalProperties: properties.length,  // ✅ Met à jour le total
-    isSearchMode: false,                 // ✅ Reste en mode browse
-    loading: false,
-    error: null
 
-  })),
-
-  // ========================================
-  // LOAD PROPERTY DETAIL
-  // ========================================
-  on(ListingsActions.loadPropertyDetail, (state) => ({
-    ...state,
-    loadingDetail: true,
-    error: null
-  })),
-
-  on(ListingsActions.loadPropertyDetailSuccess, (state, { property }) => ({
-    ...state,
-    selectedProperty: property,
-    loadingDetail: false,
-    error: null
-  })),
-
-  on(ListingsActions.loadPropertyDetailFailure, (state, { error }) => ({
-    ...state,
-    loadingDetail: false,
-    error
-  })),
-
-  // ========================================
-  // UPDATE FILTERS
-  // ========================================
+  // Update Filters
   on(ListingsActions.updateFilters, (state, { filters }) => ({
     ...state,
     filters: { ...state.filters, ...filters }
   })),
 
+  // Clear Filters
   on(ListingsActions.clearFilters, (state) => ({
     ...state,
-    filters: initialState.filters
-  })),
-
-  // ========================================
-  // CLEAR ERROR
-  // ========================================
-  on(ListingsActions.clearError, (state) => ({
-    ...state,
-    error: null
+    filters: {
+      adults: 1,
+      children: 0,
+      babies: 0,
+      pets: 0
+    },
+    searchResults: []
   }))
-
 );

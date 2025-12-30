@@ -203,6 +203,7 @@
     .mat-datepicker-toggle {
       display: none !important;
     }
+
   }
 
   .field-input {
@@ -333,6 +334,7 @@
       background: white !important;
       padding: 0 !important;
       overflow: hidden !important;
+
     }
 
     .mat-mdc-menu-content {
@@ -450,36 +452,44 @@
   }
 
   // DATEPICKER
+
   .mat-datepicker-popup,
   .mat-date-range-picker-popup {
     z-index: 9999 !important;
 
     .mat-datepicker-content,
     .mat-date-range-picker-content {
-      width: 600px !important;
+      width: 480px !important;
       height: 450px !important;
       border-radius: 20px;
       background: #fff;
       padding: 0 !important;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
     }
-
+    .mat-calendar {
+      width: 100% !important;
+    }
     .mat-calendar-header {
-      width: 100%;
+      height:80px;
       text-align: center;
-      padding: 1rem;
+      padding: 0.4rem;
       border-bottom: 1px solid rgba(0, 0, 0, 0.08);
       background: #fff;
+      width: 100% !important;
+      box-sizing: border-box !important;
 
       .mat-calendar-controls {
+        margin-top: 15px;
         justify-content: center !important;
         gap: 20px;
       }
+
     }
 
+    .mat-datepicker-close-button { display: none !important; }
     .mat-calendar-content {
       display: flex;
       justify-content: center;
@@ -507,6 +517,10 @@
       transform: scale(1.07);
     }
   }
+
+
+
+
 
   @keyframes fadeIn {
     from {
@@ -595,6 +609,120 @@
     .mat-datepicker-popup .mat-datepicker-content,
     .mat-date-range-picker-popup .mat-date-range-picker-content {
       width: 280px !important;
+    }
+  }
+}
+// ============================
+// AUTOCOMPLETE LOCATIONS - DESIGN AMÉLIORÉ
+// ============================
+::ng-deep {
+  .location-autocomplete {
+    .mat-mdc-autocomplete-panel {
+      margin-top: 8px !important;
+      border-radius: 18px !important;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15),
+      0 4px 12px rgba(0, 0, 0, 0.1) !important;
+      max-height: 320px !important;
+      overflow: auto !important;
+    }
+
+    .mat-mdc-option {
+      padding: 0.9rem 1.2rem !important;
+      min-height: unset !important;
+      transition: all 0.2s ease !important;
+
+      &:hover {
+        background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%) !important;
+      }
+
+      &.mat-mdc-option-active {
+        background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%) !important;
+      }
+    }
+
+    .location-option {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+
+      mat-icon {
+        color: #10345B;
+        font-size: 1.3rem;
+        width: 1.3rem;
+        height: 1.3rem;
+      }
+
+      .location-text {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+
+        .city {
+          font-size: 0.95rem;
+          font-weight: 600;
+          color: #1f2937;
+        }
+
+        .country {
+          font-size: 0.85rem;
+          color: #6b7280;
+        }
+      }
+    }
+  }
+}
+
+// ============================
+// RESPONSIVE
+// ============================
+@media (max-width: 1024px) {
+  .search-bar-container {
+    width: 95%;
+
+    &.compact {
+      width: 100%;
+    }
+  }
+
+  .search-bar {
+    flex-wrap: wrap;
+    border-radius: 30px;
+    padding: 1rem;
+  }
+
+  .divider-vertical {
+    display: none;
+  }
+
+  .search-field {
+    flex: 1 1 45%;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .search-button {
+    flex: 1 1 100%;
+    width: 100% !important;
+    border-radius: 24px !important;
+    height: 52px !important;
+    margin-top: 0.5rem;
+  }
+
+  ::ng-deep {
+    .guests-menu-panel .mat-mdc-menu-panel {
+      min-width: 340px !important;
+      max-width: 340px !important;
+    }
+
+    .mat-datepicker-content,
+    .mat-date-range-picker-content {
+      width: 360px !important;
+      min-height: 420px !important;
+    }
+
+    .mat-calendar-body-cell-content {
+      width: 36px !important;
+      height: 36px !important;
     }
   }
 }

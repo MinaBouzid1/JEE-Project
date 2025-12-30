@@ -35,7 +35,7 @@ export class ListingsEffects {
             // response est une Page<Property> avec { content: Property[], totalElements: number }
             const properties = response.content || [];
             const total = response.totalElements || 0;
-
+console.log(properties);
             return ListingsActions.loadAllPropertiesSuccess({
               properties,
               total

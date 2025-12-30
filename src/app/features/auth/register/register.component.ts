@@ -6,9 +6,6 @@ import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable, Subject, takeUntil } from 'rxjs';
-//Subject : On l'utilise quand on veut arrêter toutes les écoutes (subscriptions) quand un composant est fermé ou supprimé.
-//takeUntil = arrête automatiquement une écoute quand un signal arrive
-
 
 // Material Imports
 import { MatCardModule } from '@angular/material/card';
@@ -30,14 +27,6 @@ import { selectAuthLoading, selectAuthError } from '../../../store/auth/auth.sel
 // Models
 import { RegisterDTO } from '../../../core/models/auth.model';
 
-/**
- * ============================
- * COMPOSANT REGISTER
- * Inscription en 2 étapes :
- * 1. Connexion MetaMask + Signature
- * 2. Formulaire (nom, prénom, email, tel, password)
- * ============================
- */
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -58,30 +47,26 @@ import { RegisterDTO } from '../../../core/models/auth.model';
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   // Observables du store
-  loading$: Observable<boolean>; // flux pour indiquer si une action (register) est en cours.
-  error$: Observable<string | null>;//error$ : flux qui contient les erreurs du store.
+  loading$: Observable<boolean>;
+  error$: Observable<string | null>;
 
   // Formulaire
   registerForm!: FormGroup;
 
   // État local
   metaMaskInstalled = false;
-  isConnecting = false; // vrai quand on connecte le wallet.
+  isConnecting = false;
   walletConnected = false;
   walletAddress: string | null = null;
   signature: string | null = null;
-  hidePassword = true; //pour masquer ou afficher le mot de passe.
+  hidePassword = true;
 
-  // Stepper (étapes)
-  isLinear = true; //  vrai cad les étapes doivent se faire dans l’ordre.
+  // Stepper
+  isLinear = true;
   firstStepCompleted = false;
 
-  // Pour unsubscribe
-  private destroy$ = new Subject<void>(); // arrêter l’écoute des observables quand le composant est détruit
+  private destroy$ = new Subject<void>();
 
-
-
-  //injecte les services et écouter le store
   constructor(
     private fb: FormBuilder,
     private store: Store,
@@ -100,17 +85,26 @@ export class RegisterComponent implements OnInit, OnDestroy {
     // Initialiser le formulaire
     this.initForm();
 
-    // Écouter les erreurs venant du store et arreter l'ecoute quand  destroy$ envoie un signal
+    // ✅ CORRECTION: Écouter les erreurs du store (backend)
     this.error$.pipe(takeUntil(this.destroy$)).subscribe(error => {
       if (error) {
+        // ✅ Afficher l'erreur à l'utilisateur
         this.showError(error);
+      }
+    });
+
+    // ✅ CORRECTION: Surveiller le succès de l'inscription
+    // (optionnel, mais utile pour debug)
+    this.loading$.pipe(takeUntil(this.destroy$)).subscribe(loading => {
+      if (!loading) {
+        console.log('✅ Loading terminé (succès ou erreur)');
       }
     });
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();  // envoie un "signal" pour dire :arrêtez tous les Observables liés à takeUntil(this.destroy$)
-    this.destroy$.complete(); // complete cad l’Observable est terminé=>  plus possible d’envoyer des valeurs avec next()
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**
@@ -135,7 +129,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
    */
   async connectMetaMask(): Promise<void> {
     if (!this.metaMaskInstalled) {
-      this.showError('MetaMask n\'est pas installé');
+      this.showError('MetaMask is not installed');
       return;
     }
 
@@ -143,38 +137,38 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
     try {
       // 1. Connecter wallet
-      console.log('🔗 Connexion à MetaMask...');
+      console.log('🔗 Connecting to MetaMask...');
       const wallet = await this.web3Service.connectWallet().toPromise();
 
       if (!wallet) {
-        throw new Error('Impossible de récupérer le wallet');
+        throw new Error('Unable to retrieve wallet');
       }
 
       this.walletAddress = wallet;
-      console.log('✅ Wallet connecté:', wallet);
+      console.log('✅ Wallet connected:', wallet);
 
       // 2. Générer message
       const message = this.web3Service.generateAuthMessage(wallet);
 
       // 3. Demander signature
-      this.showInfo('Veuillez signer le message dans MetaMask...');
+      this.showInfo('Please sign the message in MetaMask...');
       const sig = await this.web3Service.signMessage(message).toPromise();
 
       if (!sig) {
-        throw new Error('Signature refusée');
+        throw new Error('Signature denied');
       }
 
       this.signature = sig;
-      console.log('✍️ Signature reçue');
+      console.log('✍️ Signature received');
 
       // Marquer comme complété
       this.walletConnected = true;
       this.firstStepCompleted = true;
-      this.showSuccess('Wallet connecté avec succès !');
+      this.showSuccess('Wallet connected successfully!');
 
     } catch (error: any) {
-      console.error('❌ Erreur MetaMask:', error);
-      this.showError(error.message || 'Erreur lors de la connexion MetaMask');
+      console.error('❌ MetaMask error:', error);
+      this.showError(error.message || 'Error during MetaMask connection');
       this.walletConnected = false;
       this.firstStepCompleted = false;
     } finally {
@@ -191,13 +185,13 @@ export class RegisterComponent implements OnInit, OnDestroy {
     // Vérifier que le formulaire est valide
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
-      this.showError('Veuillez remplir tous les champs correctement');
+      this.showError('Please fill in all required fields correctly');
       return;
     }
 
     // Vérifier que le wallet est connecté
     if (!this.walletAddress || !this.signature) {
-      this.showError('Veuillez d\'abord connecter votre wallet MetaMask');
+      this.showError('Please connect your MetaMask wallet first');
       return;
     }
 
@@ -211,9 +205,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
       tel: this.registerForm.value.tel?.trim() || undefined
     };
 
-    console.log('📤 Envoi inscription:', { ...registerData, password: '***' });
+    console.log('📤 Sending registration:', { ...registerData, password: '***' });
 
-    // Dispatcher l'action register
+    // ✅ Dispatcher l'action register
+    // Les erreurs backend (wallet déjà utilisé, email déjà utilisé, etc.)
+    // seront automatiquement affichées via error$
     this.store.dispatch(AuthActions.register({ registerData }));
   }
 
@@ -239,19 +235,19 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
 
     if (control.errors['required']) {
-      return 'Ce champ est obligatoire';
+      return 'This field is required';
     }
     if (control.errors['minlength']) {
-      return `Minimum ${control.errors['minlength'].requiredLength} caractères`;
+      return `Minimum ${control.errors['minlength'].requiredLength} characters`;
     }
     if (control.errors['maxlength']) {
-      return `Maximum ${control.errors['maxlength'].requiredLength} caractères`;
+      return `Maximum ${control.errors['maxlength'].requiredLength} characters`;
     }
     if (control.errors['email']) {
-      return 'Email invalide';
+      return 'Invalid email';
     }
 
-    return 'Erreur de validation';
+    return 'Validation error';
   }
 
   /**
@@ -260,8 +256,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
    * ============================
    */
   private showError(message: string): void {
-    this.snackBar.open(message, 'Fermer', {
-      duration: 5000,
+    this.snackBar.open(message, 'Close', {
+      duration: 6000,
       horizontalPosition: 'center',
       verticalPosition: 'top',
       panelClass: ['error-snackbar']

@@ -90,6 +90,9 @@ export class FiltersModalComponent implements OnInit {
     { value: 'guest_suite', label: 'Guest Suite', icon: 'bedroom_parent' }
   ];
 
+
+
+
   // Tous les types (pour la recherche)
   get allPropertyTypes() {
     return [...this.basicPropertyTypes, ...this.additionalPropertyTypes];

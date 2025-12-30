@@ -1,3 +1,8 @@
+// home.scss - VERSION MODERNE INSPIRÉE DE SUPERPOWER.COM
+
+// ============================
+// HERO SECTION (ON NE TOUCHE PAS)
+// ============================
 .hero {
   width: 100%;
   height: 800px;
@@ -9,7 +14,6 @@
   align-items: center;
   justify-content: center;
   padding-bottom: 80px;
-
 }
 
 .hero-content {
@@ -22,7 +26,6 @@
   z-index: 2;
 }
 
-/* === TEXTE GAUCHE – Identique à ta capture === */
 .left-text {
   width: 50%;
   max-width: 680px;
@@ -36,7 +39,6 @@
     line-height: 1.02;
     margin-bottom: 1.2rem;
     color: #ffffff;
-    // Plus de gradient → blanc pur comme dans ta capture
   }
 
   p {
@@ -46,7 +48,6 @@
     opacity: 0.95;
     margin-bottom: 3rem;
   }
-
 
   .cta-buttons {
     .btn-secondary {
@@ -64,17 +65,14 @@
       font-size: 1.1rem;
       border-radius: 60px;
       cursor: pointer;
-
       transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
       backdrop-filter: blur(10px);
 
-      /* Flèche toujours visible */
       .btn-arrow {
         font-size: 1.4rem;
         transition: transform 0.45s ease;
       }
 
-      /* Effet de remplissage liquide au hover */
       &::before {
         content: '';
         position: absolute;
@@ -88,10 +86,8 @@
         z-index: -1;
       }
 
-      /* Hover : remplissage + flèche avance + bordure pleine */
       &:hover {
         border-color: rgba(255, 255, 255, 0.9);
-        color: white;
         transform: translateY(-3px);
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
 
@@ -102,157 +98,264 @@
         .btn-arrow {
           transform: translateX(8px);
         }
-
-        .btn-text {
-          transform: translateX(-4px);
-        }
-      }
-
-      &:active {
-        transform: translateY(-1px);
       }
     }
   }
 }
 
-/* === IMAGE DROITE – LA CLÉ DU RENDU PARFAIT === */
 .right-image {
   position: absolute;
   right: -5%;
   bottom: -12%;
-  width: 97%;                      // un peu plus large pour couvrir tout
+  width: 97%;
   height: 115%;
   z-index: 1;
   pointer-events: none;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -600px;
+    top: 0;
+    width: 1200px;
+    height: 100%;
+    background: linear-gradient(to right,
+      #0a0e1a 0%,
+      #0a0e1a 30%,
+      rgba(10, 14, 26, 0.7) 60%,
+      rgba(10, 14, 26, 0.3) 85%,
+      transparent 100%
+    );
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.08);
+    pointer-events: none;
+  }
 }
 
-.right-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  border-radius: 0;                 // Plus de bord arrondi → comme ta photo
-  box-shadow: none;                 // Pas d’ombre portée → la maison a déjà son éclairage naturel
-}
-
-/* === LE SECRET : Fade ultra doux et large qui suit exactement le ciel noir de la photo === */
-.right-image::before {
-  content: '';
-  position: absolute;
-  left: -600px;                     // très loin à gauche
-  top: 0;
-  width: 1200px;                    // zone de fondu énorme
-  height: 100%;
-  background: linear-gradient(to right,
-    #0a0e1a 0%,         // même couleur que background hero
-    #0a0e1a 30%,
-    rgba(10, 14, 26, 0.7) 60%,
-    rgba(10, 14, 26, 0.3) 85%,
-    transparent 100%
-  );
-  z-index: 3;
-  pointer-events: none;
-}
-
-/* Option bonus : léger voile sombre global pour plus de profondeur */
-.right-image::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.08);
-  pointer-events: none;
-}
-
-
-
-
-
-
-
-
-
-
-
-
+// ============================
+// WHY CHOOSE US - VERSION SIMPLE SANS IMAGES
+// ============================
 .why-section {
   padding: 80px 0;
   width: 100%;
-  background: #fafafa; // clair propre
+  background: white;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .section-title {
-  font-size: 2.3rem;
-  font-weight: 700;
-  margin-bottom: 40px;
-  color: #10345B;
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: #111;
   text-align: center;
+  letter-spacing: -1px;
 }
 
 .section-subtitle {
   text-align: center;
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   color: #666;
-  max-width: 780px;
-  margin: 0 auto 3rem;
+  max-width: 650px;
+  margin: 0 auto 50px;
   line-height: 1.6;
+  font-weight: 400;
 }
+
 .why-container {
   width: 100%;
-  max-width: 1300px;
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+  padding: 0 40px;
+
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 }
 
 .why-card {
-  flex: 1;
-  padding: 30px 25px;
-  border-radius: 18px;
+  padding: 40px 30px;
+  border-radius: 20px;
   background: white;
   text-align: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  border: 1px solid #f0f0f0;
+  position: relative;
+  overflow: hidden;
+
+  // ✨ Cercle décoratif derrière l'icône
+  &::before {
+    content: '';
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(
+        circle,
+        rgba(230, 126, 34, 0.08) 0%,
+        transparent 70%
+    );
+    border-radius: 50%;
+    z-index: 0;
+    transition: all 0.4s ease;
+  }
 
   mat-icon {
     font-size: 42px;
-    width: 42px;         // obligatoire !
-    height: 42px;        // obligatoire !
-    line-height: 42px;   // aligne parfaitement
-    display: inline-flex; // pour éviter le crop
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 12px;
+    width: 42px;
+    height: 42px;
     color: #10345B;
-    transition: transform 0.3s ease;
-  }
-
-  &:hover mat-icon {
-    transform: scale(1.2) rotate(-5deg);
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
   }
 
   h3 {
-    font-size: 1.3rem;
-    margin-bottom: 10px;
-    font-weight: 600;
+    font-size: 1.35rem;
+    font-weight: 700;
     color: #111;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+    position: relative;
+    z-index: 1;
   }
 
   p {
     font-size: 0.95rem;
-    color: #555;
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+    position: relative;
+    z-index: 1;
   }
 
-  // Hover effect moderne
   &:hover {
-    transform: translateY(-8px) scale(1.03);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+    border-color: rgba(230, 126, 34, 0.3);
+    background: linear-gradient(135deg, #ffffff 0%, #fffbf7 100%);
+
+    &::before {
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(
+          circle,
+          rgba(230, 126, 34, 0.15) 0%,
+          transparent 70%
+      );
+    }
 
     mat-icon {
-      transform: scale(1.2) rotate(-5deg);
+      transform: scale(1.15) rotate(-5deg);
     }
+  }
+}
+
+// ============================
+// ANIMATIONS
+// ============================
+.fade-section {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1s ease, transform 1s ease;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-item {
+  opacity: 0;
+  transform: translateY(25px);
+  transition: all 0.8s ease;
+
+  .fade-section.visible & {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-card {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:nth-child(1) { transition-delay: 0.1s; }
+  &:nth-child(2) { transition-delay: 0.2s; }
+  &:nth-child(3) { transition-delay: 0.3s; }
+  &:nth-child(4) { transition-delay: 0.4s; }
+
+  .fade-section.visible & {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ============================
+// RESPONSIVE
+// ============================
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 2.2rem;
+  }
+
+  .section-subtitle {
+    font-size: 1.05rem;
+    margin-bottom: 40px;
+  }
+
+  .why-container {
+    padding: 0 20px;
+  }
+
+  .why-card {
+    padding: 35px 25px;
+
+    mat-icon {
+      font-size: 38px;
+      width: 38px;
+      height: 38px;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
+  }
+
+  .why-section {
+    padding: 60px 0;
   }
 }

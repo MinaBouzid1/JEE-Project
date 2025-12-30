@@ -77,10 +77,35 @@ export const routes: Routes = [
     },
     {
       path: 'property/:id',
-      loadComponent: () => import('./features/listing/listings.component').then(m => m.ListingsComponent),
+      loadComponent: () => import('./features/property-detail/property-detail.component').then(m => m.PropertyDetailComponent),
       data: { title: 'Explore Properties' }
     },
+    {
+      path: 'trust-safety',
+      loadComponent: () => import('./shared/components/trust-safety/trust-safety.component')
+        .then(m => m.TrustSafetyComponent),
+      title: 'Trust & Safety - RentalChain'
+    },
+    {
+      path: 'faq',
+      loadComponent: () => import('./shared/components/faq/faq.component')
+        .then(m => m.FaqComponent),
+      title: 'FAQ - RentalChain'
+    },
+    {
+      path: 'about',
+      loadComponent: () => import('./shared/components/about/about.component')
+        .then(m => m.AboutComponent),
+      title: 'About Us - RentalChain'
+    },
+    {
+      path: 'contact',
+      loadComponent: () => import('./shared/components/contact/contact.component')
+        .then(m => m.ContactComponent),
+      title: 'Contact Us - RentalChain'
+    }
 /*
+
      // ========================================
      // PAGE 404 (NOT FOUND)
      // Catch-all route : toutes les URLs non définies arrivent ici
