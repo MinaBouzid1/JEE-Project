@@ -1,4 +1,5 @@
 // src/app/store/auth/auth.effects.ts
+// ✅ VERSION CORRIGÉE - SAUVEGARDE DU TOKEN
 
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -34,11 +35,23 @@ export class AuthEffects {
     )
   );
 
+  // ✅ CORRECTION: Sauvegarder le token après inscription
   registerSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(AuthActions.registerSuccess),
-        tap(() => this.router.navigate(['/']))
+        tap(({ response }) => {
+          console.log('✅ Register success, saving token...');
+
+          // ✅ SAUVEGARDER LE TOKEN
+          localStorage.setItem(environment.tokenKey, response.token);
+          localStorage.setItem(environment.userKey, JSON.stringify(response.user));
+
+          console.log('✅ Token saved after registration');
+
+          // Redirection
+          this.router.navigate(['/']);
+        })
       ),
     { dispatch: false }
   );
@@ -61,11 +74,21 @@ export class AuthEffects {
     )
   );
 
+  // ✅ CORRECTION: Sauvegarder le token après login
   loginSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(AuthActions.loginSuccess),
-        tap(() => {
+        tap(({ response }) => {
+          console.log('✅ Login success, saving token...');
+
+          // ✅ SAUVEGARDER LE TOKEN
+          localStorage.setItem(environment.tokenKey, response.token);
+          localStorage.setItem(environment.userKey, JSON.stringify(response.user));
+
+          console.log('✅ Token saved:', response.token.substring(0, 20) + '...');
+
+          // Redirection
           const returnUrl = new URLSearchParams(window.location.search).get('returnUrl');
           const targetUrl = returnUrl || '/';
           this.router.navigate([targetUrl]);
@@ -134,7 +157,14 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(AuthActions.logout),
         tap(() => {
+          console.log('🚪 Logout, clearing token...');
+
+          // ✅ Supprimer le token
           this.authService.logout();
+
+          console.log('✅ Token cleared');
+
+          // Redirection
           this.router.navigate(['/login']);
         })
       ),

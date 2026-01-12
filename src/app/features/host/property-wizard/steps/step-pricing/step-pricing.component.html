@@ -1,0 +1,84 @@
+<!-- src/app/features/host/property-wizard/steps/step-pricing/step-pricing.component.html -->
+<div class="step-pricing">
+  <div class="step-intro">
+    <h2>Set your price</h2>
+    <p>You can change it anytime</p>
+  </div>
+
+  <form [formGroup]="form">
+    <!-- Main Pricing -->
+    <div class="section pricing-main">
+      <div class="price-input-large">
+        <span class="currency">$</span>
+        <input
+          type="number"
+          formControlName="pricePerNight"
+          min="1"
+          class="price-field"
+        >
+        <span class="per-night">/ night</span>
+      </div>
+
+      <div class="earnings-estimate">
+        <mat-icon>trending_up</mat-icon>
+        <span>Estimated monthly earnings: <strong>{{ getEstimatedEarnings() | currency:'USD':'symbol':'1.0-0' }}</strong></span>
+      </div>
+    </div>
+
+    <!-- Weekend Price -->
+    <div class="section">
+      <h3>Weekend price</h3>
+      <p class="section-hint">Set a different price for Friday and Saturday nights</p>
+
+      <mat-form-field appearance="outline" class="price-field-small">
+        <mat-label>Weekend price per night</mat-label>
+        <span matTextPrefix>$&nbsp;</span>
+        <input matInput type="number" formControlName="weekendPricePerNight" min="1">
+      </mat-form-field>
+    </div>
+
+    <!-- Additional Fees -->
+    <div class="section">
+      <h3>Additional fees (optional)</h3>
+
+      <div class="fees-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Cleaning fee</mat-label>
+          <span matTextPrefix>$&nbsp;</span>
+          <input matInput type="number" formControlName="cleaningFee" min="0">
+          <mat-hint>One-time fee</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Pet fee</mat-label>
+          <span matTextPrefix>$&nbsp;</span>
+          <input matInput type="number" formControlName="petFee" min="0">
+          <mat-hint>Per stay</mat-hint>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Stay Length -->
+    <div class="section">
+      <h3>Stay length</h3>
+
+      <div class="fees-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Minimum nights</mat-label>
+          <input matInput type="number" formControlName="minStayNights" min="1">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Maximum nights</mat-label>
+          <input matInput type="number" formControlName="maxStayNights" min="1">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Booking advance (days)</mat-label>
+          <input matInput type="number" formControlName="bookingAdvanceDays" min="0">
+          <mat-hint>How far in advance guests can book</mat-hint>
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+</div>

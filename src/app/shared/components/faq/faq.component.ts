@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
+import {RouterLink} from "@angular/router";
 
 interface FAQItem {
   id: number;
@@ -25,16 +26,17 @@ interface Category {
 @Component({
   selector: 'app-faq',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatIconModule,
-    MatExpansionModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatChipsModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatIconModule,
+        MatExpansionModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatChipsModule,
+        RouterLink
+    ],
   templateUrl: './faq.component.html',
   styleUrl: './faq.component.scss'
 })

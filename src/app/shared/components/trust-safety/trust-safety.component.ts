@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
+import {RouterLink} from "@angular/router";
 
 interface SafetyFeature {
   icon: string;
@@ -21,13 +22,14 @@ interface FAQItem {
 @Component({
   selector: 'app-trust-safety',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatIconModule,
-    MatCardModule,
-    MatButtonModule,
-    MatExpansionModule
-  ],
+    imports: [
+        CommonModule,
+        MatIconModule,
+        MatCardModule,
+        MatButtonModule,
+        MatExpansionModule,
+        RouterLink
+    ],
   templateUrl: './trust-safety.component.html',
   styleUrl: './trust-safety.component.scss'
 })

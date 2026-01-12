@@ -1,5 +1,5 @@
 // src/app/shared/components/navbar/navbar.component.scss
-// VERSION FINALE - IMAGE CARRÉE AVEC BORDER-RADIUS
+// VERSION FINALE - BOUTONS UNIFORMES ET MODERNES
 
 .navbar {
   position: absolute !important;
@@ -23,28 +23,59 @@
 
     .navbar-left .logo-link {
       color: #10345B;
-      .logo-icon { color: #10345B; }
-      .logo-text { color: #10345B; }
+
+      .logo-icon, .logo-text {
+        color: #10345B;
+      }
     }
 
     .navbar-center .nav-links .nav-link {
       color: #10345B;
-      mat-icon { color: #10345B; }
+
+      mat-icon {
+        color: #10345B;
+      }
     }
 
     .navbar-right {
-      .auth-buttons .login-btn { color: #10345B; }
-      .user-menu {
-        .icon-btn, .menu-btn { color: #10345B; }
-        .avatar-btn { background: #10345B; }
+      .auth-buttons .login-btn {
+        color: #10345B;
+      }
+
+      .user-actions {
+        .mode-switch-btn {
+          border-color: rgba(16, 52, 91, 0.3);
+          color: #10345B;
+
+          mat-icon {
+            color: #10345B;
+          }
+
+          &.host-mode {
+            background: #10345B;
+            border-color: #10345B;
+            color: white;
+
+            mat-icon {
+              color: white;
+            }
+          }
+
+          &:hover {
+            border-color: #10345B;
+            background: rgba(16, 52, 91, 0.05);
+          }
+        }
+
+        .icon-btn, .menu-btn {
+          color: #10345B;
+
+          &:hover {
+            background: rgba(16, 52, 91, 0.1);
+          }
+        }
       }
     }
-  }
-
-  &.scrolled:not(.other-page) {
-    background: rgba(10, 14, 26, 0.82) !important;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -58,6 +89,9 @@
   height: 100%;
 }
 
+// ============================
+// NAVBAR LEFT - LOGO
+// ============================
 .navbar-left {
   .logo-link {
     display: flex;
@@ -80,6 +114,9 @@
   }
 }
 
+// ============================
+// NAVBAR CENTER - NAVIGATION
+// ============================
 .navbar-center {
   flex: 1;
   display: flex;
@@ -104,25 +141,18 @@
       width: 100%;
     }
   }
-
 }
 
 // ============================
-// 🔥 MEGA MENU
+// MEGA MENU
 // ============================
 .mega-menu-wrapper {
-
-    position: static;
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-
+  position: static;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
 
   &:hover {
-    .mega-trigger .chevron {
-      transform: rotate(180deg);
-    }
-
     .mega-backdrop {
       opacity: 1;
       visibility: visible;
@@ -144,9 +174,7 @@
   bottom: 0;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   z-index: 998;
-
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
@@ -165,14 +193,13 @@
   margin-top: 20px;
   width: 1300px;
   max-width: 95vw;
-  height:400px;
+  height: 400px;
   background: #ffffff;
   border-radius: 24px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
   border: 1px solid #e9ecef;
   overflow: hidden;
   z-index: 999;
-
   opacity: 0;
   visibility: hidden;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -190,11 +217,7 @@
   min-height: 500px;
 }
 
-// ============================
-// IMAGE À GAUCHE - CARRÉE AVEC BORDER-RADIUS
-// ============================
 .mega-visual {
-  // ✅ Container avec padding pour créer l'espace
   padding: 20px;
   background: white;
   display: flex;
@@ -203,20 +226,15 @@
   align-items: center;
   position: relative;
 
-
-  // ✅ Container de l'image (carrée avec border-radius)
   .image-container {
     position: relative;
     width: 100%;
     max-width: 300px;
-    aspect-ratio: 1; // Force le carré
+    aspect-ratio: 1;
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     margin-bottom: 80px;
-
-
-
   }
 
   img {
@@ -224,48 +242,13 @@
     height: 100%;
     object-fit: cover;
     transition: transform 0.6s ease;
-
   }
 
-  .visual-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    padding: 20px;
-    background: linear-gradient(
-        to top,
-        rgba(0, 0, 0, 0.85) 0%,
-        rgba(0, 0, 0, 0.4) 50%,
-        transparent 100%
-    );
-    color: white;
-
-    h3 {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin: 0 0 6px 0;
-      line-height: 1.2;
-    }
-
-    p {
-      font-size: 0.85rem;
-      margin: 0;
-      color: rgba(255, 255, 255, 0.9);
-      line-height: 1.4;
-    }
-  }
-
-  &:hover {
-    img {
-      transform: scale(1.08);
-    }
+  &:hover img {
+    transform: scale(1.08);
   }
 }
 
-// ============================
-// COLONNES DE LIENS
-// ============================
 .mega-content {
   display: contents;
 }
@@ -298,7 +281,6 @@
   transition: all 0.2s ease;
   margin-bottom: 6px;
 
-  // ✅ AVEC IMAGE (colonne 1 uniquement)
   &.with-image {
     gap: 14px;
 
@@ -318,18 +300,12 @@
     }
   }
 
-  // ✅ TEXTE UNIQUEMENT (colonnes 2 et 3)
   &.text-only {
     padding: 14px 12px;
-
-    div {
-      width: 100%;
-    }
   }
 
   div {
     flex: 1;
-    min-width: 0;
 
     strong {
       display: block;
@@ -358,12 +334,12 @@
 }
 
 // ============================
-// NAVBAR RIGHT
+// 🔥 NAVBAR RIGHT - BOUTONS UNIFORMES
 // ============================
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 
   .auth-buttons {
     display: flex;
@@ -383,71 +359,185 @@
     }
   }
 
-  .user-menu {
+  .user-actions {
     display: flex;
+    align-items: center;
     gap: 8px;
 
-    .icon-btn, .menu-btn {
-      color: white;
-    }
-
-    .avatar-btn {
-      background: rgba(255, 255, 255, 0.18);
-      color: white;
-      width: 40px;
+    // 🔥 BOUTON SWITCH MODE (Host/Guest)
+    .mode-switch-btn {
       height: 40px;
+      padding: 0 16px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
       backdrop-filter: blur(10px);
 
-      .avatar-letter {
-        font-size: 1.1rem;
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+
+      &.host-mode {
+        background: white;
+        border-color: white;
+        color: #10345B;
+
+        mat-icon {
+          color: #10345B;
+        }
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border-color: rgba(255, 255, 255, 0.6);
+      }
+    }
+
+    // 🔥 BOUTONS ICÔNES (Messages, Menu) - Style Original
+    .icon-btn,
+    .menu-btn {
+      color: white;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
       }
     }
   }
 }
 
 // ============================
-// USER DROPDOWN
+// 🔥 USER DROPDOWN - DESIGN MODERNE
 // ============================
 ::ng-deep {
-  .user-dropdown {
-    margin-top: 8px !important;
-    background: rgba(20, 25, 40, 0.98) !important;
-    backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  .user-dropdown.mat-mdc-menu-panel {
+    margin-top: 12px !important;
+    margin-left: -100px !important;
+    background: white !important;
     border-radius: 16px !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.08) !important;
     min-width: 280px !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    overflow: hidden;
 
-    .mat-mdc-menu-item {
-      color: #e0e0e0 !important;
-      height: 48px !important;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.1) !important;
-      }
+    .mat-mdc-menu-content {
+      padding: 0 !important;
     }
 
     .menu-header {
       padding: 16px 20px;
-      background: rgba(255, 255, 255, 0.05);
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 
-      .user-name {
-        color: white;
-        font-weight: 600;
+      .user-info {
+        .user-name {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 0.95rem;
+          font-weight: 600;
+          color: #1a1a1a;
+          margin: 0 0 6px 0;
+
+          mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+            color: #10345B;
+          }
+        }
+
+        .user-email {
+          font-size: 0.85rem;
+          color: #6b7280;
+          margin: 0;
+        }
+      }
+    }
+
+    .mat-mdc-menu-item {
+      height: 48px !important;
+      padding: 0 20px !important;
+      font-size: 0.9rem;
+      transition: background-color 0.2s ease;
+
+      mat-icon {
+        margin-right: 12px;
+        color: #4b5563;
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
       }
 
-      .user-email {
-        color: rgba(255, 255, 255, 0.6);
+      &:hover {
+        background: #f8f9fa !important;
       }
     }
 
     .become-host-item {
-      color: #90caf9 !important;
+      color: #10345B !important;
+      font-weight: 600;
+
+      mat-icon {
+        color: #10345B !important;
+      }
     }
 
     .logout-item {
-      color: #ff6b6b !important;
+      color: #ef4444 !important;
+
+      mat-icon {
+        color: #ef4444 !important;
+      }
     }
+
+    mat-divider {
+      margin: 8px 0;
+      border-top-color: rgba(0, 0, 0, 0.06);
+    }
+  }
+}
+
+// ============================
+// NOTIFICATION MENU STYLING
+// ============================
+::ng-deep {
+  // Style du bouton notification pour qu'il soit identique aux autres
+  .notification-btn {
+    color: white;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  // Quand on est sur other-page
+  .navbar.other-page {
+    .notification-btn {
+      color: #10345B;
+
+      &:hover {
+        background: rgba(16, 52, 91, 0.1);
+      }
+    }
+  }
+
+  .notification-menu.mat-mdc-menu-panel {
+    margin-top: 12px !important;
+    border-radius: 16px !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
   }
 }
 
@@ -462,14 +552,6 @@
   .mega-menu-container {
     grid-template-columns: 320px repeat(3, 1fr);
   }
-
-  .mega-visual {
-    padding: 25px;
-
-    .image-container {
-      max-width: 270px;
-    }
-  }
 }
 
 @media (max-width: 1200px) {
@@ -480,22 +562,55 @@
   .mega-menu-container {
     grid-template-columns: 280px repeat(3, 1fr);
   }
-
-  .mega-column {
-    padding: 30px 20px;
-  }
-
-  .mega-visual {
-    padding: 20px;
-
-    .image-container {
-      max-width: 240px;
-    }
-  }
 }
 
 @media (max-width: 1100px) {
   .navbar-center {
     display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-right {
+    .user-actions {
+      gap: 6px;
+
+      .mode-switch-btn {
+        height: 36px;
+        font-size: 0.85rem;
+        padding: 0 12px;
+
+        span {
+          display: none; // Masquer le texte sur mobile
+        }
+
+        mat-icon {
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  ::ng-deep {
+    .user-dropdown.mat-mdc-menu-panel {
+      margin-left: -120px !important;
+      min-width: 260px !important;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  ::ng-deep {
+    .user-dropdown.mat-mdc-menu-panel {
+      margin-left: -80px !important;
+      min-width: 240px !important;
+    }
+  }
+}
+::ng-deep {
+  .notification-menu.mat-mdc-menu-panel {
+    margin-top: 12px !important;
+    margin-left: -220px !important; // 👈 décale vers la gauche
+    border-radius: 16px !important;
   }
 }

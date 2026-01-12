@@ -1,5 +1,4 @@
 <!-- src/app/shared/components/navbar/navbar.component.html -->
-<!-- FINAL VERSION - SQUARE IMAGE WITH BORDER-RADIUS -->
 
 <mat-toolbar
   class="navbar"
@@ -19,46 +18,42 @@
     <div class="navbar-center">
       <nav class="nav-links">
 
-        <!-- ✨ MEGA MENU TRIGGER -->
+        <!-- ✨ MEGA MENU WRAPPER -->
         <div class="mega-menu-wrapper">
 
+          <!-- Lien 1: Discover -->
+          <a routerLink="/listings" class="nav-link">
+            Discover
+          </a>
 
-            <!-- Lien 1: Discover -->
-            <a  routerLink="/listings" class="nav-link">
-              Discover
-            </a>
+          <!-- Lien 2: FAQ -->
+          <a routerLink="/faq" class="nav-link">
+            FAQ
+          </a>
 
-            <!-- Lien 2: FAQ -->
-            <a routerLink="/faq" class="nav-link">
-              FAQ
-            </a>
+          <!-- Lien 3: About us -->
+          <a routerLink="/about" class="nav-link">
+            About us
+          </a>
 
-            <!-- Lien 3: About us -->
-            <a routerLink="/about" class="nav-link">
-              About us
-            </a>
-
-
-
-            <!-- 🔥 BACKDROP BLUR -->
+          <!-- 🔥 BACKDROP BLUR -->
           <div class="mega-backdrop"></div>
 
           <!-- 🔥 MEGA MENU PANEL -->
           <div class="mega-menu-panel">
             <div class="mega-menu-container">
 
-              <!-- ✅ LEFT IMAGE - SQUARE WITH BORDER-RADIUS -->
+              <!-- ✅ LEFT IMAGE -->
               <div class="mega-visual">
                 <div class="image-container">
                   <img src="/assets/images/mega.jpg" alt="Modern House">
-
                 </div>
               </div>
 
               <!-- Link Columns -->
               <div class="mega-content">
 
-                <!-- Column 1: PRODUCT (with images) -->
+                <!-- Column 1: PRODUCT -->
                 <div class="mega-column">
                   <h4>PRODUCT</h4>
 
@@ -70,8 +65,8 @@
                     </div>
                   </a>
 
-                  <a routerLink="/how-it-works" class="mega-link with-image">
-                    <img src="/assets/images/logo.png" alt="How it works" style="">
+                  <a routerLink="/How-it-works" class="mega-link with-image">
+                    <img src="/assets/images/logo.png" alt="How it works">
                     <div>
                       <strong>How It Works</strong>
                       <span>Step-by-step process</span>
@@ -87,7 +82,7 @@
                   </a>
                 </div>
 
-                <!-- Column 2: LEARN MORE (text only) -->
+                <!-- Column 2: LEARN MORE -->
                 <div class="mega-column">
                   <h4>LEARN MORE</h4>
 
@@ -111,10 +106,9 @@
                       <span>Our mission and team</span>
                     </div>
                   </a>
-
                 </div>
 
-                <!-- Column 3: OTHER (text only) -->
+                <!-- Column 3: OTHER -->
                 <div class="mega-column">
                   <h4>OTHER</h4>
 
@@ -127,20 +121,16 @@
 
                   <a routerLink="/privacy-policy" class="mega-link text-only">
                     <div>
-                      <strong> Reviews</strong>
-                      <span>Pwhat people say</span>
+                      <strong>Reviews</strong>
+                      <span>What people say</span>
                     </div>
                   </a>
-
-
-
                 </div>
 
               </div>
             </div>
           </div>
         </div>
-
 
       </nav>
     </div>
@@ -159,93 +149,101 @@
       </div>
 
       <!-- Logged in -->
-      <div class="user-menu" *ngIf="isAuthenticated$ | async">
+      <div class="user-actions" *ngIf="isAuthenticated$ | async">
 
+        <!-- 🔥 SWITCH MODE BUTTON (Host/Guest) -->
+        <button
+          mat-stroked-button
+          class="mode-switch-btn"
+          (click)="toggleMode()"
+          [class.host-mode]="isHostMode">
+          <mat-icon>{{ isHostMode ? 'person' : 'home_work' }}</mat-icon>
+          <span>{{ isHostMode ? 'Switch to Guest' : 'Switch to Hosting' }}</span>
+        </button>
+        <!-- User Menu -->
+
+        <button
+          mat-icon-button
+          class="menu-btn"
+          [matMenuTriggerFor]="userActionsMenu">
+          <mat-icon>menu</mat-icon>
+        </button>
+
+        <!-- User Dropdown Menu -->
+        <mat-menu
+          #userActionsMenu="matMenu"
+          class="user-dropdown"
+          [overlapTrigger]="false">
+
+          <div class="menu-header">
+            <div class="user-info">
+              <p class="user-name">
+                <mat-icon>person</mat-icon>
+                {{ (currentUser$ | async)?.prenom }} {{ (currentUser$ | async)?.nom }}
+              </p>
+              <p class="user-email">{{ (currentUser$ | async)?.email }}</p>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <button mat-menu-item (click)="navigateToProfile()">
+            <mat-icon>account_circle</mat-icon>
+            <span>My Profile</span>
+          </button>
+
+          <button mat-menu-item (click)="navigateToBookings()">
+            <mat-icon>event</mat-icon>
+            <span>My Bookings</span>
+          </button>
+
+          <button mat-menu-item (click)="navigateToMessages()">
+            <mat-icon
+              [matBadge]="unreadMessagesCount$ | async"
+              [matBadgeHidden]="(unreadMessagesCount$ | async) === 0"
+              matBadgeColor="warn"
+              matBadgeSize="small">
+              message
+            </mat-icon>
+            <span>Messages</span>
+          </button>
+
+          <mat-divider></mat-divider>
+
+          <button
+            mat-menu-item
+            (click)="navigateToBecomeHost()"
+            *ngIf="!(isHost$ | async)"
+            class="become-host-item">
+            <mat-icon>home_work</mat-icon>
+            <span>Become Host</span>
+          </button>
+
+
+          <button mat-menu-item (click)="logout()" class="logout-item">
+            <mat-icon>logout</mat-icon>
+            <span>Log Out</span>
+          </button>
+        </mat-menu>
+
+        <!-- Notifications -->
+        <app-notification-bell></app-notification-bell>
         <!-- Messages -->
         <button
           mat-icon-button
           class="icon-btn"
           (click)="navigateToMessages()"
           matTooltip="Messages">
-          <mat-icon matBadge="3" matBadgeColor="warn" matBadgeSize="small">
+          <mat-icon
+            [matBadge]="unreadMessagesCount$ | async"
+            [matBadgeHidden]="(unreadMessagesCount$ | async) === 0"
+            matBadgeColor="warn"
+            matBadgeSize="small">
             message
           </mat-icon>
         </button>
 
-        <!-- User Menu -->
-        <div class="menu-trigger-container">
-          <button
-            mat-icon-button
-            class="menu-btn"
-            [matMenuTriggerFor]="userActionsMenu">
-            <mat-icon>menu</mat-icon>
-          </button>
 
-          <button
-            mat-mini-fab
-            class="avatar-btn"
-            [matMenuTriggerFor]="userActionsMenu">
-            <span class="avatar-letter">{{ userInitial }}</span>
-          </button>
-
-          <mat-menu
-            #userActionsMenu="matMenu"
-            class="user-dropdown"
-            [overlapTrigger]="false">
-
-            <div class="menu-header">
-              <mat-icon>person</mat-icon>
-              <div class="user-info">
-                <p class="user-name">
-                  {{ (currentUser$ | async)?.prenom }} {{ (currentUser$ | async)?.nom }}
-                </p>
-                <p class="user-email">{{ (currentUser$ | async)?.email }}</p>
-              </div>
-            </div>
-
-            <mat-divider></mat-divider>
-
-            <button mat-menu-item (click)="navigateToProfile()">
-              <mat-icon>account_circle</mat-icon>
-              <span>My Profile</span>
-            </button>
-
-            <button mat-menu-item (click)="navigateToBookings()">
-              <mat-icon>event</mat-icon>
-              <span>My Bookings</span>
-            </button>
-
-            <button mat-menu-item (click)="navigateToMessages()">
-              <mat-icon matBadge="3" matBadgeColor="warn" matBadgeSize="small">
-                message
-              </mat-icon>
-              <span>Messages</span>
-            </button>
-
-            <mat-divider></mat-divider>
-
-            <button
-              mat-menu-item
-              (click)="navigateToBecomeHost()"
-              *ngIf="!(isHost$ | async)"
-              class="become-host-item">
-              <mat-icon>home_work</mat-icon>
-              <span>Become Host</span>
-            </button>
-
-            <button mat-menu-item (click)="navigateToSettings()">
-              <mat-icon>settings</mat-icon>
-              <span>Account Settings</span>
-            </button>
-
-            <mat-divider></mat-divider>
-
-            <button mat-menu-item (click)="logout()" class="logout-item">
-              <mat-icon>logout</mat-icon>
-              <span>Log Out</span>
-            </button>
-          </mat-menu>
-        </div>
       </div>
     </div>
   </div>

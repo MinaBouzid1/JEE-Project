@@ -274,4 +274,5 @@ export class ListingsComponent implements OnInit, OnDestroy {
   trackByPropertyId(index: number, property: any): number {
     return property.propertyId;
   }
+
 }

@@ -52,7 +52,7 @@
     }
 
     .instant-booking-chip {
-      background: #00A699 !important;
+      background: #e67e22 !important;
       color: white !important;
       font-size: 13px;
       height: 28px;
@@ -104,7 +104,7 @@
       align-items: flex-start;
       gap: 8px;
       padding: 12px;
-      background: #E3F2FD;
+      background: #6faaea;
       border-radius: 8px;
       margin: 16px 0;
 
@@ -112,13 +112,13 @@
         font-size: 20px;
         width: 20px;
         height: 20px;
-        color: #1976D2;
+        color: #10345B;
         flex-shrink: 0;
       }
 
       .stay-info-text {
         font-size: 14px;
-        color: #1976D2;
+        color: #10345B;
         line-height: 1.5;
       }
     }
@@ -153,11 +153,11 @@
       font-weight: 600;
       margin-top: 16px;
       border-radius: 8px;
-      background: linear-gradient(to right, #E61E4D 0%, #E31C5F 50%, #D70466 100%);
+      background: linear-gradient(to right, #10345B 0%, #10345B 50%, #16477e 100%);
       color: white;
 
       &:hover:not(:disabled) {
-        background: linear-gradient(to right, #D90A47 0%, #C70956 50%, #B0045D 100%);
+        background: linear-gradient(to right, #2a619e 0%, #10345B 50%, #16477e 100%);
         box-shadow: 0 4px 12px rgba(230, 30, 77, 0.3);
       }
 

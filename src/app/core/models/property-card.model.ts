@@ -26,4 +26,5 @@ export interface PropertyCard {
   // Optionnel (pour plus tard)
   averageRating?: number;
   reviewCount?: number;
+  status?: string;
 }

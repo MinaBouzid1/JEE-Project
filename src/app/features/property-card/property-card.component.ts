@@ -67,7 +67,7 @@ export class PropertyCardComponent {
    */
   onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
-    img.src = 'assets/images/placeholder-property.jpg';
+    img.src = 'assets/images/logo.png';
   }
 
   /**

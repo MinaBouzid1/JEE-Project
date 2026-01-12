@@ -16,7 +16,8 @@
 // ============================
 .hero-section {
   padding: 100px 0 60px 0;
-  background: linear-gradient(135deg, #10345B 0%, #1a4d7a 100%);
+  background: linear-gradient(135deg, rgba(3, 27, 48, 0.95) 0%, rgba(26, 77, 122, 0.95) 100%),
+  url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1600&h=900&fit=crop') center/cover;
   color: white;
   text-align: center;
 

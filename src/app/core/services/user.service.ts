@@ -147,4 +147,14 @@ export class UserService {
       { params: { proficiencyLevel } }
     );
   }
+
+  uploadProfilePhoto(userId: number, file: File): Observable<{ photoUrl: string; message: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.apiService.post<{ photoUrl: string; message: string }>(
+      `${this.baseUrl}/users/${userId}/upload-photo`,
+      formData
+    );
+  }
 }

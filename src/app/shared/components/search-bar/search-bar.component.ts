@@ -1,5 +1,5 @@
 // src/app/shared/components/search-bar/search-bar.component.ts
-import {  Component, OnInit, ViewChild, HostListener, Input  } from '@angular/core';
+import {Component, OnInit, ViewChild, HostListener, Input, ElementRef} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -20,12 +20,6 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 // Services
 import { LocationService, Location } from '../../../core/services/location.service';
 
-/**
- * ============================
- * SEARCH BAR COMPONENT
- * Barre de recherche pour la home page (style Airbnb)
- * ============================
- */
 @Component({
   selector: 'app-search-bar',
   standalone: true,
@@ -47,14 +41,11 @@ import { LocationService, Location } from '../../../core/services/location.servi
 })
 export class SearchBarComponent implements OnInit {
 
+  @Input() compact = false;
+  @Input() theme: 'light' | 'dark' = 'dark';
 
-  @Input() compact = false; // 👈 NOUVEAU : Mode compact pour la page listings
-  @Input() theme: 'light' | 'dark' = 'dark'; // 👈 NOUVEAU : Thème de couleur
-
-
-
-  @ViewChild('guestsMenuTrigger') guestsMenuTrigger!: MatMenuTrigger;
   @ViewChild('dateRangePicker') dateRangePicker!: MatDatepicker<any>;
+  @ViewChild('guestsTrigger') guestsTrigger!: MatMenuTrigger;
 
   searchForm!: FormGroup;
 
@@ -71,14 +62,14 @@ export class SearchBarComponent implements OnInit {
   // Date min (aujourd'hui)
   minDate = new Date();
 
-  // État d'ouverture (pour gérer l'exclusivité)
-  isGuestsMenuOpen = false;
+  // État d'ouverture
   isDatePickerOpen = false;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private elementRef: ElementRef
   ) {}
 
   ngOnInit(): void {
@@ -87,33 +78,25 @@ export class SearchBarComponent implements OnInit {
   }
 
   /**
-   * ============================
    * ÉCOUTER LES CLICS EN DEHORS DU COMPOSANT
-   * Pour fermer les overlays automatiquement
-   * ============================
    */
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent): void {
     const target = event.target as HTMLElement;
 
-    // Vérifier si le clic est en dehors de la search bar
-    const searchBarElement = document.querySelector('.search-bar-container');
+    const searchBarElement = this.elementRef.nativeElement.querySelector('.search-bar-container');
     const isClickInsideSearchBar = searchBarElement?.contains(target);
 
-    // Vérifier si le clic est dans un overlay Material (menu ou datepicker)
     const overlayContainer = document.querySelector('.cdk-overlay-container');
     const isClickInOverlay = overlayContainer?.contains(target);
 
-    // Fermer si le clic est vraiment en dehors (pas dans search bar ET pas dans overlay)
     if (!isClickInsideSearchBar && !isClickInOverlay) {
       this.closeAllOverlays();
     }
   }
 
   /**
-   * ============================
    * INITIALISER LE FORMULAIRE
-   * ============================
    */
   private initForm(): void {
     this.searchForm = this.fb.group({
@@ -124,9 +107,7 @@ export class SearchBarComponent implements OnInit {
   }
 
   /**
-   * ============================
    * CONFIGURER L'AUTOCOMPLETE DES LOCATIONS
-   * ============================
    */
   private setupLocationAutocomplete(): void {
     this.filteredLocations$ = this.searchForm.get('location')!.valueChanges.pipe(
@@ -134,7 +115,6 @@ export class SearchBarComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap(value => {
-        // Si c'est un objet Location, extraire le displayName
         const searchTerm = typeof value === 'string' ? value : (value?.displayName || '');
         return this.locationService.searchLocations(searchTerm);
       })
@@ -142,9 +122,7 @@ export class SearchBarComponent implements OnInit {
   }
 
   /**
-   * ============================
    * VALIDATEUR PERSONNALISÉ : Check-out > Check-in
-   * ============================
    */
   private dateRangeValidator(group: FormGroup): { [key: string]: boolean } | null {
     const checkIn = group.get('checkIn')?.value;
@@ -157,23 +135,18 @@ export class SearchBarComponent implements OnInit {
   }
 
   /**
-   * ============================
    * OUVRIR LE DATEPICKER
-   * Ferme le guests menu si ouvert
-   * ============================
    */
   openDatePicker(): void {
-    if (this.isGuestsMenuOpen) {
-      this.closeGuestsMenu();
+    if (this.guestsTrigger?.menuOpen) {
+      this.guestsTrigger.closeMenu();
     }
     this.dateRangePicker.open();
     this.isDatePickerOpen = true;
   }
 
   /**
-   * ============================
    * FERMER LE DATEPICKER
-   * ============================
    */
   closeDatePicker(): void {
     if (this.dateRangePicker) {
@@ -183,65 +156,31 @@ export class SearchBarComponent implements OnInit {
   }
 
   /**
-   * ============================
-   * OUVRIR LE GUESTS MENU
-   * Ferme le datepicker si ouvert
-   * ============================
-   */
-  openGuestsMenu(): void {
-    if (this.isDatePickerOpen) {
-      this.closeDatePicker();
-    }
-    if (this.guestsMenuTrigger) {
-      this.guestsMenuTrigger.openMenu();
-      this.isGuestsMenuOpen = true;
-    }
-  }
-
-  /**
-   * ============================
-   * FERMER LE GUESTS MENU
-   * ============================
-   */
-  closeGuestsMenu(): void {
-    if (this.guestsMenuTrigger) {
-      this.guestsMenuTrigger.closeMenu();
-      this.isGuestsMenuOpen = false;
-    }
-  }
-
-  /**
-   * ============================
    * FERMER TOUS LES OVERLAYS
-   * ============================
    */
   closeAllOverlays(): void {
     this.closeDatePicker();
-    this.closeGuestsMenu();
+    if (this.guestsTrigger?.menuOpen) {
+      this.guestsTrigger.closeMenu();
+    }
   }
 
   /**
-   * ============================
    * ÉCOUTER LA FERMETURE DU GUESTS MENU
-   * ============================
    */
   onGuestsMenuClosed(): void {
-    this.isGuestsMenuOpen = false;
+    // Menu fermé automatiquement
   }
 
   /**
-   * ============================
    * ÉCOUTER LA FERMETURE DU DATEPICKER
-   * ============================
    */
   onDatePickerClosed(): void {
     this.isDatePickerOpen = false;
   }
 
   /**
-   * ============================
    * GESTION DES COMPTEURS (Guests)
-   * ============================
    */
   incrementAdults(): void {
     if (this.adults < 16) this.adults++;
@@ -276,18 +215,14 @@ export class SearchBarComponent implements OnInit {
   }
 
   /**
-   * ============================
    * TOTAL DES GUESTS
-   * ============================
    */
   getTotalGuests(): number {
     return this.adults + this.children + this.babies;
   }
 
   /**
-   * ============================
    * TEXTE AFFICHÉ POUR LES GUESTS
-   * ============================
    */
   getGuestsText(): string {
     const total = this.getTotalGuests();
@@ -301,9 +236,7 @@ export class SearchBarComponent implements OnInit {
   }
 
   /**
-   * ============================
    * LOCATION SÉLECTIONNÉE DEPUIS L'AUTOCOMPLETE
-   * ============================
    */
   onLocationSelected(location: Location): void {
     this.selectedLocation = location;
@@ -311,9 +244,7 @@ export class SearchBarComponent implements OnInit {
   }
 
   /**
-   * ============================
    * AFFICHER LE NOM DE LA LOCATION DANS L'AUTOCOMPLETE
-   * ============================
    */
   displayLocation(location: Location | string): string {
     if (typeof location === 'string') {
@@ -323,9 +254,7 @@ export class SearchBarComponent implements OnInit {
   }
 
   /**
-   * ============================
    * SOUMETTRE LA RECHERCHE
-   * ============================
    */
   onSearch(): void {
     if (this.searchForm.invalid) {
@@ -336,26 +265,22 @@ export class SearchBarComponent implements OnInit {
     const checkIn = this.formatDate(this.searchForm.value.checkIn);
     const checkOut = this.formatDate(this.searchForm.value.checkOut);
 
-    // Construire les query params avec city et country séparés
     const queryParams: any = {
       checkIn,
       checkOut,
       adults: this.adults
     };
 
-    // Si une location a été sélectionnée depuis l'autocomplete
     if (this.selectedLocation) {
       queryParams.city = this.selectedLocation.city;
       queryParams.country = this.selectedLocation.country;
     } else {
-      // Sinon, essayer de parser le texte saisi
       const locationText = this.searchForm.value.location;
       const parsed = this.locationService.parseLocationString(locationText);
       if (parsed) {
         queryParams.city = parsed.city;
         queryParams.country = parsed.country;
       } else {
-        // Si pas au bon format, utiliser comme city uniquement
         queryParams.city = locationText;
       }
     }
@@ -364,14 +289,11 @@ export class SearchBarComponent implements OnInit {
     if (this.babies > 0) queryParams.babies = this.babies;
     if (this.pets > 0) queryParams.pets = this.pets;
 
-    // Naviguer vers /listings avec les filtres
     this.router.navigate(['/listings'], { queryParams });
   }
 
   /**
-   * ============================
    * FORMATER UNE DATE EN ISO STRING
-   * ============================
    */
   private formatDate(date: Date): string {
     return date.toISOString().split('T')[0];

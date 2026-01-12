@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { map, catchError, switchMap, tap } from 'rxjs/operators';
 import * as ReviewActions from './review.actions';
 import { ReviewService } from '../../core/services/review.service';
+import {WebSocketService} from "../../core/services/websocket.service";
 
 @Injectable()
 export class ReviewEffects {
@@ -14,8 +15,7 @@ export class ReviewEffects {
   private actions$ = inject(Actions);
   private reviewService = inject(ReviewService);
 
-  // ❌ SUPPRIMÉ : constructor() { ... }
-  // ✅ L'injection se fait via inject() au-dessus
+
 
   loadPropertyReviews$ = createEffect(() =>
     this.actions$.pipe(

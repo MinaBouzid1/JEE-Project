@@ -1,13 +1,18 @@
 // src/app/features/reviews/components/review-card/review-card.component.scss
 
 .review-card {
-  padding: 1.5rem;
-  border-bottom: 1px solid #ebebeb;
-  transition: background-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 16px 0;
 
   &:hover {
     background-color: #fafafa;
   }
+  .full-width {
+    width: 100%;
+  }
+
 
   &:last-child {
     border-bottom: none;

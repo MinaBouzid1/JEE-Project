@@ -1,175 +1,209 @@
 // src/app/core/services/booking.service.ts
+// ✅ VERSION TEST - Appel DIRECT sans /api
 
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ApiService } from './api.service';
+import {Observable, throwError} from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   Booking,
   CreateBookingDTO,
   ReservationStatus
 } from '../models/booking.model';
+import { BookingWithSnapshot } from '../models/booking-with-snapshot.model';
+import {catchError, tap} from "rxjs/operators";
 
-/**
- * ============================
- * BOOKING SERVICE
- * Gère toutes les interactions avec l'API Booking
- * ============================
- */
 @Injectable({
   providedIn: 'root'
 })
 export class BookingService {
 
-  private apiService = inject(ApiService);
+  private http = inject(HttpClient);
+  private baseUrl = 'http://localhost:8080';  // ✅ URL directe
 
   constructor() {
-    console.log('✅ BookingService initialized');
+    console.log('✅ BookingService initialized - Direct mode');
   }
 
   /**
-   * ============================
+   * Headers avec token
+   */
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('authToken');
+    console.log('🔑 Token from localStorage:', token ? token.substring(0, 50) + '...' : 'NULL');
+
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+      console.log('🔑 Authorization header set');
+    } else {
+      console.error('❌ No token found in localStorage!');
+    }
+    return headers;
+  }
+
+  /**
    * CRÉER UNE RÉSERVATION
-   * ============================
+   * POST http://localhost:8080/bookings
    */
   createBooking(booking: CreateBookingDTO): Observable<Booking> {
     console.log('📤 Creating booking:', booking);
-    return this.apiService.post<Booking>('/bookings/new', booking);
+    console.log('📤 JSON being sent:', JSON.stringify(booking));  // ✅ Debug JSON exact
+
+    return this.http.post<Booking>(
+      `${this.baseUrl}/bookings/new`,
+      booking,
+      { headers: this.getHeaders() }
+    ).pipe(
+      tap(response => console.log('✅ Booking created:', response)),
+      catchError(error => {
+        // ✅ AFFICHER L'ERREUR COMPLÈTE DU BACKEND
+        console.error('❌ Backend error status:', error.status);
+        console.error('❌ Backend error message:', error.error);
+        console.error('❌ Full error:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   /**
-   * ============================
-   * RÉCUPÉRER MES RÉSERVATIONS
-   * ============================
+   * MES RÉSERVATIONS
+   * GET http://localhost:8080/bookings/user/me
    */
   getMyBookings(): Observable<Booking[]> {
-    return this.apiService.get<Booking[]>('/bookings/my-bookings');
-  }
-
-  getUpcomingBookings(): Observable<Booking[]> {
-    return this.apiService.get<Booking[]>('/bookings/upcoming');
-  }
-
-  getPastBookings(): Observable<Booking[]> {
-    return this.apiService.get<Booking[]>('/bookings/past');
+    console.log('📤 GET http://localhost:8080/bookings/user/me');
+    return this.http.get<Booking[]>(
+      `${this.baseUrl}/bookings/user/me`,
+      { headers: this.getHeaders() }
+    );
   }
 
   /**
-   * ============================
+   * RÉSERVATIONS À VENIR
+   * GET http://localhost:8080/bookings/user/upcoming
+   */
+  getUpcomingBookings(): Observable<Booking[]> {
+    return this.http.get<Booking[]>(
+      `${this.baseUrl}/bookings/user/upcoming`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  /**
+   * RÉSERVATIONS PASSÉES
+   * GET http://localhost:8080/bookings/user/past
+   */
+  getPastBookings(): Observable<Booking[]> {
+    return this.http.get<Booking[]>(
+      `${this.baseUrl}/bookings/user/past`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  /**
    * RÉCUPÉRER UNE RÉSERVATION PAR ID
-   * ============================
+   * GET http://localhost:8080/bookings/{id}
    */
   getBookingById(id: number): Observable<Booking> {
-    return this.apiService.get<Booking>(`/bookings/${id}`);
+    return this.http.get<Booking>(
+      `${this.baseUrl}/bookings/${id}`,
+      { headers: this.getHeaders() }
+    );
   }
 
   /**
-   * ============================
    * RÉCUPÉRER LES RÉSERVATIONS D'UNE PROPRIÉTÉ
-   * ============================
+   * GET http://localhost:8080/bookings/property/{propertyId}
    */
   getPropertyBookings(propertyId: number): Observable<Booking[]> {
-    return this.apiService.get<Booking[]>(`/bookings/property/${propertyId}/bookings`);
+    return this.http.get<Booking[]>(
+      `${this.baseUrl}/bookings/property/${propertyId}`,
+      { headers: this.getHeaders() }
+    );
   }
 
   /**
-   * ============================
    * CONFIRMER UNE RÉSERVATION
-   * ============================
+   * PATCH http://localhost:8080/bookings/{id}/confirm?blockchainTxHash=xxx
    */
   confirmBooking(id: number, blockchainTxHash: string): Observable<Booking> {
-    return this.apiService.patch<Booking>(
-      `/bookings/${id}/confirm`,
-      { blockchainTxHash }
+    return this.http.patch<Booking>(
+      `${this.baseUrl}/bookings/${id}/confirm?blockchainTxHash=${blockchainTxHash}`,
+      {},
+      { headers: this.getHeaders() }
     );
   }
 
   /**
-   * ============================
    * CHECK-IN
-   * ============================
+   * PATCH http://localhost:8080/bookings/{id}/check-in
    */
   checkIn(id: number): Observable<Booking> {
-    return this.apiService.patch<Booking>(`/bookings/${id}/check-in`, {});
+    return this.http.patch<Booking>(
+      `${this.baseUrl}/bookings/${id}/check-in`,
+      {},
+      { headers: this.getHeaders() }
+    );
   }
 
   /**
-   * ============================
    * CHECK-OUT
-   * ============================
+   * PATCH http://localhost:8080/bookings/{id}/check-out
    */
   checkOut(id: number): Observable<Booking> {
-    return this.apiService.patch<Booking>(`/bookings/${id}/check-out`, {});
+    return this.http.patch<Booking>(
+      `${this.baseUrl}/bookings/${id}/check-out`,
+      {},
+      { headers: this.getHeaders() }
+    );
   }
 
   /**
-   * ============================
    * ANNULER UNE RÉSERVATION
-   * ============================
+   * PATCH http://localhost:8080/bookings/{id}/cancel?reason=xxx
    */
   cancelBooking(id: number, reason: string): Observable<Booking> {
-    return this.apiService.patch<Booking>(
-      `/bookings/${id}/cancel`,
-      { reason }
+    return this.http.patch<Booking>(
+      `${this.baseUrl}/bookings/${id}/cancel?reason=${encodeURIComponent(reason)}`,
+      {},
+      { headers: this.getHeaders() }
     );
   }
 
   /**
-   * ============================
    * LIBÉRER L'ESCROW
-   * ============================
+   * PATCH http://localhost:8080/bookings/{id}/release-escrow?txHash=xxx
    */
   releaseEscrow(id: number, txHash: string): Observable<Booking> {
-    return this.apiService.patch<Booking>(
-      `/bookings/${id}/release-escrow`,
-      { blockchainTxHash: txHash }
+    return this.http.patch<Booking>(
+      `${this.baseUrl}/bookings/${id}/release-escrow?txHash=${txHash}`,
+      {},
+      { headers: this.getHeaders() }
+    );
+  }
+
+
+  getHostBookings(): Observable<Booking[]> {
+    console.log('📤 GET /bookings/host/me');
+    return this.http.get<Booking[]>(
+      `${this.baseUrl}/bookings/host/me`,
+      { headers: this.getHeaders() }
     );
   }
 
   /**
-   * ============================
-   * VÉRIFIER LA DISPONIBILITÉ
-   * ============================
+   * RÉSERVATIONS DU HOST PAR STATUT
+   * GET http://localhost:8080/bookings/host/me/status?status=CONFIRMED
    */
-  checkAvailability(
-    propertyId: number,
-    checkIn: Date,
-    checkOut: Date
-  ): Observable<boolean> {
-    const params = {
-      checkIn: this.formatDate(checkIn),
-      checkOut: this.formatDate(checkOut)
-    };
-
-    console.log('🔍 Checking availability:', params);
-
-    return this.apiService.get<{ available: boolean }>(
-      `/bookings/property/${propertyId}/check-availability`,
-      params
-    ).pipe(
-      map(response => response.available)
+  getHostBookingsByStatus(status: ReservationStatus): Observable<Booking[]> {
+    return this.http.get<Booking[]>(
+      `${this.baseUrl}/bookings/host/me/status?status=${status}`,
+      { headers: this.getHeaders() }
     );
   }
 
-  /**
-   * ============================
-   * RÉCUPÉRER LES DATES BLOQUÉES
-   * ============================
-   */
-  getBlockedDates(propertyId: number): Observable<string[]> {
-    console.log('🔍 Fetching blocked dates for property:', propertyId);
-    return this.apiService.get<string[]>(`/bookings/property/${propertyId}`);
-  }
 
-  /**
-   * ============================
-   * HELPERS
-   * ============================
-   */
-  private formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
 }
+
+

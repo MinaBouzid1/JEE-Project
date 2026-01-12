@@ -106,3 +106,114 @@ export const clearFilters = createAction('[Listings] Clear Filters');
  * ============================
  */
 export const clearError = createAction('[Listings] Clear Error');
+
+
+
+export const loadPropertyBlockedDates = createAction(
+  '[Listings] Load Property Blocked Dates',
+  props<{ propertyId: number; start: string; end: string }>()
+);
+
+export const loadPropertyBlockedDatesSuccess = createAction(
+  '[Listings] Load Property Blocked Dates Success',
+  props<{ blockedDates: string[] }>()
+);
+
+export const loadPropertyBlockedDatesFailure = createAction(
+  '[Listings] Load Property Blocked Dates Failure',
+  props<{ error: string }>()
+);
+
+/**
+ * ============================
+ * ACTIONS MY PROPERTIES (HOST)
+ * ============================
+ */
+export const loadMyProperties = createAction(
+  '[Host] Load My Properties',
+  props<{ userId: number }>()
+);
+
+export const loadMyPropertiesSuccess = createAction(
+  '[Host] Load My Properties Success',
+  props<{ properties: PropertyCard[] }>()
+);
+export const loadMyPropertiesFailure = createAction(
+  '[Host] Load My Properties Failure',
+  props<{ error: string }>()
+);
+
+/**
+ * ============================
+ * ACTIONS DELETE PROPERTY (HOST)
+ * ============================
+ */
+export const deleteProperty = createAction(
+  '[Host] Delete Property',
+  props<{ propertyId: number }>()
+);
+
+export const deletePropertySuccess = createAction(
+  '[Host] Delete Property Success',
+  props<{ propertyId: number }>()
+);
+
+export const deletePropertyFailure = createAction(
+  '[Host] Delete Property Failure',
+  props<{ error: string }>()
+);
+
+/**
+ * ============================
+ * ACTIONS PUBLISH PROPERTY (HOST)
+ * ============================
+ */
+export const publishProperty = createAction(
+  '[Host] Publish Property',
+  props<{ propertyId: number }>()
+);
+
+export const publishPropertySuccess = createAction(
+  '[Host] Publish Property Success',
+  props<{ property: Property }>()
+);
+
+export const publishPropertyFailure = createAction(
+  '[Host] Publish Property Failure',
+  props<{ error: string }>()
+);
+
+/**
+ * ============================
+ * ACTIONS BLOCK/UNBLOCK DATES (HOST)
+ * ============================
+ */
+export const blockDates = createAction(
+  '[Host] Block Dates',
+  props<{ propertyId: number; start: string; end: string; reason: string }>()
+);
+
+export const blockDatesSuccess = createAction(
+  '[Host] Block Dates Success',
+  props<{ propertyId: number; start: string; end: string }>()
+);
+
+export const blockDatesFailure = createAction(
+  '[Host] Block Dates Failure',
+  props<{ error: string }>()
+);
+
+export const unblockDates = createAction(
+  '[Host] Unblock Dates',
+  props<{ propertyId: number; start: string; end: string }>()
+);
+
+export const unblockDatesSuccess = createAction(
+  '[Host] Unblock Dates Success',
+  props<{ propertyId: number; start: string; end: string }>()
+);
+
+export const unblockDatesFailure = createAction(
+  '[Host] Unblock Dates Failure',
+  props<{ error: string }>()
+);

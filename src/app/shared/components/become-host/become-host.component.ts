@@ -3,16 +3,18 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { Router } from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subject, combineLatest } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import {filter, map, takeUntil} from 'rxjs/operators';
 
 // Store Selectors
 import {
   selectIsAuthenticated,
   selectIsHost
 } from '../../../store/auth/auth.selectors';
+
+
 
 interface Benefit {
   icon: string;
@@ -35,7 +37,7 @@ type UserStatus = 'guest' | 'user' | 'host';
   styleUrl: './become-host.component.scss'
 })
 export class BecomeHostComponent implements OnInit, OnDestroy {
-
+  isBecomeHostRoute:boolean = false;
   // Observables depuis le store
   isAuthenticated$: Observable<boolean>;
   isHost$: Observable<boolean>;
@@ -84,23 +86,16 @@ export class BecomeHostComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Combiner les deux observables pour déterminer le statut de l'utilisateur
-    combineLatest([this.isAuthenticated$, this.isHost$])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([isAuthenticated, isHost]) => {
-        if (!isAuthenticated) {
-          this.userStatus = 'guest';
-          this.shouldDisplay = true; // Toujours afficher pour les invités
-        } else if (isAuthenticated && !isHost) {
-          this.userStatus = 'user';
-          this.shouldDisplay = true; // Afficher pour encourager à devenir host
-        } else if (isAuthenticated && isHost) {
-          this.userStatus = 'host';
-          this.shouldDisplay = false; // Ne pas afficher si déjà host
-        }
+    // Détecter si on est sur la route /become-host
+    this.isBecomeHostRoute = this.router.url === '/become-host';
+
+    // Pour détecter les changements de route si tu navigues dans l'app
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        this.isBecomeHostRoute = event.urlAfterRedirects === '/become-host';
       });
   }
-
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -168,13 +163,11 @@ export class BecomeHostComponent implements OnInit, OnDestroy {
 
   navigateToHostSignup(): void {
     if (this.userStatus === 'guest') {
-      // Si non connecté → rediriger vers inscription
-      this.router.navigate(['/register'], {
-        queryParams: { becomeHost: true }
-      });
-    } else {
-      // Si connecté → rediriger vers création de propriété
-      this.router.navigate(['/host/create-property']);
+      this.router.navigate(['/register'], { queryParams: { becomeHost: true } });
+    } else if (this.userStatus === 'user') {
+      this.router.navigate(['/host']);
+    } else if (this.userStatus === 'host') {
+      this.router.navigate(['/host']); // <- redirection directe pour hosts
     }
   }
 }

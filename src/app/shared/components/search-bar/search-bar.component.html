@@ -75,7 +75,8 @@
         type="button"
         mat-button
         class="guests-trigger"
-        (click)="openGuestsMenu()">
+        [matMenuTriggerFor]="guestsMenu"
+        #guestsTrigger="matMenuTrigger">
         <mat-icon class="field-icon">people</mat-icon>
         <span class="guests-text">{{ getGuestsText() }}</span>
         <mat-icon class="arrow-icon">expand_more</mat-icon>
@@ -89,93 +90,84 @@
   </form>
 </div>
 
-<!-- Guests Menu (reste identique) -->
+<!-- 🔥 GUESTS MENU - CORRECTEMENT CONFIGURÉ -->
 <mat-menu
   #guestsMenu="matMenu"
   class="guests-menu-panel"
-  [hasBackdrop]="false"
+  [hasBackdrop]="true"
   (closed)="onGuestsMenuClosed()">
 
-  <ng-template matMenuContent>
-    <div class="guests-menu-content" (click)="$event.stopPropagation()">
+  <div class="guests-menu-content" (click)="$event.stopPropagation()">
 
-      <!-- Adults -->
-      <div class="guest-row">
-        <div class="guest-info">
-          <div class="guest-label">Adults</div>
-          <div class="guest-desc">Ages 13 or above</div>
-        </div>
-        <div class="counter">
-          <button mat-icon-button (click)="decrementAdults()" [disabled]="adults <= 1">
-            <mat-icon>remove_circle_outline</mat-icon>
-          </button>
-          <span class="counter-value">{{ adults }}</span>
-          <button mat-icon-button (click)="incrementAdults()" [disabled]="adults >= 16">
-            <mat-icon>add_circle_outline</mat-icon>
-          </button>
-        </div>
+    <!-- Adults -->
+    <div class="guest-row">
+      <div class="guest-info">
+        <div class="guest-label">Adults</div>
+        <div class="guest-desc">Ages 13 or above</div>
       </div>
-      <mat-divider></mat-divider>
-
-      <!-- Children -->
-      <div class="guest-row">
-        <div class="guest-info">
-          <div class="guest-label">Children</div>
-          <div class="guest-desc">Ages 2–12</div>
-        </div>
-        <div class="counter">
-          <button mat-icon-button (click)="decrementChildren()" [disabled]="children <= 0">
-            <mat-icon>remove_circle_outline</mat-icon>
-          </button>
-          <span class="counter-value">{{ children }}</span>
-          <button mat-icon-button (click)="incrementChildren()">
-            <mat-icon>add_circle_outline</mat-icon>
-          </button>
-        </div>
-      </div>
-      <mat-divider></mat-divider>
-
-      <!-- Infants -->
-      <div class="guest-row">
-        <div class="guest-info">
-          <div class="guest-label">Infants</div>
-          <div class="guest-desc">Under 2</div>
-        </div>
-        <div class="counter">
-          <button mat-icon-button (click)="decrementBabies()" [disabled]="babies <= 0">
-            <mat-icon>remove_circle_outline</mat-icon>
-          </button>
-          <span class="counter-value">{{ babies }}</span>
-          <button mat-icon-button (click)="incrementBabies()">
-            <mat-icon>add_circle_outline</mat-icon>
-          </button>
-        </div>
-      </div>
-      <mat-divider></mat-divider>
-
-      <!-- Pets -->
-      <div class="guest-row">
-        <div class="guest-info">
-          <div class="guest-label">Pets</div>
-          <div class="guest-desc">Service animals allowed</div>
-        </div>
-        <div class="counter">
-          <button mat-icon-button (click)="decrementPets()" [disabled]="pets <= 0">
-            <mat-icon>remove_circle_outline</mat-icon>
-          </button>
-          <span class="counter-value">{{ pets }}</span>
-          <button mat-icon-button (click)="incrementPets()">
-            <mat-icon>add_circle_outline</mat-icon>
-          </button>
-        </div>
+      <div class="counter">
+        <button mat-icon-button (click)="decrementAdults()" [disabled]="adults <= 1">
+          <mat-icon>remove_circle_outline</mat-icon>
+        </button>
+        <span class="counter-value">{{ adults }}</span>
+        <button mat-icon-button (click)="incrementAdults()" [disabled]="adults >= 16">
+          <mat-icon>add_circle_outline</mat-icon>
+        </button>
       </div>
     </div>
-  </ng-template>
-</mat-menu>
+    <mat-divider></mat-divider>
 
-<!-- Menu trigger invisible -->
-<button
-  #guestsMenuTrigger="matMenuTrigger"
-  [matMenuTriggerFor]="guestsMenu"
-  style="display: none;">
-</button>
+    <!-- Children -->
+    <div class="guest-row">
+      <div class="guest-info">
+        <div class="guest-label">Children</div>
+        <div class="guest-desc">Ages 2–12</div>
+      </div>
+      <div class="counter">
+        <button mat-icon-button (click)="decrementChildren()" [disabled]="children <= 0">
+          <mat-icon>remove_circle_outline</mat-icon>
+        </button>
+        <span class="counter-value">{{ children }}</span>
+        <button mat-icon-button (click)="incrementChildren()">
+          <mat-icon>add_circle_outline</mat-icon>
+        </button>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+
+    <!-- Infants -->
+    <div class="guest-row">
+      <div class="guest-info">
+        <div class="guest-label">Infants</div>
+        <div class="guest-desc">Under 2</div>
+      </div>
+      <div class="counter">
+        <button mat-icon-button (click)="decrementBabies()" [disabled]="babies <= 0">
+          <mat-icon>remove_circle_outline</mat-icon>
+        </button>
+        <span class="counter-value">{{ babies }}</span>
+        <button mat-icon-button (click)="incrementBabies()">
+          <mat-icon>add_circle_outline</mat-icon>
+        </button>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+
+    <!-- Pets -->
+    <div class="guest-row">
+      <div class="guest-info">
+        <div class="guest-label">Pets</div>
+        <div class="guest-desc">Service animals allowed</div>
+      </div>
+      <div class="counter">
+        <button mat-icon-button (click)="decrementPets()" [disabled]="pets <= 0">
+          <mat-icon>remove_circle_outline</mat-icon>
+        </button>
+        <span class="counter-value">{{ pets }}</span>
+        <button mat-icon-button (click)="incrementPets()">
+          <mat-icon>add_circle_outline</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</mat-menu>

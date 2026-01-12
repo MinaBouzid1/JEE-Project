@@ -72,8 +72,9 @@ export interface PropertyAmenity {
 export interface PropertyPhoto {
   photoId: number;
   photoUrl: string;
+  photoHash?: string;
+  isCover: boolean;
   displayOrder: number;
-  caption?: string;
 }
 
 export interface PropertyDiscount {

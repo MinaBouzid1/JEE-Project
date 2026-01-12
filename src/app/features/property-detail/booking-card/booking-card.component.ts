@@ -1,9 +1,10 @@
-// src/app/features/property-detail/components/booking-card/booking-card.component.ts
+// src/app/features/property-detail/booking-card/booking-card.component.ts
 
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Subject, takeUntil, combineLatest } from 'rxjs';
+import { Router } from '@angular/router';
+import { Subject, takeUntil, combineLatest, filter, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -27,15 +28,13 @@ import { User } from '../../../core/models/user.model';
 import * as BookingActions from '../../../store/booking/booking.actions';
 import * as PaymentActions from '../../../store/payment/payment.actions';
 import {
-  selectBlockedDates,
-  selectIsAvailable,
   selectBookingLoading,
-  selectCurrentBooking
+  selectCurrentBooking,
+  selectBookingError
 } from '../../../store/booking/booking.selectors';
 import {
   selectIsWalletConnected,
   selectWalletAddress,
-  selectHasSufficientBalance,
   selectPaymentLoading
 } from '../../../store/payment/payment.selectors';
 import { selectCurrentUser } from '../../../store/auth/auth.selectors';
@@ -43,14 +42,18 @@ import { selectCurrentUser } from '../../../store/auth/auth.selectors';
 // Components
 import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
 
+
+
+import * as ListingsActions from '../../../store/listings/listing.actions';  // ✅ CHANGÉ
+import {
+  selectPropertyBlockedDates,  // ✅ CHANGÉ
+  selectListingsLoading         // ✅ CHANGÉ
+} from '../../../store/listings/listing.selectors';
+import {MatCheckbox} from "@angular/material/checkbox";
+
 /**
  * ============================
  * BOOKING CARD COMPONENT
- * Composant de réservation avec :
- * - Calendrier intelligent (dates bloquées, min/max stay)
- * - Calcul de prix en temps réel
- * - Intégration MetaMask
- * - Flow de paiement
  * ============================
  */
 @Component({
@@ -67,7 +70,9 @@ import { PaymentModalComponent } from '../payment-modal/payment-modal.component'
     MatNativeDateModule,
     MatChipsModule,
     MatDividerModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatCheckbox,
+
   ],
   templateUrl: './booking-card.component.html',
   styleUrl: './booking-card.component.scss'
@@ -75,7 +80,7 @@ import { PaymentModalComponent } from '../payment-modal/payment-modal.component'
 export class BookingCardComponent implements OnInit, OnDestroy {
 
   @Input() property!: PropertyDetail;
-  @Input() propertyId!: number; // ✅ AJOUTÉ
+  @Input() propertyId!: number;
 
   // Form
   bookingForm!: FormGroup;
@@ -87,14 +92,13 @@ export class BookingCardComponent implements OnInit, OnDestroy {
 
   // Disponibilité
   blockedDates: Set<string> = new Set();
-  isAvailable: boolean | null = null;
 
   // Prix
   totalNights = 0;
   baseAmount = 0;
   cleaningFee = 0;
   petFee = 0;
-  serviceFee = 0; // 10%
+  serviceFee = 0;
   totalAmount = 0;
 
   // UI State
@@ -103,14 +107,15 @@ export class BookingCardComponent implements OnInit, OnDestroy {
 
   // Date limits
   minDate = new Date();
-  maxDate = new Date(new Date().setMonth(new Date().getMonth() + 12)); // 1 an max
+  maxDate = new Date(new Date().setMonth(new Date().getMonth() + 12));
 
   private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
     private store: Store,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -126,7 +131,7 @@ export class BookingCardComponent implements OnInit, OnDestroy {
 
   /**
    * ============================
-   * INITIALISATION DU FORMULAIRE
+   * INITIALISATION
    * ============================
    */
   private initForm(): void {
@@ -142,7 +147,6 @@ export class BookingCardComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.calculatePrice();
-        this.checkAvailability();
       });
   }
 
@@ -168,51 +172,64 @@ export class BookingCardComponent implements OnInit, OnDestroy {
         this.walletAddress = address;
       });
 
-    // Blocked dates
-    this.store.select(selectBlockedDates)
+    // ✅ CHANGÉ - Blocked dates depuis Listings
+    this.store.select(selectPropertyBlockedDates)
       .pipe(takeUntil(this.destroy$))
       .subscribe(dates => {
         this.blockedDates = new Set(dates);
+        console.log('📅 Blocked dates loaded from Property Service:', dates.length);
       });
 
-    // Disponibilité
-    this.store.select(selectIsAvailable)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(available => {
-        this.isAvailable = available;
-        if (available === false) {
-          this.error = 'Ces dates ne sont pas disponibles';
-        } else if (available === true) {
-          this.error = null;
-        }
-      });
-
-    // Loading states
+    // ✅ CHANGÉ - Loading states
     combineLatest([
-      this.store.select(selectBookingLoading),
+      this.store.select(selectListingsLoading),  // Au lieu de selectBookingLoading
       this.store.select(selectPaymentLoading)
     ])
       .pipe(takeUntil(this.destroy$))
-      .subscribe(([bookingLoading, paymentLoading]) => {
-        this.loading = bookingLoading || paymentLoading;
+      .subscribe(([listingsLoading, paymentLoading]) => {
+        this.loading = listingsLoading || paymentLoading;
+      });
+
+    // Booking error (reste inchangé)
+    this.store.select(selectBookingError)
+      .pipe(
+        takeUntil(this.destroy$),
+        filter(error => error !== null)
+      )
+      .subscribe(error => {
+        this.error = error;
+        console.error('❌ Booking error:', error);
       });
   }
 
   /**
    * ============================
    * CHARGER LES DATES BLOQUÉES
+   * ✅ CHANGÉ - Appelle Property Service via Listings
    * ============================
    */
   private loadBlockedDates(): void {
-    this.store.dispatch(BookingActions.loadBlockedDates({
-      propertyId: this.propertyId // ✅ CORRIGÉ
+    console.log('🔍 Loading blocked dates from Property Service for property:', this.propertyId);
+
+    // Calculer la plage de dates (aujourd'hui + 1 an)
+    const today = new Date();
+
+    const oneYearLater = new Date();
+    oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
+
+    const start = this.formatDate(today);
+    const end = this.formatDate(oneYearLater);
+
+    // ✅ DISPATCH vers Listings au lieu de Booking
+    this.store.dispatch(ListingsActions.loadPropertyBlockedDates({
+      propertyId: this.propertyId,
+      start,
+      end
     }));
   }
-
   /**
    * ============================
    * FILTRE DE DATES (CALENDRIER)
-   * Bloque les dates non disponibles
    * ============================
    */
   dateFilter = (date: Date | null): boolean => {
@@ -225,7 +242,9 @@ export class BookingCardComponent implements OnInit, OnDestroy {
 
     // Bloquer les dates déjà réservées
     const dateStr = this.formatDate(date);
-    if (this.blockedDates.has(dateStr)) return false;
+    if (this.blockedDates.has(dateStr)) {
+      return false;
+    }
 
     return true;
   };
@@ -233,7 +252,6 @@ export class BookingCardComponent implements OnInit, OnDestroy {
   /**
    * ============================
    * FILTRE CHECK-OUT
-   * Applique min/max stay + dates bloquées
    * ============================
    */
   checkOutFilter = (date: Date | null): boolean => {
@@ -271,24 +289,6 @@ export class BookingCardComponent implements OnInit, OnDestroy {
 
   /**
    * ============================
-   * VÉRIFIER LA DISPONIBILITÉ
-   * ============================
-   */
-  private checkAvailability(): void {
-    const checkIn = this.bookingForm.get('checkIn')?.value;
-    const checkOut = this.bookingForm.get('checkOut')?.value;
-
-    if (!checkIn || !checkOut) return;
-
-    this.store.dispatch(BookingActions.checkAvailability({
-      propertyId: this.propertyId, // ✅ CORRIGÉ
-      checkIn: this.toISOString(checkIn),
-      checkOut: this.toISOString(checkOut)
-    }));
-  }
-
-  /**
-   * ============================
    * CALCULER LE PRIX
    * ============================
    */
@@ -311,14 +311,8 @@ export class BookingCardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Base amount (prix par nuit × nuits)
+    // Base amount
     this.baseAmount = this.property.pricePerNight * this.totalNights;
-
-    // TODO: Appliquer réductions (weekly, monthly)
-    // if (this.totalNights >= 7 && this.property.weeklyDiscount) {
-    //   const discount = this.baseAmount * (this.property.weeklyDiscount / 100);
-    //   this.baseAmount -= discount;
-    // }
 
     // Cleaning fee
     this.cleaningFee = this.property.cleaningFee || 0;
@@ -331,13 +325,14 @@ export class BookingCardComponent implements OnInit, OnDestroy {
 
     // Total
     this.totalAmount = this.baseAmount + this.cleaningFee + this.petFee + this.serviceFee;
+
+    console.log('💰 Price calculated:', {
+      nights: this.totalNights,
+      base: this.baseAmount,
+      total: this.totalAmount
+    });
   }
 
-  /**
-   * ============================
-   * RÉINITIALISER LE PRIX
-   * ============================
-   */
   private resetPrice(): void {
     this.totalNights = 0;
     this.baseAmount = 0;
@@ -353,38 +348,43 @@ export class BookingCardComponent implements OnInit, OnDestroy {
    * ============================
    */
   onReserve(): void {
-    if (this.bookingForm.invalid) {
-      this.error = 'Veuillez remplir tous les champs requis';
+    const checkIn = this.bookingForm.get('checkIn')?.value;
+    const checkOut = this.bookingForm.get('checkOut')?.value;
+    const numGuests = this.bookingForm.get('numGuests')?.value;
+    const hasPets = this.bookingForm.get('hasPets')?.value;
+
+    if (!checkIn || !checkOut) {
+      console.error('❌ Dates manquantes');
+      this.error = 'Veuillez sélectionner les dates de check-in et check-out';
       return;
     }
 
     if (!this.currentUser) {
-      this.error = 'Vous devez être connecté pour réserver';
+      console.log('⚠️ User not authenticated, redirecting to login');
+      this.router.navigate(['login'], {
+        queryParams: { returnUrl: this.router.url }
+      });
       return;
     }
 
-    if (this.isAvailable === false) {
-      this.error = 'Ces dates ne sont pas disponibles';
-      return;
-    }
-
-    const formValue = this.bookingForm.value;
+    console.log('📝 Creating booking...');
 
     const createBookingDTO: CreateBookingDTO = {
-      propertyId: this.propertyId, // ✅ CORRIGÉ
-      checkInDate: this.toISOString(formValue.checkIn),
-      checkOutDate: this.toISOString(formValue.checkOut),
-      numGuests: formValue.numGuests,
-      hasPets: formValue.hasPets
+      propertyId: this.propertyId,
+      checkInDate: this.toLocalDateTime(checkIn),      // ✅ Format correct
+      checkOutDate: this.toLocalDateTimeCheckOut(checkOut),  // ✅ Format correct
+      numGuests: numGuests,
+      hasPets: hasPets || false
     };
 
-    // Créer la réservation (status PENDING)
-    this.store.dispatch(BookingActions.createBooking({ createBookingDTO }));
+    console.log('📤 Sending booking:', createBookingDTO);  // ✅ Debug
 
-    // Ouvrir la modal de paiement
-    this.openPaymentModal();
+    this.store.dispatch(BookingActions.createBooking({
+      booking: createBookingDTO
+    }));
+
+    // ... reste du code
   }
-
   /**
    * ============================
    * OUVRIR MODAL DE PAIEMENT
@@ -407,10 +407,10 @@ export class BookingCardComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result?.success) {
         console.log('✅ Paiement réussi!');
-        // Rediriger vers mes réservations
+        this.router.navigate(['/bookings/my-bookings']);
       } else if (result?.cancelled) {
         console.log('❌ Paiement annulé');
-        // Annuler la réservation PENDING
+        // TODO: Annuler la réservation PENDING
       }
     });
   }
@@ -427,11 +427,35 @@ export class BookingCardComponent implements OnInit, OnDestroy {
     return `${year}-${month}-${day}`;
   }
 
-  private toISOString(date: Date): string {
-    return date.toISOString();
+  /**
+   * Convertir une Date en format LocalDateTime pour le backend
+   * Format attendu: "2025-01-15T14:00:00" (sans Z, sans millisecondes)
+   */
+  private toLocalDateTime(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    // Utiliser les heures de check-in/check-out de la propriété
+    // Par défaut: check-in à 14:00, check-out à 11:00
+    return `${year}-${month}-${day}T14:00:00`;
   }
 
-  // Getters pour le template
+  /**
+   * Convertir pour check-out (heure différente)
+   */
+  private toLocalDateTimeCheckOut(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}T11:00:00`;
+  }
+  /**
+   * ============================
+   * GETTERS POUR LE TEMPLATE
+   * ============================
+   */
   get hasMinStay(): boolean {
     return !!this.property.minStayNights && this.property.minStayNights > 1;
   }
@@ -442,9 +466,12 @@ export class BookingCardComponent implements OnInit, OnDestroy {
 
   get canReserve(): boolean {
     return this.bookingForm.valid &&
-      this.isAvailable === true &&
       this.totalAmount > 0 &&
       !this.loading;
+  }
+
+  get isAuthenticated(): boolean {
+    return this.currentUser !== null;
   }
 
   get pricePerNight(): number {

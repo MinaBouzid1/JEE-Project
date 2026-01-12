@@ -7,13 +7,13 @@
        ======================================== -->
   <div class="price-header">
     <div class="price">
-      <span class="amount">{{ pricePerNight }}€</span>
-      <span class="period">/ nuit</span>
+      <span class="amount">{{ pricePerNight }}ETH</span>
+      <span class="period">/ night</span>
     </div>
 
     <div *ngIf="hasWeekendPrice" class="weekend-price">
-      <span class="amount">{{ weekendPrice }}€</span>
-      <span class="period">/ nuit weekend</span>
+      <span class="amount">{{ weekendPrice }}ETH</span>
+      <span class="period">/ night weekend</span>
     </div>
 
     <mat-chip *ngIf="property.instantBooking" class="instant-booking-chip">
@@ -124,30 +124,30 @@
     <mat-divider></mat-divider>
 
     <div class="breakdown-row">
-      <span>{{ pricePerNight }}€ × {{ totalNights }} nuits</span>
-      <span>{{ baseAmount.toFixed(2) }}€</span>
+      <span>{{ pricePerNight }}ETH × {{ totalNights }} nuits</span>
+      <span>{{ baseAmount.toFixed(2) }}ETH</span>
     </div>
 
     <div class="breakdown-row" *ngIf="cleaningFee > 0">
       <span>Frais de ménage</span>
-      <span>{{ cleaningFee.toFixed(2) }}€</span>
+      <span>{{ cleaningFee.toFixed(2) }}ETH</span>
     </div>
 
     <div class="breakdown-row" *ngIf="petFee > 0">
       <span>Frais animaux</span>
-      <span>{{ petFee.toFixed(2) }}€</span>
+      <span>{{ petFee.toFixed(2) }}ETH</span>
     </div>
 
     <div class="breakdown-row">
       <span>Frais de service</span>
-      <span>{{ serviceFee.toFixed(2) }}€</span>
+      <span>{{ serviceFee.toFixed(2) }}ETH</span>
     </div>
 
     <mat-divider></mat-divider>
 
     <div class="breakdown-row total-row">
       <span><strong>Total</strong></span>
-      <span><strong>{{ totalAmount.toFixed(2) }}€</strong></span>
+      <span><strong>{{ totalAmount.toFixed(2) }}ETH</strong></span>
     </div>
   </div>
 

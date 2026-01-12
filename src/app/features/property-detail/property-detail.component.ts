@@ -201,6 +201,10 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
     this.mapLayers = [marker];
   }
 
+
+// src/app/features/property-detail/property-detail.component.ts
+// ✅ Méthode openPhotoGallery() CORRIGÉE
+
   openPhotoGallery(): void {
     this.dialog.open(PhotoGalleryDialogComponent, {
       data: {
@@ -212,13 +216,13 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
       maxWidth: '1200px',
       height: '85vh',
       maxHeight: '800px',
-      panelClass: 'photo-gallery-dialog-container',
+      panelClass: 'photo-gallery-dialog-container', // ✅ Cette classe permet le centrage via CSS
       hasBackdrop: true,
       backdropClass: 'photo-gallery-backdrop',
-      disableClose: false
+      disableClose: false,
+      autoFocus: false
     });
   }
-
   // ✅ Getters pour les reviews
   get averageRating(): number {
     let rating = 0;
@@ -281,4 +285,6 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   goBack(): void {
     this.router.navigate(['/listings']);
   }
+
+
 }

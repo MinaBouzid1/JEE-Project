@@ -157,3 +157,7 @@ export const selectUserLanguages = createSelector(
   selectCurrentUser,
   (user) => user?.languages || []
 );
+export const selectUserId = createSelector(
+  selectCurrentUser,
+  (user) => user?.id ?? null
+);

@@ -1,5 +1,3 @@
-// src/app/shared/components/search-bar/search-bar.component.scss
-
 // ============================
 // CONTAINER PRINCIPAL
 // ============================
@@ -12,11 +10,9 @@
   width: 90%;
   max-width: 1100px;
 
-  // 👇 MODE COMPACT (pour la page listings)
-  // Ajoutez/modifiez la section MODE COMPACT dans votre fichier existant
-
+  // 👇 MODE COMPACT (pour la page listings) - NE PAS ÊTRE FIXED
   &.compact {
-    position: static;
+    position: static !important; // ✅ CHANGÉ DE relative à static pour éviter tout comportement fixed
     transform: none;
     width: 100%;
     max-width: 100%;
@@ -27,8 +23,8 @@
       border-radius: 50px;
       padding: 0.25rem;
       box-shadow: 0 2px 12px rgba(16, 52, 91, 0.12);
-      max-width: 720px; // 👈 Largeur optimale
-      margin: 0 auto; // 👈 Centrage automatique
+      max-width: 720px;
+      margin: 0 auto;
       border: 2px solid #10345B;
       transition: all 0.3s ease;
 
@@ -63,7 +59,7 @@
 
       mat-icon {
         font-size: 1.3rem;
-        color : black;
+        color: black;
       }
     }
 
@@ -72,7 +68,6 @@
     }
   }
 
-  // 👇 THÈME CLAIR (pour s'harmoniser avec navbar blanche)
   &.light-theme {
     .search-bar {
       background: white;
@@ -203,7 +198,6 @@
     .mat-datepicker-toggle {
       display: none !important;
     }
-
   }
 
   .field-input {
@@ -317,79 +311,60 @@
 }
 
 // ============================
-// GLOBAL OVERLAYS
+// 🔥 GUESTS MENU - DESIGN MODERNE ET PROFESSIONNEL
 // ============================
 ::ng-deep {
-  .cdk-overlay-container {
-    z-index: 9999 !important;
-  }
-
-  .guests-menu-panel {
-    .mat-mdc-menu-panel {
-      margin-top: 8px !important;
-      min-width: 400px !important;
-      max-width: 400px !important;
-      border-radius: 20px !important;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.06) !important;
-      background: white !important;
-      padding: 0 !important;
-      overflow: hidden !important;
-
-    }
-
-    .mat-mdc-menu-content {
-      padding: 0 !important;
-    }
+  .guests-menu-panel.mat-mdc-menu-panel {
+    margin-top: 12px !important;
+    min-width: 340px !important;
+    max-width: 340px !important;
+    border-radius: 16px !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.08) !important;
+    background: white !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
   }
 
   .guests-menu-content {
-    padding: 1.5rem;
+    padding: 1rem 1.25rem;
     width: 100%;
     background-color: white;
-    overflow-y: visible !important;
-    max-height: none !important;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-
-    &::-webkit-scrollbar {
-      display: none !important;
-      width: 0 !important;
-      height: 0 !important;
-    }
   }
 
   .guest-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.2rem 1rem;
-    border-radius: 12px;
-    margin-bottom: 0.5rem;
-    transition: all 0.2s ease;
+    padding: 0.85rem 0.75rem;
+    border-radius: 10px;
+    margin-bottom: 0.3rem;
+    transition: background-color 0.2s ease;
 
     &:last-child {
       margin-bottom: 0;
     }
 
     &:hover {
-      background-color: #f5f5f5;
+      background-color: #f8f9fa;
     }
 
     .guest-info {
       display: flex;
       flex-direction: column;
-      gap: 0.3rem;
+      gap: 0.2rem;
 
       .guest-label {
-        font-size: 1rem;
+        font-size: 0.9rem;
         font-weight: 600;
-        color: #222;
+        color: #1a1a1a;
         letter-spacing: -0.01em;
       }
 
       .guest-desc {
-        font-size: 0.875rem;
-        color: #717171;
+        font-size: 0.8rem;
+        color: #6b7280;
         font-weight: 400;
       }
     }
@@ -397,27 +372,29 @@
     .counter {
       display: flex;
       align-items: center;
-      gap: 1.2rem;
+      gap: 0.9rem;
 
       button {
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
         padding: 0;
         min-width: unset;
         border-radius: 50%;
         transition: all 0.2s ease;
-        background-color: white;
+        background-color: #f3f4f6;
+        border: 1px solid transparent;
 
         mat-icon {
-          font-size: 24px;
-          width: 24px;
-          height: 24px;
-          color: #717171;
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+          color: #4b5563;
         }
 
         &:not(:disabled):hover {
-          background-color: #222;
-          transform: scale(1.1);
+          background-color: #10345B;
+          border-color: #10345B;
+          transform: scale(1.05);
 
           mat-icon {
             color: white;
@@ -425,246 +402,200 @@
         }
 
         &:disabled {
-          opacity: 0.3;
+          opacity: 0.4;
           cursor: not-allowed;
-          background-color: white;
+          background-color: #f3f4f6;
 
           mat-icon {
-            color: #b0b0b0;
+            color: #9ca3af;
           }
         }
       }
 
       .counter-value {
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 600;
-        color: #222;
-        min-width: 30px;
+        color: #1a1a1a;
+        min-width: 28px;
         text-align: center;
-        letter-spacing: -0.01em;
       }
     }
   }
 
   .guests-menu-content mat-divider {
-    margin: 0.75rem 0;
-    border-top-color: rgba(0, 0, 0, 0.08);
+    margin: 0.5rem 0;
+    border-top-color: rgba(0, 0, 0, 0.06);
   }
 
-  // DATEPICKER
-
+  // DATEPICKER - DESIGN MODERNE ET ÉPURÉ
   .mat-datepicker-popup,
   .mat-date-range-picker-popup {
     z-index: 9999 !important;
 
     .mat-datepicker-content,
     .mat-date-range-picker-content {
-      width: 480px !important;
-      height: 450px !important;
-      border-radius: 20px;
+      width: 420px !important;
+      height:450px;
+
+      border-radius: 16px;
       background: #fff;
       padding: 0 !important;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12),
+      0 2px 6px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.06);
     }
+
     .mat-calendar {
       width: 100% !important;
+      font-family: 'Roboto', sans-serif;
     }
+
     .mat-calendar-header {
-      height:80px;
-      text-align: center;
-      padding: 0.4rem;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
       background: #fff;
-      width: 100% !important;
-      box-sizing: border-box !important;
 
       .mat-calendar-controls {
-        margin-top: 15px;
-        justify-content: center !important;
-        gap: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .mat-calendar-period-button {
+          font-size: 0.95rem;
+          font-weight: 600;
+          color: #1a1a1a;
+        }
+
+        button {
+          width: 36px;
+          height: 36px;
+          border-radius: 8px;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background-color: #f3f4f6;
+          }
+
+          mat-icon {
+            color: #4b5563;
+          }
+        }
+      }
+    }
+
+    .mat-datepicker-close-button {
+      display: none !important;
+    }
+
+    .mat-calendar-content {
+      padding: 1rem 1.25rem 1.25rem;
+    }
+
+    .mat-calendar-table-header th {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #6b7280;
+      padding-bottom: 0.5rem;
+    }
+
+    .mat-calendar-body-cell {
+      border-radius: 8px;
+
+      .mat-calendar-body-cell-content {
+        width: 36px;
+        height: 36px;
+        line-height: 36px;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #1a1a1a;
+        transition: all 0.2s ease;
       }
 
-    }
+      &:not(.mat-calendar-body-disabled):hover .mat-calendar-body-cell-content {
+        background: #e0f2fe;
+        color: #0369a1;
+      }
 
-    .mat-datepicker-close-button { display: none !important; }
-    .mat-calendar-content {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      padding: 1.2rem 0 !important;
-    }
+      &.mat-calendar-body-today .mat-calendar-body-cell-content {
+        border: 1.5px solid #0ea5e9;
+        font-weight: 600;
+      }
 
-    .mat-calendar-content-container {
-      display: flex;
-      width: 100%;
-    }
+      &.mat-calendar-body-selected .mat-calendar-body-cell-content {
+        background: #10345B !important;
+        color: white !important;
+        font-weight: 600;
+      }
 
-    .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover
-    .mat-calendar-body-cell-content {
-      background: rgba(0, 132, 137, 0.12);
-    }
+      &.mat-calendar-body-in-range .mat-calendar-body-cell-content {
+        background: #dbeafe !important;
+        color: #0369a1 !important;
+      }
 
-    .mat-calendar-body-today .mat-calendar-body-cell-content {
-      border: 1px solid #bde6ee;
-    }
-
-    .mat-calendar-body-selected .mat-calendar-body-cell-content {
-      background: #008489 !important;
-      color: white !important;
-      transform: scale(1.07);
+      &.mat-calendar-body-disabled .mat-calendar-body-cell-content {
+        color: #d1d5db;
+      }
     }
   }
 
-
-
-
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(4px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-}
-
-// ============================
-// RESPONSIVE
-// ============================
-@media (max-width: 1024px) {
-  .search-bar-container {
-    width: 95%;
-
-    &.compact {
-      width: 100%;
-    }
-  }
-
-  .search-bar {
-    flex-wrap: wrap;
-    border-radius: 30px;
-    padding: 1rem;
-  }
-
-  .divider-vertical {
-    display: none;
-  }
-
-  .search-field {
-    flex: 1 1 45%;
-    margin-bottom: 0.5rem;
-    padding: 0.5rem 1rem;
-  }
-
-  .search-button {
-    flex: 1 1 100%;
-    width: 100% !important;
-    border-radius: 24px !important;
-    height: 52px !important;
-    margin-top: 0.5rem;
-  }
-
-  ::ng-deep {
-    .guests-menu-panel .mat-mdc-menu-panel {
-      min-width: 320px !important;
-      max-width: 320px !important;
-    }
-
-    .mat-datepicker-popup .mat-datepicker-content,
-    .mat-date-range-picker-popup .mat-date-range-picker-content {
-      width: 320px !important;
-    }
-
-    .mat-calendar {
-      width: 100% !important;
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .search-bar-container {
-    &:not(.compact) {
-      position: relative;
-      bottom: unset;
-      margin-top: 2rem;
-    }
-  }
-
-  .search-field {
-    flex: 1 1 100%;
-  }
-
-  ::ng-deep {
-    .guests-menu-panel .mat-mdc-menu-panel {
-      min-width: 300px !important;
-      max-width: 300px !important;
-    }
-
-    .mat-datepicker-popup .mat-datepicker-content,
-    .mat-date-range-picker-popup .mat-date-range-picker-content {
-      width: 280px !important;
-    }
-  }
-}
-// ============================
-// AUTOCOMPLETE LOCATIONS - DESIGN AMÉLIORÉ
-// ============================
-::ng-deep {
+  // AUTOCOMPLETE LOCATIONS - DESIGN ÉPURÉ
   .location-autocomplete {
     .mat-mdc-autocomplete-panel {
-      margin-top: 8px !important;
-      border-radius: 18px !important;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15),
-      0 4px 12px rgba(0, 0, 0, 0.1) !important;
-      max-height: 320px !important;
+      margin-top: 12px !important;
+      border-radius: 16px !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12),
+      0 2px 6px rgba(0, 0, 0, 0.08) !important;
+      max-height: 300px !important;
       overflow: auto !important;
+      border: 1px solid rgba(0, 0, 0, 0.06) !important;
+      background: white;
     }
 
     .mat-mdc-option {
-      padding: 0.9rem 1.2rem !important;
+      padding: 0.75rem 1rem !important;
       min-height: unset !important;
-      transition: all 0.2s ease !important;
+      transition: background-color 0.2s ease !important;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+
+      &:last-child {
+        border-bottom: none;
+      }
 
       &:hover {
-        background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%) !important;
+        background: #f8f9fa !important;
       }
 
       &.mat-mdc-option-active {
-        background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%) !important;
+        background: #e0f2fe !important;
       }
     }
 
     .location-option {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 0.75rem;
 
       mat-icon {
         color: #10345B;
-        font-size: 1.3rem;
-        width: 1.3rem;
-        height: 1.3rem;
+        font-size: 1.2rem;
+        width: 1.2rem;
+        height: 1.2rem;
       }
 
       .location-text {
         display: flex;
         flex-direction: column;
-        gap: 0.2rem;
+        gap: 0.15rem;
 
         .city {
-          font-size: 0.95rem;
+          font-size: 0.9rem;
           font-weight: 600;
-          color: #1f2937;
+          color: #1a1a1a;
         }
 
         .country {
-          font-size: 0.85rem;
+          font-size: 0.8rem;
           color: #6b7280;
         }
       }
@@ -709,20 +640,54 @@
   }
 
   ::ng-deep {
-    .guests-menu-panel .mat-mdc-menu-panel {
-      min-width: 340px !important;
-      max-width: 340px !important;
+    .guests-menu-panel.mat-mdc-menu-panel {
+      min-width: 320px !important;
+      max-width: 320px !important;
     }
 
-    .mat-datepicker-content,
-    .mat-date-range-picker-content {
+    .mat-datepicker-popup .mat-datepicker-content,
+    .mat-date-range-picker-popup .mat-date-range-picker-content {
+      width: 320px !important;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .search-bar-container {
+    &:not(.compact) {
+      position: relative;
+      bottom: unset;
+      margin-top: 2rem;
+    }
+  }
+
+  .search-field {
+    flex: 1 1 100%;
+  }
+
+  ::ng-deep {
+    .guests-menu-panel.mat-mdc-menu-panel {
+      min-width: 300px !important;
+      max-width: 300px !important;
+    }
+
+    .mat-datepicker-popup .mat-datepicker-content,
+    .mat-date-range-picker-popup .mat-date-range-picker-content {
       width: 360px !important;
-      min-height: 420px !important;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  ::ng-deep {
+    .guests-menu-panel.mat-mdc-menu-panel {
+      min-width: 280px !important;
+      max-width: 280px !important;
     }
 
-    .mat-calendar-body-cell-content {
-      width: 36px !important;
-      height: 36px !important;
+    .mat-datepicker-popup .mat-datepicker-content,
+    .mat-date-range-picker-popup .mat-date-range-picker-content {
+      width: 320px !important;
     }
   }
 }

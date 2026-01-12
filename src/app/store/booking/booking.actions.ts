@@ -2,25 +2,14 @@
 
 import { createAction, props } from '@ngrx/store';
 import { Booking, CreateBookingDTO } from '../../core/models/booking.model';
+import { BookingWithSnapshot } from '../../core/models/booking-with-snapshot.model';
 
 /**
- * ============================
- * ACTIONS BOOKING
- * Toutes les actions pour gérer les réservations
- * ============================
- */
-
-// ========================================
-// CRÉATION DE RÉSERVATION
-// ========================================
-
-/**
- * Créer une nouvelle réservation
- * Flow: createBooking → API → createBookingSuccess OU createBookingFailure
+ * CRÉER UNE RÉSERVATION
  */
 export const createBooking = createAction(
   '[Booking] Create Booking',
-  props<{ createBookingDTO: CreateBookingDTO }>()
+  props<{ booking: CreateBookingDTO }>()
 );
 
 export const createBookingSuccess = createAction(
@@ -33,16 +22,10 @@ export const createBookingFailure = createAction(
   props<{ error: string }>()
 );
 
-// ========================================
-// RÉCUPÉRATION DE RÉSERVATIONS
-// ========================================
-
 /**
- * Charger toutes les réservations de l'utilisateur
+ * CHARGER MES RÉSERVATIONS (simple)
  */
-export const loadMyBookings = createAction(
-  '[Booking] Load My Bookings'
-);
+export const loadMyBookings = createAction('[Booking] Load My Bookings');
 
 export const loadMyBookingsSuccess = createAction(
   '[Booking] Load My Bookings Success',
@@ -55,86 +38,60 @@ export const loadMyBookingsFailure = createAction(
 );
 
 /**
- * Charger les réservations à venir
+ * CHARGER MES RÉSERVATIONS AVEC SNAPSHOTS
  */
-export const loadUpcomingBookings = createAction(
-  '[Booking] Load Upcoming Bookings'
+export const loadMyBookingsWithSnapshots = createAction(
+  '[Booking] Load My Bookings With Snapshots'
 );
 
-export const loadUpcomingBookingsSuccess = createAction(
-  '[Booking] Load Upcoming Bookings Success',
-  props<{ bookings: Booking[] }>()
+export const loadMyBookingsWithSnapshotsSuccess = createAction(
+  '[Booking] Load My Bookings With Snapshots Success',
+  props<{ bookings: BookingWithSnapshot[] }>()
 );
 
-export const loadUpcomingBookingsFailure = createAction(
-  '[Booking] Load Upcoming Bookings Failure',
+export const loadMyBookingsWithSnapshotsFailure = createAction(
+  '[Booking] Load My Bookings With Snapshots Failure',
   props<{ error: string }>()
 );
 
 /**
- * Charger les réservations passées
- */
-export const loadPastBookings = createAction(
-  '[Booking] Load Past Bookings'
-);
-
-export const loadPastBookingsSuccess = createAction(
-  '[Booking] Load Past Bookings Success',
-  props<{ bookings: Booking[] }>()
-);
-
-export const loadPastBookingsFailure = createAction(
-  '[Booking] Load Past Bookings Failure',
-  props<{ error: string }>()
-);
-
-/**
- * Charger une réservation par ID
+ * CHARGER UNE RÉSERVATION PAR ID (simple)
  */
 export const loadBookingById = createAction(
-  '[Booking] Load Booking By ID',
+  '[Booking] Load Booking By Id',
   props<{ id: number }>()
 );
 
 export const loadBookingByIdSuccess = createAction(
-  '[Booking] Load Booking By ID Success',
+  '[Booking] Load Booking By Id Success',
   props<{ booking: Booking }>()
 );
 
 export const loadBookingByIdFailure = createAction(
-  '[Booking] Load Booking By ID Failure',
+  '[Booking] Load Booking By Id Failure',
   props<{ error: string }>()
 );
 
 /**
- * Charger les réservations d'une propriété
- * Utilisé pour afficher le calendrier
+ * CHARGER BOOKING AVEC SNAPSHOT
  */
-export const loadPropertyBookings = createAction(
-  '[Booking] Load Property Bookings',
-  props<{ propertyId: number }>()
+export const loadBookingWithSnapshot = createAction(
+  '[Booking] Load Booking With Snapshot',
+  props<{ id: number }>()
 );
 
-export const loadPropertyBookingsSuccess = createAction(
-  '[Booking] Load Property Bookings Success',
-  props<{ bookings: Booking[] }>()
+export const loadBookingWithSnapshotSuccess = createAction(
+  '[Booking] Load Booking With Snapshot Success',
+  props<{ booking: BookingWithSnapshot }>()
 );
 
-export const loadPropertyBookingsFailure = createAction(
-  '[Booking] Load Property Bookings Failure',
+export const loadBookingWithSnapshotFailure = createAction(
+  '[Booking] Load Booking With Snapshot Failure',
   props<{ error: string }>()
 );
 
-// ========================================
-// CONFIRMATION DE RÉSERVATION
-// ========================================
-
 /**
- * Confirmer une réservation après paiement
- * Flow:
- * 1. User paie avec MetaMask
- * 2. Frontend dispatch confirmBooking avec txHash
- * 3. Backend change status PENDING → CONFIRMED
+ * CONFIRMER UNE RÉSERVATION
  */
 export const confirmBooking = createAction(
   '[Booking] Confirm Booking',
@@ -151,57 +108,8 @@ export const confirmBookingFailure = createAction(
   props<{ error: string }>()
 );
 
-// ========================================
-// CHECK-IN / CHECK-OUT
-// ========================================
-
 /**
- * Effectuer le check-in
- * Change status CONFIRMED → CHECKED_IN
- */
-export const checkIn = createAction(
-  '[Booking] Check In',
-  props<{ id: number }>()
-);
-
-export const checkInSuccess = createAction(
-  '[Booking] Check In Success',
-  props<{ booking: Booking }>()
-);
-
-export const checkInFailure = createAction(
-  '[Booking] Check In Failure',
-  props<{ error: string }>()
-);
-
-/**
- * Effectuer le check-out
- * Change status CHECKED_IN → COMPLETED
- * Déclenche libération escrow
- */
-export const checkOut = createAction(
-  '[Booking] Check Out',
-  props<{ id: number }>()
-);
-
-export const checkOutSuccess = createAction(
-  '[Booking] Check Out Success',
-  props<{ booking: Booking }>()
-);
-
-export const checkOutFailure = createAction(
-  '[Booking] Check Out Failure',
-  props<{ error: string }>()
-);
-
-// ========================================
-// ANNULATION
-// ========================================
-
-/**
- * Annuler une réservation
- * Change status → CANCELLED
- * Déclenche remboursement
+ * ANNULER UNE RÉSERVATION
  */
 export const cancelBooking = createAction(
   '[Booking] Cancel Booking',
@@ -218,13 +126,41 @@ export const cancelBookingFailure = createAction(
   props<{ error: string }>()
 );
 
-// ========================================
-// LIBÉRATION ESCROW
-// ========================================
+/**
+ * CHECK-IN / CHECK-OUT
+ */
+export const checkIn = createAction(
+  '[Booking] Check In',
+  props<{ id: number }>()
+);
+
+export const checkInSuccess = createAction(
+  '[Booking] Check In Success',
+  props<{ booking: Booking }>()
+);
+
+export const checkInFailure = createAction(
+  '[Booking] Check In Failure',
+  props<{ error: string }>()
+);
+
+export const checkOut = createAction(
+  '[Booking] Check Out',
+  props<{ id: number }>()
+);
+
+export const checkOutSuccess = createAction(
+  '[Booking] Check Out Success',
+  props<{ booking: Booking }>()
+);
+
+export const checkOutFailure = createAction(
+  '[Booking] Check Out Failure',
+  props<{ error: string }>()
+);
 
 /**
- * Libérer l'escrow au propriétaire
- * Appelé après check-out
+ * LIBÉRER L'ESCROW
  */
 export const releaseEscrow = createAction(
   '[Booking] Release Escrow',
@@ -241,79 +177,9 @@ export const releaseEscrowFailure = createAction(
   props<{ error: string }>()
 );
 
-// ========================================
-// DISPONIBILITÉ
-// ========================================
-
 /**
- * Vérifier la disponibilité d'une propriété
+ * RESET / CLEAR
  */
-export const checkAvailability = createAction(
-  '[Booking] Check Availability',
-  props<{ propertyId: number; checkIn: string; checkOut: string }>()
-);
+export const resetBookingState = createAction('[Booking] Reset State');
 
-export const checkAvailabilitySuccess = createAction(
-  '[Booking] Check Availability Success',
-  props<{ available: boolean }>()
-);
-
-export const checkAvailabilityFailure = createAction(
-  '[Booking] Check Availability Failure',
-  props<{ error: string }>()
-);
-
-/**
- * Charger les dates bloquées pour le calendrier
- */
-export const loadBlockedDates = createAction(
-  '[Booking] Load Blocked Dates',
-  props<{ propertyId: number }>()
-);
-
-export const loadBlockedDatesSuccess = createAction(
-  '[Booking] Load Blocked Dates Success',
-  props<{ blockedDates: string[] }>()
-);
-
-export const loadBlockedDatesFailure = createAction(
-  '[Booking] Load Blocked Dates Failure',
-  props<{ error: string }>()
-);
-
-// ========================================
-// SÉLECTION DE RÉSERVATION COURANTE
-// ========================================
-
-/**
- * Sélectionner une réservation pour affichage détaillé
- */
-export const selectBooking = createAction(
-  '[Booking] Select Booking',
-  props<{ booking: Booking }>()
-);
-
-/**
- * Désélectionner la réservation courante
- */
-export const clearSelectedBooking = createAction(
-  '[Booking] Clear Selected Booking'
-);
-
-// ========================================
-// RESET / CLEAR
-// ========================================
-
-/**
- * Réinitialiser l'état booking
- */
-export const resetBookingState = createAction(
-  '[Booking] Reset State'
-);
-
-/**
- * Effacer les erreurs
- */
-export const clearBookingError = createAction(
-  '[Booking] Clear Error'
-);
+export const clearBookingError = createAction('[Booking] Clear Error');

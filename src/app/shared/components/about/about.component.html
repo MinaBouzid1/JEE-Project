@@ -94,61 +94,6 @@
     </div>
   </section>
 
-  <!-- TEAM SECTION (avec vraies photos) -->
-  <section class="team-section">
-    <div class="container">
-      <h2 class="section-title">Meet Our Team</h2>
-      <p class="section-subtitle">
-        Passionate builders dedicated to decentralizing real estate
-      </p>
-
-      <div class="team-grid">
-        <!-- Team Member 1 -->
-        <div class="team-card">
-          <div class="team-image">
-            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop"
-                 alt="Sarah Johnson">
-          </div>
-          <h3>Sarah Johnson</h3>
-          <p class="team-role">CEO & Co-Founder</p>
-          <p class="team-bio">Blockchain expert with 10+ years in real estate technology</p>
-        </div>
-
-        <!-- Team Member 2 -->
-        <div class="team-card">
-          <div class="team-image">
-            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop"
-                 alt="Michael Chen">
-          </div>
-          <h3>Michael Chen</h3>
-          <p class="team-role">CTO & Co-Founder</p>
-          <p class="team-bio">Smart contract developer and Ethereum core contributor</p>
-        </div>
-
-        <!-- Team Member 3 -->
-        <div class="team-card">
-          <div class="team-image">
-            <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=400&fit=crop"
-                 alt="Emma Davis">
-          </div>
-          <h3>Emma Davis</h3>
-          <p class="team-role">Head of Product</p>
-          <p class="team-bio">Product designer focused on Web3 user experience</p>
-        </div>
-
-        <!-- Team Member 4 -->
-        <div class="team-card">
-          <div class="team-image">
-            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop"
-                 alt="James Wilson">
-          </div>
-          <h3>James Wilson</h3>
-          <p class="team-role">Head of Community</p>
-          <p class="team-bio">Building trust and engagement in our decentralized community</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- TECHNOLOGY SECTION (avec image) -->
   <section class="technology-section">
@@ -196,14 +141,16 @@
         <h2>Join the Revolution</h2>
         <p>Be part of the decentralized future of real estate rentals</p>
         <div class="cta-buttons">
-          <button mat-raised-button class="btn-primary" routerLink="/become-host">
+
+
+          <a routerLink="/become-host" class="btn-primary" mat-raised-button>
             <mat-icon>home_work</mat-icon>
             Become a Host
-          </button>
-          <button mat-stroked-button class="btn-secondary" routerLink="/listings">
+          </a>
+          <a routerLink="/listings" class="btn-secondary" mat-stroked-button>
             <mat-icon>search</mat-icon>
             Explore Properties
-          </button>
+          </a>
         </div>
       </div>
     </div>

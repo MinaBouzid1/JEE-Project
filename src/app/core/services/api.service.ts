@@ -116,17 +116,16 @@ export class ApiService {
     );
   }
 
-  /** Upload fichiers (images, pdf...) */
-  upload<T>(endpoint: string, formData: FormData): Observable<T> { // formData : un objet spécial (classe FormData) cad pdf , iamage , video ...
-    // Configuration Axios special pour upload
-    const config: AxiosRequestConfig = {
-      headers: {
-        'Content-Type': 'multipart/form-data' // important pour les fichiers pour préciser que l’envoi contient un fichier pas json
-      }
-    };
-    return from(this.axiosInstance.post<T>(endpoint, formData, config)).pipe(
-      map((response) => response.data),
-      catchError(this.handleError)
+  /**
+   * Upload de fichier (multipart/form-data)
+   */
+  upload<T>(url: string, formData: FormData): Observable<T> {
+    return from(
+      this.axiosInstance.post<T>(url, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(response => response.data)
     );
   }
 

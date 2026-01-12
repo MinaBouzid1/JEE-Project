@@ -104,3 +104,73 @@ export const selectHasActiveFilters = createSelector(
     );
   }
 );
+
+
+/**
+ * ============================
+ * SÉLECTEUR : DATES BLOQUÉES
+ * ============================
+ */
+export const selectPropertyBlockedDates = createSelector(
+  selectListingsState,
+  (state: ListingsState) => state.blockedDates
+);
+
+/**
+ * ============================
+ * SÉLECTEUR : SET DE DATES BLOQUÉES (pour le calendrier)
+ * ============================
+ */
+export const selectPropertyBlockedDatesSet = createSelector(
+  selectPropertyBlockedDates,
+  (dates: string[]) => new Set(dates)
+);
+
+
+
+
+
+/**
+ * ============================
+ * SELECTORS MY PROPERTIES (HOST)
+ * ============================
+ */
+export const selectMyProperties = createSelector(
+  selectListingsState,
+  (state: ListingsState): PropertyCard[] => state.myProperties
+);
+
+export const selectMyPropertiesLoaded = createSelector(
+  selectListingsState,
+  (state: ListingsState) => state.myPropertiesLoaded
+);
+
+export const selectMyPropertiesCount = createSelector(
+  selectMyProperties,
+  (properties) => properties.length
+);
+
+/**
+ * ============================
+ * SELECTOR : MY PROPERTIES BY STATUS
+ * ============================
+ */
+export const selectMyPropertiesByStatus = (status: string) => createSelector(
+  selectMyProperties,
+  (properties) => properties.filter(p => p.status === status)
+);
+
+export const selectMyActiveProperties = createSelector(
+  selectMyProperties,
+  (properties) => properties.filter(p => p.status === 'ACTIVE')
+);
+
+export const selectMyDraftProperties = createSelector(
+  selectMyProperties,
+  (properties) => properties.filter(p => p.status === 'DRAFT')
+);
+
+export const selectMyArchivedProperties = createSelector(
+  selectMyProperties,
+  (properties) => properties.filter(p => p.status === 'ARCHIVED')
+);

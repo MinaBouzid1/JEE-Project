@@ -10,7 +10,7 @@ export const environment = {
     listing: '/listings',
     booking: '/bookings',
     payment: '/payments',
-    messaging: '/messages',
+    messaging: '',
     notification: '/notifications',
     review: '/reviews',
     media: '/media',
@@ -34,5 +34,6 @@ export const environment = {
 
   // Autres configs
   tokenKey: 'authToken', // le token jwt
-  userKey: 'current_user'
+  userKey: 'current_user',
+  wsUrl: 'ws://localhost:8080/api/ws/messages',
 };

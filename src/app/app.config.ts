@@ -26,13 +26,19 @@ import { ListingsEffects } from "./store/listings/listing.effects";
 import { reviewReducer } from "./store/review/review.reducer";
 import { ReviewEffects } from "./store/review/review.effects";
 
+// notifications
+import { notificationReducer } from './store/notification/notification.reducer';
+import { NotificationEffects } from './store/notification/notification.effects';
 // ✅ NOUVEAU - Booking
 import { bookingReducer } from "./store/booking/booking.reducer";
 import { BookingEffects } from "./store/booking/booking.effects";
-
+import { profileReducer } from './store/profile/profile.reducer';
+import { ProfileEffects } from './store/profile/profile.effects';
 // ✅ NOUVEAU - Payment
 import { paymentReducer } from "./store/payment/payment.reducer";
 import { PaymentEffects } from "./store/payment/payment.effects";
+import {messagingReducer} from "./store/messaging/messaging.reducer";
+import {MessagingEffects} from "./store/messaging/messaging.effects";
 
 /**
  * ============================
@@ -98,7 +104,10 @@ export const appConfig: ApplicationConfig = {
       listings: listingsReducer,   // État des propriétés
       reviews: reviewReducer,       // État des avis
       booking: bookingReducer,      // ✅ NOUVEAU - État des réservations
-      payment: paymentReducer       // ✅ NOUVEAU - État des paiements
+      payment: paymentReducer ,      // ✅ NOUVEAU - État des paiements
+      profile: profileReducer,
+      notification: notificationReducer,
+      messaging: messagingReducer,
     }),
 
     // ========================================
@@ -110,7 +119,10 @@ export const appConfig: ApplicationConfig = {
       ListingsEffects,    // Effects des propriétés
       ReviewEffects,      // Effects des avis
       BookingEffects,     // ✅ NOUVEAU - Effects des réservations
-      PaymentEffects      // ✅ NOUVEAU - Effects des paiements
+      PaymentEffects  ,    // ✅ NOUVEAU - Effects des paiements
+      ProfileEffects,
+      NotificationEffects,
+      MessagingEffects
     ]),
 
     // ========================================

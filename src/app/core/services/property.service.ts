@@ -9,10 +9,11 @@ import {
   PropertySearchResultDTO,
   PropertySearchFilters,
   CreatePropertyDTO,
-  PriceHistory
+  PriceHistory, PropertyAvailability
 } from '../models/property.model';
 import {PropertyDetail} from "../models/property-detail.model";
 import {PropertyCard} from "../models/property-card.model";
+import {Discount} from "../models/discount.model";
 
 
 /**
@@ -43,7 +44,33 @@ export class PropertyService {
       size
     });
   }
+  getBlockedDates(
+    propertyId: number,
+    start: string,
+    end: string
+  ): Observable<PropertyAvailability[]> {
+    return this.apiService.get<PropertyAvailability[]>(
+      `${this.baseUrl}/properties/${propertyId}/availability/blocked`,
+      { start, end }
+    );
+  }
 
+  /**
+   * ============================
+   * VÉRIFIER CONFLIT DE DATES
+   * GET /listings/properties/{id}/availability/conflict
+   * ============================
+   */
+  checkDateConflict(
+    propertyId: number,
+    start: string,
+    end: string
+  ): Observable<boolean> {
+    return this.apiService.get<boolean>(
+      `${this.baseUrl}/properties/${propertyId}/availability/conflict`,
+      { start, end }
+    );
+  }
 
   /**
    * ============================
@@ -161,7 +188,7 @@ export class PropertyService {
    * ============================
    */
   createProperty(property: CreatePropertyDTO): Observable<Property> {
-    return this.apiService.post<Property>(`${this.baseUrl}/properties`, property);
+    return this.apiService.post<Property>(`${this.baseUrl}/properties/new`, property);
   }
 
   /**
@@ -200,8 +227,8 @@ export class PropertyService {
    * GET /listings/properties/my?userId={id}
    * ============================
    */
-  getMyProperties(userId: number): Observable<Property[]> {
-    return this.apiService.get<Property[]>(`${this.baseUrl}/properties/my`, { userId });
+  getMyProperties(userId: number): Observable<PropertyCard[]> {
+    return this.apiService.get<PropertyCard[]>(`${this.baseUrl}/properties/my`, { userId });
   }
 
   /**
@@ -220,6 +247,146 @@ export class PropertyService {
     return this.apiService.get<PropertyDetail>(`${this.baseUrl}/properties/${id}/details`);
   }
 
+  /**
+   * ============================
+   * MISE À JOUR PARTIELLE (PATCH)
+   * PATCH /listings/properties/{id}
+   * ============================
+   */
+  patchProperty(id: number, updates: Partial<Property>): Observable<Property> {
+    return this.apiService.patch<Property>(`${this.baseUrl}/properties/${id}`, updates);
+  }
+
+  /**
+   * ============================
+   * BLOQUER DES DATES
+   * POST /listings/properties/{id}/availability/block
+   * ============================
+   */
+  blockDates(propertyId: number, start: string, end: string, reason: string): Observable<void> {
+    return this.apiService.post<void>(
+      `${this.baseUrl}/properties/${propertyId}/availability/block`,
+      { start, end, reason }
+    );
+  }
+
+  /**
+   * ============================
+   * DÉBLOQUER DES DATES
+   * DELETE /listings/properties/{id}/availability/unblock
+   * ============================
+   */
+
+  unblockDates(propertyId: number, start: string, end: string): Observable<void> {
+    return this.apiService.post<void>(  // ✅ Changer delete en post
+      `${this.baseUrl}/properties/${propertyId}/availability/unblock`,
+      { start, end, reason: '' }  // ✅ Envoyer un body JSON
+    );
+  }
+
+  /**
+   * ============================
+   * RÉCUPÉRER TOUTES LES DISPONIBILITÉS
+   * GET /listings/properties/{id}/availability/blocked
+   * ============================
+   */
+  getAvailabilities(propertyId: number, start: string, end: string): Observable<PropertyAvailability[]> {
+    return this.apiService.get<PropertyAvailability[]>(
+      `${this.baseUrl}/properties/${propertyId}/availability/blocked`,
+      { start, end }
+    );
+  }
+
+
+  // src/app/core/services/property.service.ts
+// ✅ AJOUTER CES MÉTHODES
+
+  /**
+   * ============================
+   * AJOUTER UNE AMENITY À UNE PROPERTY
+   * POST /listings/properties/{id}/amenities/{amenityId}
+   * ============================
+   */
+  addAmenityToProperty(propertyId: number, amenityId: number): Observable<void> {
+    return this.apiService.post<void>(
+      `${this.baseUrl}/properties/${propertyId}/amenities/${amenityId}`,
+      {}
+    );
+  }
+
+  /**
+   * ============================
+   * SUPPRIMER UNE AMENITY D'UNE PROPERTY
+   * DELETE /listings/properties/{id}/amenities/{amenityId}
+   * ============================
+   */
+  removeAmenityFromProperty(propertyId: number, amenityId: number): Observable<void> {
+    return this.apiService.delete<void>(
+      `${this.baseUrl}/properties/${propertyId}/amenities/${amenityId}`
+    );
+  }
+
+  /**
+   * ============================
+   * AJOUTER UN DISCOUNT À UNE PROPERTY
+   * POST /listings/properties/{id}/discounts
+   * ============================
+   */
+  addDiscountToProperty(propertyId: number, discount: Partial<Discount>): Observable<void> {
+    return this.apiService.post<void>(
+      `${this.baseUrl}/properties/${propertyId}/discounts`,
+      discount
+    );
+  }
+
+  /**
+   * ============================
+   * SUPPRIMER UN DISCOUNT D'UNE PROPERTY
+   * DELETE /listings/properties/{id}/discounts/{discountId}
+   * ============================
+   */
+  removeDiscountFromProperty(propertyId: number, discountId: number): Observable<void> {
+    return this.apiService.delete<void>(
+      `${this.baseUrl}/properties/${propertyId}/discounts/${discountId}`
+    );
+  }
+
+  /**
+   * ============================
+   * MODIFIER UN DISCOUNT
+   * PUT /listings/properties/{id}/discounts/{discountId}
+   * ============================
+   */
+  updateDiscount(propertyId: number, discountId: number, discount: Partial<Discount>): Observable<void> {
+    return this.apiService.put<void>(
+      `${this.baseUrl}/properties/${propertyId}/discounts/${discountId}`,
+      discount
+    );
+  }
+
+
+
+  /**
+   * Définir une photo comme couverture
+   * PUT /listings/properties/{propertyId}/photos/{photoId}/cover
+   */
+  setPhotoCover(propertyId: number, photoId: number): Observable<void> {
+    return this.apiService.put<void>(
+      `${this.baseUrl}/properties/${propertyId}/photos/${photoId}/cover`,
+      {}
+    );
+  }
+
+  /**
+   * Mettre à jour l'ordre des photos
+   * PUT /listings/properties/{propertyId}/photos/reorder
+   */
+  reorderPhotos(propertyId: number, photoIds: number[]): Observable<void> {
+    return this.apiService.put<void>(
+      `${this.baseUrl}/properties/${propertyId}/photos/reorder`,
+      { photoIds }
+    );
+  }
 }
 export interface Page<T> {
   content: T[];

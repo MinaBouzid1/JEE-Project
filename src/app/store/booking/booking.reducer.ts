@@ -1,64 +1,32 @@
 // src/app/store/booking/booking.reducer.ts
 
 import { createReducer, on } from '@ngrx/store';
-import * as BookingActions from './booking.actions';
 import { Booking } from '../../core/models/booking.model';
+import { BookingWithSnapshot } from '../../core/models/booking-with-snapshot.model';
+import * as BookingActions from './booking.actions';
 
-/**
- * ============================
- * ÉTAT BOOKING
- * ============================
- */
 export interface BookingState {
-  // Listes de réservations
-  myBookings: Booking[];              // Toutes mes réservations
-  upcomingBookings: Booking[];        // Réservations à venir
-  pastBookings: Booking[];            // Réservations passées
-  propertyBookings: Booking[];        // Réservations d'une propriété spécifique
-
-  // Réservation courante
-  selectedBooking: Booking | null;    // Réservation sélectionnée
-  currentBooking: Booking | null;     // Réservation en cours de création
-
-  // Disponibilité
-  isAvailable: boolean | null;        // Résultat de vérification de disponibilité
-  blockedDates: string[];             // Dates bloquées pour le calendrier
-
-  // État UI
+  bookings: Booking[];
+  bookingsWithSnapshots: BookingWithSnapshot[];
+  currentBooking: Booking | null;
+  currentBookingWithSnapshot: BookingWithSnapshot | null;
   loading: boolean;
   error: string | null;
 }
 
-/**
- * ============================
- * ÉTAT INITIAL
- * ============================
- */
 export const initialState: BookingState = {
-  myBookings: [],
-  upcomingBookings: [],
-  pastBookings: [],
-  propertyBookings: [],
-  selectedBooking: null,
+  bookings: [],
+  bookingsWithSnapshots: [],
   currentBooking: null,
-  isAvailable: null,
-  blockedDates: [],
+  currentBookingWithSnapshot: null,
   loading: false,
   error: null
 };
 
-/**
- * ============================
- * REDUCER
- * ============================
- */
 export const bookingReducer = createReducer(
   initialState,
 
-  // ========================================
-  // CRÉATION DE RÉSERVATION
-  // ========================================
-
+  // CREATE BOOKING
   on(BookingActions.createBooking, (state) => ({
     ...state,
     loading: true,
@@ -67,8 +35,8 @@ export const bookingReducer = createReducer(
 
   on(BookingActions.createBookingSuccess, (state, { booking }) => ({
     ...state,
+    bookings: [...state.bookings, booking],
     currentBooking: booking,
-    myBookings: [booking, ...state.myBookings],
     loading: false
   })),
 
@@ -78,10 +46,7 @@ export const bookingReducer = createReducer(
     error
   })),
 
-  // ========================================
-  // RÉCUPÉRATION - MES RÉSERVATIONS
-  // ========================================
-
+  // LOAD MY BOOKINGS (simple)
   on(BookingActions.loadMyBookings, (state) => ({
     ...state,
     loading: true,
@@ -90,7 +55,7 @@ export const bookingReducer = createReducer(
 
   on(BookingActions.loadMyBookingsSuccess, (state, { bookings }) => ({
     ...state,
-    myBookings: bookings,
+    bookings,
     loading: false
   })),
 
@@ -100,54 +65,26 @@ export const bookingReducer = createReducer(
     error
   })),
 
-  // ========================================
-  // RÉCUPÉRATION - RÉSERVATIONS À VENIR
-  // ========================================
-
-  on(BookingActions.loadUpcomingBookings, (state) => ({
+  // LOAD MY BOOKINGS WITH SNAPSHOTS
+  on(BookingActions.loadMyBookingsWithSnapshots, (state) => ({
     ...state,
     loading: true,
     error: null
   })),
 
-  on(BookingActions.loadUpcomingBookingsSuccess, (state, { bookings }) => ({
+  on(BookingActions.loadMyBookingsWithSnapshotsSuccess, (state, { bookings }) => ({
     ...state,
-    upcomingBookings: bookings,
+    bookingsWithSnapshots: bookings,
     loading: false
   })),
 
-  on(BookingActions.loadUpcomingBookingsFailure, (state, { error }) => ({
+  on(BookingActions.loadMyBookingsWithSnapshotsFailure, (state, { error }) => ({
     ...state,
     loading: false,
     error
   })),
 
-  // ========================================
-  // RÉCUPÉRATION - RÉSERVATIONS PASSÉES
-  // ========================================
-
-  on(BookingActions.loadPastBookings, (state) => ({
-    ...state,
-    loading: true,
-    error: null
-  })),
-
-  on(BookingActions.loadPastBookingsSuccess, (state, { bookings }) => ({
-    ...state,
-    pastBookings: bookings,
-    loading: false
-  })),
-
-  on(BookingActions.loadPastBookingsFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error
-  })),
-
-  // ========================================
-  // RÉCUPÉRATION - PAR ID
-  // ========================================
-
+  // LOAD BOOKING BY ID (simple)
   on(BookingActions.loadBookingById, (state) => ({
     ...state,
     loading: true,
@@ -156,7 +93,7 @@ export const bookingReducer = createReducer(
 
   on(BookingActions.loadBookingByIdSuccess, (state, { booking }) => ({
     ...state,
-    selectedBooking: booking,
+    currentBooking: booking,
     loading: false
   })),
 
@@ -166,32 +103,26 @@ export const bookingReducer = createReducer(
     error
   })),
 
-  // ========================================
-  // RÉCUPÉRATION - RÉSERVATIONS D'UNE PROPRIÉTÉ
-  // ========================================
-
-  on(BookingActions.loadPropertyBookings, (state) => ({
+  // LOAD BOOKING WITH SNAPSHOT
+  on(BookingActions.loadBookingWithSnapshot, (state) => ({
     ...state,
     loading: true,
     error: null
   })),
 
-  on(BookingActions.loadPropertyBookingsSuccess, (state, { bookings }) => ({
+  on(BookingActions.loadBookingWithSnapshotSuccess, (state, { booking }) => ({
     ...state,
-    propertyBookings: bookings,
+    currentBookingWithSnapshot: booking,
     loading: false
   })),
 
-  on(BookingActions.loadPropertyBookingsFailure, (state, { error }) => ({
+  on(BookingActions.loadBookingWithSnapshotFailure, (state, { error }) => ({
     ...state,
     loading: false,
     error
   })),
 
-  // ========================================
-  // CONFIRMATION
-  // ========================================
-
+  // CONFIRM BOOKING
   on(BookingActions.confirmBooking, (state) => ({
     ...state,
     loading: true,
@@ -200,9 +131,8 @@ export const bookingReducer = createReducer(
 
   on(BookingActions.confirmBookingSuccess, (state, { booking }) => ({
     ...state,
+    bookings: state.bookings.map(b => b.id === booking.id ? booking : b),
     currentBooking: booking,
-    selectedBooking: booking,
-    myBookings: state.myBookings.map(b => b.id === booking.id ? booking : b),
     loading: false
   })),
 
@@ -212,57 +142,7 @@ export const bookingReducer = createReducer(
     error
   })),
 
-  // ========================================
-  // CHECK-IN
-  // ========================================
-
-  on(BookingActions.checkIn, (state) => ({
-    ...state,
-    loading: true,
-    error: null
-  })),
-
-  on(BookingActions.checkInSuccess, (state, { booking }) => ({
-    ...state,
-    selectedBooking: booking,
-    myBookings: state.myBookings.map(b => b.id === booking.id ? booking : b),
-    upcomingBookings: state.upcomingBookings.map(b => b.id === booking.id ? booking : b),
-    loading: false
-  })),
-
-  on(BookingActions.checkInFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error
-  })),
-
-  // ========================================
-  // CHECK-OUT
-  // ========================================
-
-  on(BookingActions.checkOut, (state) => ({
-    ...state,
-    loading: true,
-    error: null
-  })),
-
-  on(BookingActions.checkOutSuccess, (state, { booking }) => ({
-    ...state,
-    selectedBooking: booking,
-    myBookings: state.myBookings.map(b => b.id === booking.id ? booking : b),
-    loading: false
-  })),
-
-  on(BookingActions.checkOutFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error
-  })),
-
-  // ========================================
-  // ANNULATION
-  // ========================================
-
+  // CANCEL BOOKING
   on(BookingActions.cancelBooking, (state) => ({
     ...state,
     loading: true,
@@ -271,9 +151,11 @@ export const bookingReducer = createReducer(
 
   on(BookingActions.cancelBookingSuccess, (state, { booking }) => ({
     ...state,
-    selectedBooking: booking,
-    myBookings: state.myBookings.map(b => b.id === booking.id ? booking : b),
-    upcomingBookings: state.upcomingBookings.filter(b => b.id !== booking.id),
+    bookings: state.bookings.map(b => b.id === booking.id ? booking : b),
+    bookingsWithSnapshots: state.bookingsWithSnapshots.map(b =>
+      b.bookingId === booking.id ? { ...b, status: booking.status } : b
+    ),
+    currentBooking: booking,
     loading: false
   })),
 
@@ -283,10 +165,47 @@ export const bookingReducer = createReducer(
     error
   })),
 
-  // ========================================
-  // ESCROW
-  // ========================================
+  // CHECK-IN
+  on(BookingActions.checkIn, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  })),
 
+  on(BookingActions.checkInSuccess, (state, { booking }) => ({
+    ...state,
+    bookings: state.bookings.map(b => b.id === booking.id ? booking : b),
+    currentBooking: booking,
+    loading: false
+  })),
+
+  on(BookingActions.checkInFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error
+  })),
+
+  // CHECK-OUT
+  on(BookingActions.checkOut, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  })),
+
+  on(BookingActions.checkOutSuccess, (state, { booking }) => ({
+    ...state,
+    bookings: state.bookings.map(b => b.id === booking.id ? booking : b),
+    currentBooking: booking,
+    loading: false
+  })),
+
+  on(BookingActions.checkOutFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error
+  })),
+
+  // RELEASE ESCROW
   on(BookingActions.releaseEscrow, (state) => ({
     ...state,
     loading: true,
@@ -295,8 +214,8 @@ export const bookingReducer = createReducer(
 
   on(BookingActions.releaseEscrowSuccess, (state, { booking }) => ({
     ...state,
-    selectedBooking: booking,
-    myBookings: state.myBookings.map(b => b.id === booking.id ? booking : b),
+    bookings: state.bookings.map(b => b.id === booking.id ? booking : b),
+    currentBooking: booking,
     loading: false
   })),
 
@@ -306,69 +225,7 @@ export const bookingReducer = createReducer(
     error
   })),
 
-  // ========================================
-  // DISPONIBILITÉ
-  // ========================================
-
-  on(BookingActions.checkAvailability, (state) => ({
-    ...state,
-    loading: true,
-    error: null,
-    isAvailable: null
-  })),
-
-  on(BookingActions.checkAvailabilitySuccess, (state, { available }) => ({
-    ...state,
-    isAvailable: available,
-    loading: false
-  })),
-
-  on(BookingActions.checkAvailabilityFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error
-  })),
-
-  // ========================================
-  // DATES BLOQUÉES
-  // ========================================
-
-  on(BookingActions.loadBlockedDates, (state) => ({
-    ...state,
-    loading: true,
-    error: null
-  })),
-
-  on(BookingActions.loadBlockedDatesSuccess, (state, { blockedDates }) => ({
-    ...state,
-    blockedDates,
-    loading: false
-  })),
-
-  on(BookingActions.loadBlockedDatesFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error
-  })),
-
-  // ========================================
-  // SÉLECTION
-  // ========================================
-
-  on(BookingActions.selectBooking, (state, { booking }) => ({
-    ...state,
-    selectedBooking: booking
-  })),
-
-  on(BookingActions.clearSelectedBooking, (state) => ({
-    ...state,
-    selectedBooking: null
-  })),
-
-  // ========================================
-  // RESET
-  // ========================================
-
+  // RESET / CLEAR
   on(BookingActions.resetBookingState, () => initialState),
 
   on(BookingActions.clearBookingError, (state) => ({

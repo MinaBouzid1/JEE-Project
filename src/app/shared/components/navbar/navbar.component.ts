@@ -1,6 +1,6 @@
 // src/app/shared/components/navbar/navbar.component.ts
 
-import { Component, OnInit, HostListener, OnDestroy, ViewChild } from '@angular/core';
+import {Component, OnInit, HostListener, OnDestroy, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -14,6 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Store
 import * as AuthActions from '../../../store/auth/auth.actions';
@@ -25,6 +26,10 @@ import {
 
 // Models
 import { User } from '../../../core/models/user.model';
+import { NotificationBellComponent } from "../notification-bell/notification-bell.component";
+
+import * as MessagingActions from '../../../store/messaging/messaging.actions';
+import * as MessagingSelectors from '../../../store/messaging/messaging.selectors';
 
 @Component({
   selector: 'app-navbar',
@@ -37,7 +42,9 @@ import { User } from '../../../core/models/user.model';
     MatIconModule,
     MatMenuModule,
     MatBadgeModule,
-    MatDividerModule
+    MatDividerModule,
+    MatTooltipModule,
+    NotificationBellComponent
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
@@ -47,13 +54,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
   currentUser$: Observable<User | null>;
   isAuthenticated$: Observable<boolean>;
   isHost$: Observable<boolean>;
+  unreadMessagesCount$: Observable<number>;
 
   // État local
   userInitial = '';
   isHomePage = true;
   isScrolled = false;
+  isHostMode = false; // 🔥 Détermine si on est en mode Host (basé sur l'URL)
 
-  // ✅ Référence au menu trigger
   @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
 
   private destroy$ = new Subject<void>();
@@ -65,6 +73,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.currentUser$ = this.store.select(selectCurrentUser);
     this.isAuthenticated$ = this.store.select(selectIsAuthenticated);
     this.isHost$ = this.store.select(selectIsHost);
+    this.unreadMessagesCount$ = this.store.select(
+      MessagingSelectors.selectTotalUnreadCount
+    );
   }
 
   ngOnInit(): void {
@@ -81,6 +92,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     // Écouter les changements de route
     this.checkIfHomePage();
+    this.checkHostMode(); // 🔥 NOUVEAU
+
     this.router.events
       .pipe(
         filter(event => event instanceof NavigationEnd),
@@ -88,7 +101,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
       )
       .subscribe(() => {
         this.checkIfHomePage();
+        this.checkHostMode(); // 🔥 NOUVEAU
       });
+
+    // Charger les conversations au démarrage
+
+    this.isAuthenticated$.subscribe(isAuth => {
+      if (isAuth) {
+        this.store.dispatch(MessagingActions.loadConversations());
+      }
+    });
+
+
   }
 
   ngOnDestroy(): void {
@@ -100,9 +124,29 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.isHomePage = this.router.url === '/' || this.router.url === '';
   }
 
+  /**
+   * 🔥 NOUVEAU: Vérifier si on est en mode Host
+   */
+  private checkHostMode(): void {
+    this.isHostMode = this.router.url.startsWith('/host');
+  }
+
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
     this.isScrolled = window.scrollY > 50;
+  }
+
+  // ============================
+  // 🔥 NOUVEAU: TOGGLE MODE (Host/Guest)
+  // ============================
+  toggleMode(): void {
+    if (this.isHostMode) {
+      // Si on est en mode Host, basculer vers Guest (listings)
+      this.router.navigate(['/listings']);
+    } else {
+      // Si on est en mode Guest, basculer vers Host
+      this.router.navigate(['/host']);
+    }
   }
 
   // ============================
@@ -137,7 +181,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   navigateToBookings(): void {
-    this.router.navigate(['/bookings']);
+    this.router.navigate(['/my-bookings']);
   }
 
   // ============================

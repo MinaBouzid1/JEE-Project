@@ -1,24 +1,26 @@
-// src/app/store/listings/listings.reducer.ts
-
+// src/app/store/listings/listing.reducer.ts
 import { createReducer, on } from '@ngrx/store';
 import * as ListingsActions from './listing.actions';
-import {
-  Property,
-  PropertySearchResultDTO,
-  PropertySearchFilters
-} from '../../core/models/property.model';
-import {PropertyCard} from "../../core/models/property-card.model";
+import { Property, PropertySearchResultDTO, PropertySearchFilters } from '../../core/models/property.model';
+import { PropertyCard } from '../../core/models/property-card.model';
 
-//
 /**
  * ============================
  * ÉTAT LISTINGS
  * ============================
  */
 export interface ListingsState {
-  allProperties: PropertyCard[];  // ← Changé de Property[] à PropertyCard[]
+  // Browse/Search (existant)
+  allProperties: PropertyCard[];
   searchResults: PropertySearchResultDTO[];
   filters: PropertySearchFilters;
+  blockedDates: string[];
+
+  // ✅ NOUVEAU : My Properties (Host)
+  myProperties: PropertyCard[];
+  myPropertiesLoaded: boolean;
+
+  // Common
   loading: boolean;
   error: string | null;
   currentPage: number;
@@ -40,6 +42,12 @@ export const initialState: ListingsState = {
     babies: 0,
     pets: 0
   },
+  blockedDates: [],
+
+  // ✅ NOUVEAU
+  myProperties: [],
+  myPropertiesLoaded: false,
+
   loading: false,
   error: null,
   currentPage: 0,
@@ -55,7 +63,9 @@ export const initialState: ListingsState = {
 export const listingsReducer = createReducer(
   initialState,
 
-  // Load All Properties
+  // ========================================
+  // LOAD ALL PROPERTIES (existant)
+  // ========================================
   on(ListingsActions.loadAllProperties, (state) => ({
     ...state,
     loading: true,
@@ -64,7 +74,7 @@ export const listingsReducer = createReducer(
 
   on(ListingsActions.loadAllPropertiesSuccess, (state, { properties }) => ({
     ...state,
-    allProperties: properties,  // Directement properties, pas response.content
+    allProperties: properties,
     searchResults: [],
     loading: false
   })),
@@ -75,7 +85,9 @@ export const listingsReducer = createReducer(
     error
   })),
 
-  // Filter Properties (sans dates)
+  // ========================================
+  // FILTER PROPERTIES (existant)
+  // ========================================
   on(ListingsActions.filterProperties, (state) => ({
     ...state,
     loading: true,
@@ -84,8 +96,8 @@ export const listingsReducer = createReducer(
 
   on(ListingsActions.filterPropertiesSuccess, (state, { properties }) => ({
     ...state,
-    allProperties: properties,  // ✅ PropertyCard[]
-    searchResults: [],  // Clear search results
+    allProperties: properties,
+    searchResults: [],
     loading: false
   })),
 
@@ -95,7 +107,9 @@ export const listingsReducer = createReducer(
     error
   })),
 
-  // Search Properties (avec dates)
+  // ========================================
+  // SEARCH PROPERTIES (existant)
+  // ========================================
   on(ListingsActions.searchProperties, (state) => ({
     ...state,
     loading: true,
@@ -104,8 +118,8 @@ export const listingsReducer = createReducer(
 
   on(ListingsActions.searchPropertiesSuccess, (state, { results }) => ({
     ...state,
-    searchResults: results,  // ✅ PropertySearchResultDTO[]
-    allProperties: [],  // Clear browse properties
+    searchResults: results,
+    allProperties: [],
     loading: false
   })),
 
@@ -115,13 +129,14 @@ export const listingsReducer = createReducer(
     error
   })),
 
-  // Update Filters
+  // ========================================
+  // UPDATE/CLEAR FILTERS (existant)
+  // ========================================
   on(ListingsActions.updateFilters, (state, { filters }) => ({
     ...state,
     filters: { ...state.filters, ...filters }
   })),
 
-  // Clear Filters
   on(ListingsActions.clearFilters, (state) => ({
     ...state,
     filters: {
@@ -131,5 +146,100 @@ export const listingsReducer = createReducer(
       pets: 0
     },
     searchResults: []
+  })),
+
+  // ========================================
+  // BLOCKED DATES (existant)
+  // ========================================
+  on(ListingsActions.loadPropertyBlockedDates, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  })),
+
+  on(ListingsActions.loadPropertyBlockedDatesSuccess, (state, { blockedDates }) => ({
+    ...state,
+    blockedDates,
+    loading: false
+  })),
+
+  on(ListingsActions.loadPropertyBlockedDatesFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error
+  })),
+
+  // ========================================
+  // ✅ NOUVEAU : MY PROPERTIES (HOST)
+  // ========================================
+  on(ListingsActions.loadMyProperties, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  })),
+
+  on(ListingsActions.loadMyPropertiesSuccess, (state, { properties }) => ({
+    ...state,
+    myProperties: properties,
+    myPropertiesLoaded: true,
+    loading: false
+  })),
+
+  on(ListingsActions.loadMyPropertiesFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error
+  })),
+
+  // ========================================
+  // ✅ NOUVEAU : DELETE PROPERTY (HOST)
+  // ========================================
+  on(ListingsActions.deleteProperty, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  })),
+
+  on(ListingsActions.deletePropertySuccess, (state, { propertyId }) => ({
+    ...state,
+    myProperties: state.myProperties.filter(p => p.propertyId !== propertyId),
+    loading: false
+  })),
+
+  on(ListingsActions.deletePropertyFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error
+  })),
+
+  // ========================================
+  // ✅ NOUVEAU : PUBLISH PROPERTY (HOST)
+  // ========================================
+  on(ListingsActions.publishProperty, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  })),
+
+  on(ListingsActions.publishPropertySuccess, (state, { property }) => ({
+    ...state,
+    myProperties: state.myProperties.map(p =>
+      p.propertyId === property.propertyId ? property : p
+    ),
+    loading: false
+  })),
+
+  on(ListingsActions.publishPropertyFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error
+  })),
+
+  // ========================================
+  // CLEAR ERROR (existant)
+  // ========================================
+  on(ListingsActions.clearError, (state) => ({
+    ...state,
+    error: null
   }))
 );
