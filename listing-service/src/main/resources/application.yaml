@@ -19,7 +19,16 @@ spring:
       hibernate:
         format_sql: true
 
+
   # Pour éviter les problèmes de redémarrage avec DevTools
   devtools:
     restart:
       enabled: true
+  # configuration eureka
+eureka:
+  client:
+    enabled: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
