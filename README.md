@@ -75,24 +75,24 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 ┌─────────────────────────────────────────────────────────────┐
 │                   API GATEWAY LAYER                         │
 │     Spring Cloud Gateway (Port 8080)                        │
-│   Routage | Sécurité JWT | Rate Limiting | Load Balancing  │
+│   Routage | Sécurité JWT | Rate Limiting | Load Balancing   │
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
 │                  MICROSERVICES LAYER                        │
-│  User (8081) | Listing (8082) | Booking (8083)             │
-│  Payment (8084) | Messaging (8085) | Notification (8086)   │
-│  Review (8087) | Media (8088) | Blockchain (8089)          │
+│  User (8081) | Listing (8082) | Booking (8083)              │
+│  Payment (8084) | Messaging (8085) | Notification (8086)    │
+│  Review (8087) | Media (8088) | Blockchain (8089)           │
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
 │               SERVICES INFRASTRUCTURE                       │
-│  Eureka (8761) | Config Server (8888) | RabbitMQ (5672)    │
+│  Eureka (8761) | Config Server (8888) | RabbitMQ (5672)     │
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
 │                     DATA LAYER                              │
-│           MySQL 8.0 (3306) | AWS S3 Storage                │
+│           MySQL 8.0 (3306) | AWS S3 Storage                 │
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -133,8 +133,11 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 ---
 
 ### ⚛️ Frontend Developer
+
 **Nom** : Allali Fatima-ezzahra 
+
 **Rôle** : Développeur Frontend  
+
 **Responsabilités** :
 - Développement de l'interface Angular avec TypeScript
 - Intégration Web3.js et MetaMask
@@ -171,7 +174,52 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 ##  Conception UML:
 ### Diagramme de classes
+
 <img width="342" height="296" alt="image" src="https://github.com/user-attachments/assets/8b64f32b-d360-46bf-ae93-9ce5cd2adb97" />
+
+### 📁Package des Users 
+
+**Diagramme des classes** 
+
+<img width="480" height="390" alt="image" src="https://github.com/user-attachments/assets/08ebbd61-3179-4575-8a6a-eadb2a3350a2" />
+
+**Diagramme des activités**
+
+<img width="770" height="401" alt="image" src="https://github.com/user-attachments/assets/45524fcf-c474-4a3f-ba2d-c9f09f2ae390" />
+
+**Diagramme des cas d’utilisation**
+
+<img width="493" height="284" alt="image" src="https://github.com/user-attachments/assets/a6f0ceac-f85d-4f66-b6d5-8af236bbb311" />
+
+### 📁Package des Réservations
+
+**Diagramme des activités**
+
+<img width="513" height="387" alt="image" src="https://github.com/user-attachments/assets/542bf537-72dd-4763-b49b-2228ce49565f" />
+
+**Diagramme des cas d’utilisation**
+
+<img width="601" height="373" alt="image" src="https://github.com/user-attachments/assets/adf59521-ae3e-412c-9de1-df45d180e2ad" />
+
+### 📁Package de Communication
+
+**Diagramme des cas d’utilisation**
+
+<img width="481" height="258" alt="image" src="https://github.com/user-attachments/assets/313ea365-38d4-4ea7-98c1-0f16e2e0d76d" />
+
+**Diagramme des activités**
+
+<img width="715" height="383" alt="image" src="https://github.com/user-attachments/assets/42b6aaf9-b8f5-4cbe-9662-f509eebea218" />
+
+### 📁Package des annonces
+
+**Diagramme des activités**
+
+<img width="597" height="412" alt="image" src="https://github.com/user-attachments/assets/45ee9a1e-aeee-4941-8784-efa6b3afbe17" />
+
+**Diagramme des cas d’utilisation**
+
+<img width="606" height="371" alt="image" src="https://github.com/user-attachments/assets/0078b15a-a6c5-46e1-9984-b146739a67d0" />
 
 --- 
 
