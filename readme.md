@@ -41,7 +41,7 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 ✅ Escrow décentralisé pour la protection des transactions  
 ✅ Chat temps réel propriétaire-locataire  
 ✅ Système d'avis et de notations  
-✅ Notifications par email
+✅ Notifications interne / par email
 
 ---
 
@@ -52,7 +52,7 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                     FRONTEND LAYER                          │
-│   React 18 + TypeScript + Redux + Material-UI + Web3.js    │
+│Angular 18.2+ TypeScript+ NgRx 18.0 + Material-UI + Web3.js  │
 └─────────────────────────────────────────────────────────────┘
                             ↓ HTTPS
 ┌─────────────────────────────────────────────────────────────┐
@@ -101,13 +101,13 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 - **Blockchain** : Web3j (Java Ethereum Client)
 
 ### Frontend
-- **Framework** : React 18 avec TypeScript
-- **State Management** : Redux Toolkit
-- **UI Library** : Material-UI (MUI)
+- **Framework** : Angular 18.2 avec TypeScript
+- **State Management** : NgRx 18.0
+- **UI Library** : Angular Material 18.2
 - **Blockchain** : Web3.js / Ethers.js
-- **Maps** : React-Leaflet
-- **Real-time** : Socket.io-client
-- **HTTP Client** : Axios
+- **Maps** : ngx-leaflet 18.0
+- **Real-time** : Socket.io-client 4.8
+- **HTTP Client** : Axios 1.13
 
 ### Blockchain
 - **Network** : Ethereum (Sepolia Testnet / Mainnet)
