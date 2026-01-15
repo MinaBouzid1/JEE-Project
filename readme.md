@@ -92,7 +92,7 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
 │                     DATA LAYER                              │
-│           MySQL 8.0 (3306) | AWS S3 Storage                │
+│           MySQL 8.0 (3306) | AWS S3 Storage                 │
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -176,7 +176,7 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 **Diagramme des Classes** 
 
-<img width="342" height="296" alt="image" src="https://github.com/user-attachments/assets/8b64f32b-d360-46bf-ae93-9ce5cd2adb97" 
+<img width="342" height="296" alt="image" src="https://github.com/user-attachments/assets/8b64f32b-d360-46bf-ae93-9ce5cd2adb97" />
 
 ### Package Users:
 
