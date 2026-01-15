@@ -115,6 +115,7 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 - Configuration Spring Cloud (Eureka, Gateway, Config)
 - Base de données MySQL et intégrations
 - Sécurité et authentification JWT
+- Conception UML de l'application 
 
 ---
 
