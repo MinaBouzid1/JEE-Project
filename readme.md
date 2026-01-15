@@ -48,8 +48,6 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 - **Communication temps réel** : Chat intégré
 - **Géolocalisation** : Cartographie interactive des propriétés
 
-### Conception UML:
-
 
 ### Fonctionnalités Principales
 
@@ -171,7 +169,11 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 ---
 
+##  Conception UML:
+### Diagramme de classes
+<img width="342" height="296" alt="image" src="https://github.com/user-attachments/assets/8b64f32b-d360-46bf-ae93-9ce5cd2adb97" />
 
+--- 
 
 ## 🔧 Backend Architecture
 
