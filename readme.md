@@ -60,7 +60,7 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                     FRONTEND LAYER                          │
-│   React 18 + TypeScript + Redux + Material-UI + Web3.js    │
+│Angular 18.2+ TypeScript+ NgRx 18.0 + Material-UI + Web3.js  │
 └─────────────────────────────────────────────────────────────┘
                             ↓ HTTPS
 ┌─────────────────────────────────────────────────────────────┐
@@ -270,39 +270,8 @@ Conception et implémentation d'une architecture modulaire et évolutive basée 
 
 ---
 
-## 🎨 Frontend Architecture
-
-### Stack Technologique
-- **React 18** avec TypeScript pour une typage statique robuste
-- **Redux Toolkit** pour la gestion d'état globale
-- **Material-UI (MUI)** pour le design system
-- **React Router** pour la navigation
-- **Axios** pour les requêtes HTTP
-- **Socket.io-client** pour la communication temps réel
-
-### Intégration Blockchain Frontend
-- **Web3.js / Ethers.js** pour l'interaction avec Ethereum
-- **MetaMask Integration** pour la gestion des wallets
-- **Smart Contract Interaction** via ABI
-- **Transaction Status Tracking** en temps réel
-
-### Composants Principaux
-- **Dashboard Utilisateur** : Vue d'ensemble des réservations et messages
-- **Marketplace des Propriétés** : Recherche, filtrage et visualisation
-- **Interface de Réservation** : Processus de booking étape par étape
-- **Chat en Temps Réel** : Communication propriétaire-locataire
-- **Portefeuille Crypto** : Gestion des paiements Ethereum
-- **Système d'Avis** : Publication et consultation des reviews
-
-### Optimisations Performances
-- **Lazy Loading** des composants et routes
-- **Memoization** avec React.memo et useMemo
-- **Code Splitting** automatique
-- **Image Optimization** avec lazy loading
-- **State Management** optimisé avec Redux Toolkit
-
 ---
----
+
 # Frontend
 ![Angular](https://img.shields.io/badge/Angular-18.2-DD0031?style=flat&logo=angular)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?style=flat&logo=typescript)
