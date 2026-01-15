@@ -150,12 +150,36 @@
         gap: 4px;
         flex: 1;
 
-        .number {
-          font-size: 28px;
-          font-weight: 700;
-          color: #111;
-          letter-spacing: -0.5px;
+
+
+
+
+        .price-column {
+          display: flex;
+          align-items: baseline;
+          gap: 2px;
+
+          .price-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111;
+          }
+
+          .price-conversion {
+            font-size: 15px;
+            color: #717171;
+          }
+          .number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #111;
+            letter-spacing: -0.5px;
+
+          }
+
         }
+
+
 
         .label {
           font-size: 12px;

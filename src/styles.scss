@@ -784,24 +784,258 @@ button:focus-visible {
 
 
 
+// ===========================
+// ADD LANGUAGE DIALOG - CENTRÉ AU MILIEU
+// ===========================
+
+// Cible le conteneur overlay CDK
+.cdk-overlay-pane.add-language-dialog-container {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  max-width: 500px !important;
+  width: 90% !important;
+}
+
+// Conteneur Material Dialog
+.add-language-dialog-container {
+  .mat-mdc-dialog-container {
+    padding: 0 !important;
+    border-radius: 16px !important;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2) !important;
+    overflow: hidden !important;
+  }
+
+  .mat-mdc-dialog-surface {
+    border-radius: 16px !important;
+    overflow: hidden !important;
+  }
+
+  // Header du dialog
+  mat-dialog-content {
+    padding: 32px !important;
+    max-height: 70vh !important;
+    overflow-y: auto !important;
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #111;
+      margin: 0 0 24px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      mat-icon {
+        color: #e67e22;
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+    }
+  }
+
+  // Actions du dialog
+  mat-dialog-actions {
+    padding: 16px 32px !important;
+    margin: 0 !important;
+    border-top: 1px solid #e0e0e0 !important;
+    display: flex !important;
+    gap: 12px !important;
+    justify-content: flex-end !important;
+
+    button {
+      min-width: 100px;
+    }
+  }
+
+  // Form fields
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 16px;
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+
+  // Select dropdown
+  .mat-mdc-select-panel {
+    max-height: 300px !important;
+  }
+
+  // Proficiency level options avec couleurs
+  .proficiency-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .level-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+
+      &.basic {
+        background: rgba(230, 126, 34, 0.1);
+        color: #e67e22;
+      }
+
+      &.intermediate {
+        background: rgba(3, 27, 48, 0.1);
+        color: #031b30;
+      }
+
+      &.advanced {
+        background: rgba(16, 52, 91, 0.1);
+        color: #10345B;
+      }
+
+      &.native {
+        background: rgba(10, 14, 26, 0.1);
+        color: #0a0e1a;
+      }
+    }
+  }
+}
+
+// Backdrop du dialog
+.add-language-dialog-backdrop {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+// Animation d'entrée
+@keyframes addLanguageDialogSlideIn {
+  from {
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.add-language-dialog-container {
+  animation: addLanguageDialogSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Responsive mobile
+@media (max-width: 768px) {
+  .cdk-overlay-pane.add-language-dialog-container {
+    width: 95% !important;
+    max-width: none !important;
+  }
+
+  .add-language-dialog-container {
+    mat-dialog-content {
+      padding: 24px !important;
+    }
+
+    mat-dialog-actions {
+      padding: 12px 24px !important;
+      flex-direction: column-reverse !important;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
 
 
 
+// src/styles.scss - Ajouter ces styles
+
+/* ============================
+   SNACKBAR STYLES
+   ============================ */
+
+.success-snackbar {
+  background-color: #4caf50 !important;
+  color: white !important;
+
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+
+  .mat-mdc-button {
+    color: white !important;
+  }
+}
+
+.error-snackbar {
+  background-color: #f44336 !important;
+  color: white !important;
+
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+
+  .mat-mdc-button {
+    color: white !important;
+  }
+}
+
+.warning-snackbar {
+  background-color: #ff9800 !important;
+  color: white !important;
+
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+
+  .mat-mdc-button {
+    color: white !important;
+  }
+}
+
+.info-snackbar {
+  background-color: #2196f3 !important;
+  color: white !important;
+
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+
+  .mat-mdc-button {
+    color: white !important;
+  }
+}
+
+
+// ========================================
+// MODAL DE PAIEMENT CENTRÉE
+// ========================================
 
 
 
+.payment-dialog-centered .mat-mdc-dialog-container {
 
 
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  max-width: 600px !important;
+  width: 80% !important;
 
 
+  border-radius: 16px !important;
+  overflow: hidden;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2) !important;
 
 
+  max-height: 90vh;
 
-
-
-
-
-
+  .mat-mdc-dialog-surface {
+    border-radius: 16px;
+  }
+}
 
 
 

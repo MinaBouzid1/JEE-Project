@@ -1,5 +1,5 @@
 // src/app/features/profile/components/profile-languages/profile-languages.component.ts
-// ✅ VERSION AVEC DEBUG COMPLET
+// ✅ AVEC CONFIGURATION DIALOG CENTRÉE
 
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -77,7 +77,7 @@ export class ProfileLanguagesComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Ouvrir dialog pour ajouter une langue
+   * ✨ Ouvrir dialog pour ajouter une langue - AVEC STYLES CENTRÉS
    */
   onAddLanguage(): void {
     console.log('➕ Add Language clicked');
@@ -85,13 +85,26 @@ export class ProfileLanguagesComponent implements OnInit, OnDestroy {
 
     if (!this.currentUserId) {
       console.error('❌ No user ID!');
-      this.snackBar.open('User not found', 'Close', { duration: 3000 });
+      this.snackBar.open('User not found', 'Close', {
+        duration: 3000,
+        panelClass: ['language-error-snackbar']
+      });
       return;
     }
 
+    // ✅ Configuration du dialog avec classes CSS personnalisées
     const dialogRef = this.dialog.open(AddLanguageDialogComponent, {
       width: '500px',
-      disableClose: false
+      maxWidth: '90vw',
+      disableClose: false,
+      autoFocus: true,
+      restoreFocus: true,
+      // ✨ Classes CSS pour centrer et styliser
+      panelClass: 'add-language-dialog-container',
+      backdropClass: 'add-language-dialog-backdrop',
+      // Animation
+      enterAnimationDuration: '300ms',
+      exitAnimationDuration: '200ms'
     });
 
     console.log('📂 Dialog opened');
@@ -113,6 +126,16 @@ export class ProfileLanguagesComponent implements OnInit, OnDestroy {
             proficiencyLevel: result.proficiencyLevel
           }
         }));
+
+        // ✅ Snackbar de succès personnalisé
+        this.snackBar.open(
+          `✅ ${result.languageName || 'Language'} added successfully!`,
+          'Close',
+          {
+            duration: 3000,
+            panelClass: ['language-success-snackbar']
+          }
+        );
       } else {
         console.log('❌ No result or no user ID');
       }
@@ -120,7 +143,7 @@ export class ProfileLanguagesComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Supprimer une langue
+   * 🗑️ Supprimer une langue - AVEC CONFIRMATION AMÉLIORÉE
    */
   onRemoveLanguage(language: UserLanguageDTO): void {
     console.log('🗑️ Remove language clicked:', language);
@@ -130,20 +153,45 @@ export class ProfileLanguagesComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const confirmed = confirm(`Remove ${language.languageName}?`);
+    // ✅ Confirmation plus user-friendly
+    const confirmed = confirm(
+      `Are you sure you want to remove ${language.languageName}?\n\n` +
+      `This action cannot be undone.`
+    );
+
     console.log('❓ Confirmed:', confirmed);
 
     if (confirmed) {
       console.log('✅ Dispatching removeLanguage action');
+
       this.store.dispatch(ProfileActions.removeLanguage({
         userId: this.currentUserId,
         languageId: language.languageId
       }));
+
+      // ✅ Snackbar de succès
+      this.snackBar.open(
+        `🗑️ ${language.languageName} removed`,
+        'Undo',
+        {
+          duration: 3000,
+          panelClass: ['language-success-snackbar']
+        }
+      ).onAction().subscribe(() => {
+        // Si l'utilisateur clique sur "Undo", re-ajouter la langue
+        this.store.dispatch(ProfileActions.addLanguage({
+          userId: this.currentUserId!,
+          languageData: {
+            languageId: language.languageId,
+            proficiencyLevel: language.proficiencyLevel
+          }
+        }));
+      });
     }
   }
 
   /**
-   * Labels pour les niveaux de maîtrise
+   * 📊 Labels pour les niveaux de maîtrise avec emojis
    */
   getProficiencyLabel(level: ProficiencyLevel): string {
     const labels: Record<ProficiencyLevel, string> = {
@@ -153,5 +201,31 @@ export class ProfileLanguagesComponent implements OnInit, OnDestroy {
       [ProficiencyLevel.NATIVE]: 'Native'
     };
     return labels[level] || level;
+  }
+
+  /**
+   * 🎨 Obtenir la couleur pour un niveau
+   */
+  getProficiencyColor(level: ProficiencyLevel): string {
+    const colors: Record<ProficiencyLevel, string> = {
+      [ProficiencyLevel.BASIC]: '#e67e22',
+      [ProficiencyLevel.INTERMEDIATE]: '#031b30',
+      [ProficiencyLevel.ADVANCED]: '#10345B',
+      [ProficiencyLevel.NATIVE]: '#0a0e1a'
+    };
+    return colors[level] || '#666';
+  }
+
+  /**
+   * ⭐ Obtenir le nombre d'étoiles pour un niveau
+   */
+  getProficiencyStars(level: ProficiencyLevel): number {
+    const stars: Record<ProficiencyLevel, number> = {
+      [ProficiencyLevel.BASIC]: 1,
+      [ProficiencyLevel.INTERMEDIATE]: 2,
+      [ProficiencyLevel.ADVANCED]: 3,
+      [ProficiencyLevel.NATIVE]: 4
+    };
+    return stars[level] || 0;
   }
 }

@@ -33,9 +33,15 @@
       </div>
 
       <div class="stat-card spent">
-        <mat-icon>euro</mat-icon>
+
         <div class="stat-content">
-          <span class="number">€{{ stats.totalSpent.toFixed(0) }}</span>
+
+
+          <div class="price-column">
+            <span class="number">{{ stats.totalSpent | ethPrice:false:true }}</span>
+            <span class="price-conversion">≈ €{{ (stats.totalSpent * 3200).toFixed(0) }}</span>
+
+          </div>
           <span class="label">Total Spent</span>
         </div>
       </div>

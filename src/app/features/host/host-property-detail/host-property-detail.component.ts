@@ -22,12 +22,14 @@ import { AvailabilityCalendarComponent } from '../../host/availability-calendar/
 import { AmenitiesManagerComponent } from '../../host/amenities-manager/amenities-manager.component';
 import { PropertyService } from '../../../core/services/property.service';
 import { PropertyDetail, PropertyPhoto, PropertyAmenity } from '../../../core/models/property-detail.model';
+import { PricePredictionResponse } from '../../../core/models/price-prediction.model';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { switchMap, tap, catchError } from 'rxjs/operators';
+import { switchMap, tap, catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
-import {DiscountsManagerComponent} from "../discounts-manager/discounts-manager.component";
+import { DiscountsManagerComponent } from "../discounts-manager/discounts-manager.component";
 import { PhotosManagerComponent } from '../../host/photos-manager/photos-manager.component';
-// Types pour les options de select
+import { EthPricePipe } from "../../../core/pipes/eth-price.pipe";
+
 interface SelectOption {
   value: string;
   label: string;
@@ -58,7 +60,8 @@ interface SelectOption {
     AvailabilityCalendarComponent,
     AmenitiesManagerComponent,
     DiscountsManagerComponent,
-    PhotosManagerComponent
+    PhotosManagerComponent,
+    EthPricePipe
   ],
   templateUrl: './host-property-detail.component.html',
   styleUrl: './host-property-detail.component.scss'
@@ -75,6 +78,11 @@ export class HostPropertyDetailComponent implements OnInit {
   loading$ = new BehaviorSubject<boolean>(true);
   error$ = new BehaviorSubject<string | null>(null);
   saving$ = new BehaviorSubject<boolean>(false);
+
+  // AI Price Prediction
+  loadingPrediction$ = new BehaviorSubject<boolean>(false);
+  pricePrediction: PricePredictionResponse | null = null;
+  showPriceSuggestion = false;
 
   // Edit modes for each section
   editMode: Record<string, boolean> = {
@@ -102,10 +110,8 @@ export class HostPropertyDetailComponent implements OnInit {
   rulesForm!: FormGroup;
   hostPreferencesForm!: FormGroup;
 
-  // Photo gallery
   selectedPhotoIndex = 0;
 
-  // Select options
   propertyTypes: SelectOption[] = [
     { value: 'APARTMENT', label: 'Apartment' },
     { value: 'HOUSE', label: 'House' },
@@ -134,7 +140,6 @@ export class HostPropertyDetailComponent implements OnInit {
       this.loadProperty();
     });
 
-    // Update property$ observable
     this.property$ = this.route.paramMap.pipe(
       switchMap(() => {
         if (this.property) {
@@ -144,6 +149,7 @@ export class HostPropertyDetailComponent implements OnInit {
       })
     );
   }
+
   loadProperty(): void {
     this.loading$.next(true);
     this.error$.next(null);
@@ -162,9 +168,7 @@ export class HostPropertyDetailComponent implements OnInit {
       })
     ).subscribe();
   }
-  /**
-   * Initialize all forms
-   */
+
   private initForms(): void {
     this.basicInfoForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(10)]],
@@ -210,8 +214,8 @@ export class HostPropertyDetailComponent implements OnInit {
     });
 
     this.pricingForm = this.fb.group({
-      pricePerNight: [0, [Validators.required, Validators.min(1)]],
-      weekendPricePerNight: [0, [Validators.required, Validators.min(1)]]
+      pricePerNight: [0, [Validators.required, Validators.min(0.0001)]],
+      weekendPricePerNight: [0, [Validators.required, Validators.min(0.0001)]]
     });
 
     this.feesForm = this.fb.group({
@@ -236,20 +240,30 @@ export class HostPropertyDetailComponent implements OnInit {
     });
   }
 
+  /**
+   * ✅ FIX: Reload property after child component changes
+   * Cette méthode est appelée par les composants enfants via (photosChanged), (discountsChanged), etc.
+   */
   reloadProperty(): void {
+    this.loading$.next(true);
+
     this.propertyService.getPropertyDetails(this.propertyId).subscribe({
       next: (property) => {
         this.property = property;
         this.populateForms(property);
+        this.loading$.next(false);
+
+        // Force change detection pour mettre à jour la vue
+        this.property$ = of(property);
       },
       error: (error) => {
         console.error('Error reloading property:', error);
+        this.loading$.next(false);
+        this.snackBar.open('Error reloading property', 'Close', { duration: 3000 });
       }
     });
   }
-  /**
-   * Populate forms with property data
-   */
+
   private populateForms(property: PropertyDetail): void {
     if (!property) return;
 
@@ -327,30 +341,105 @@ export class HostPropertyDetailComponent implements OnInit {
     }
   }
 
-  /**
-   * Toggle edit mode for a section
-   */
+  getPricePrediction(): void {
+    if (!this.propertyId) {
+      this.snackBar.open('Property ID not available', 'Close', { duration: 3000 });
+      return;
+    }
+
+    this.loadingPrediction$.next(true);
+    this.showPriceSuggestion = false;
+
+    this.propertyService.suggestPriceForExistingProperty(this.propertyId).pipe(
+      tap((prediction) => {
+        this.pricePrediction = prediction;
+        this.showPriceSuggestion = true;
+
+        this.snackBar.open('✅ AI price suggestion generated!', 'Close', {
+          duration: 3000,
+          panelClass: ['success-snackbar']
+        });
+      }),
+      catchError((error) => {
+        console.error('Error getting price prediction:', error);
+        this.snackBar.open('❌ Failed to get price suggestion', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
+        return of(null);
+      }),
+      finalize(() => {
+        this.loadingPrediction$.next(false);
+      })
+    ).subscribe();
+  }
+
+  applySuggestedPrice(): void {
+    if (!this.pricePrediction) return;
+
+    const suggestedPrice = parseFloat(this.pricePrediction.predicted_price_eth.toFixed(8));
+    const weekendPrice = parseFloat((suggestedPrice * 1.2).toFixed(8));
+
+    this.pricingForm.patchValue({
+      pricePerNight: suggestedPrice,
+      weekendPricePerNight: weekendPrice
+    });
+
+    this.pricingForm.get('pricePerNight')?.markAsTouched();
+    this.pricingForm.get('weekendPricePerNight')?.markAsTouched();
+
+    this.snackBar.open('💡 AI suggested price applied! Remember to save.', 'Close', {
+      duration: 4000
+    });
+  }
+
+  dismissSuggestion(): void {
+    this.showPriceSuggestion = false;
+    this.pricePrediction = null;
+  }
+
+  getPriceDifferencePercentage(): number | null {
+    if (!this.pricePrediction || !this.property) return null;
+
+    const currentPrice = this.property.pricePerNight;
+    const suggestedPrice = this.pricePrediction.predicted_price_eth;
+
+    if (currentPrice === 0) return null;
+
+    return ((suggestedPrice - currentPrice) / currentPrice) * 100;
+  }
+
+  getPriceDifferenceColor(): string {
+    const diff = this.getPriceDifferencePercentage();
+    if (!diff) return '#666';
+
+    if (diff > 0) return '#4CAF50';
+    if (diff < 0) return '#f44336';
+    return '#666';
+  }
+
   toggleEditMode(section: string): void {
-    // If turning off edit mode, reset the form
     if (this.editMode[section] && this.property) {
       this.populateForms(this.property);
     }
     this.editMode[section] = !this.editMode[section];
+
+    if (section === 'pricing' && this.editMode[section]) {
+      this.showPriceSuggestion = false;
+    }
   }
 
-  /**
-   * Cancel edit mode
-   */
   cancelEdit(section: string): void {
     if (this.property) {
       this.populateForms(this.property);
     }
     this.editMode[section] = false;
+
+    if (section === 'pricing') {
+      this.showPriceSuggestion = false;
+    }
   }
 
-  /**
-   * Save a section - Only send changed fields
-   */
   saveSection(section: string, form: FormGroup): void {
     if (form.invalid) {
       this.snackBar.open('Please fix the errors before saving', 'Close', {
@@ -368,21 +457,27 @@ export class HostPropertyDetailComponent implements OnInit {
 
     this.saving$.next(true);
 
-    // Build update data based on section
     const updateData = this.buildUpdateData(section, form.value);
 
-    // Use PATCH to only update changed fields
     this.propertyService.patchProperty(this.propertyId, updateData).subscribe({
       next: (updatedProperty) => {
         this.saving$.next(false);
         this.editMode[section] = false;
 
-        // Update local property data
+        // ✅ Update local property immediately
         this.updateLocalProperty(section, form.value);
 
         this.snackBar.open('Changes saved successfully!', 'Close', {
           duration: 3000
         });
+
+        if (section === 'pricing') {
+          this.showPriceSuggestion = false;
+          this.pricePrediction = null;
+        }
+
+        // ✅ Reload to ensure full sync
+        this.reloadProperty();
       },
       error: (error) => {
         this.saving$.next(false);
@@ -393,18 +488,10 @@ export class HostPropertyDetailComponent implements OnInit {
     });
   }
 
-  /**
-   * Build update data for PATCH request
-   */
   private buildUpdateData(section: string, formData: any): any {
-    // For most sections, just return the form data
-    // The backend PATCH will only update these fields
     return formData;
   }
 
-  /**
-   * Update local property object after save
-   */
   private updateLocalProperty(section: string, formData: any): void {
     if (!this.property) return;
 
@@ -429,9 +516,7 @@ export class HostPropertyDetailComponent implements OnInit {
       Object.assign(this.property, formData);
     }
   }
-  /**
-   * Get status color
-   */
+
   getStatusColor(status: string): string {
     const colors: Record<string, string> = {
       'ACTIVE': '#4CAF50',
@@ -442,9 +527,6 @@ export class HostPropertyDetailComponent implements OnInit {
     return colors[status] || '#9E9E9E';
   }
 
-  /**
-   * Get status label
-   */
   getStatusLabel(status: string): string {
     const labels: Record<string, string> = {
       'ACTIVE': 'Active',
@@ -455,40 +537,25 @@ export class HostPropertyDetailComponent implements OnInit {
     return labels[status] || status;
   }
 
-  /**
-   * Get property type label
-   */
   getPropertyTypeLabel(type: string): string {
     const found = this.propertyTypes.find(t => t.value === type);
     return found?.label || type;
   }
 
-  /**
-   * Get place type label
-   */
   getPlaceTypeLabel(type: string): string {
     const found = this.placeTypes.find(t => t.value === type);
     return found?.label || type;
   }
 
-  /**
-   * Get sorted photos
-   */
   getSortedPhotos(photos: PropertyPhoto[]): PropertyPhoto[] {
     if (!photos) return [];
     return [...photos].sort((a, b) => a.displayOrder - b.displayOrder);
   }
 
-  /**
-   * Select photo
-   */
   selectPhoto(index: number): void {
     this.selectedPhotoIndex = index;
   }
 
-  /**
-   * Get amenities by category
-   */
   getAmenitiesByCategory(amenities: PropertyAmenity[]): Map<string, PropertyAmenity[]> {
     const map = new Map<string, PropertyAmenity[]>();
     if (!amenities) return map;
@@ -504,23 +571,14 @@ export class HostPropertyDetailComponent implements OnInit {
     return map;
   }
 
-  /**
-   * Get rule icon
-   */
   getRuleIcon(allowed: boolean): string {
     return allowed ? 'check_circle' : 'cancel';
   }
 
-  /**
-   * Get rule color
-   */
   getRuleColor(allowed: boolean): string {
     return allowed ? '#4CAF50' : '#f44336';
   }
 
-  /**
-   * Copy to clipboard
-   */
   copyToClipboard(text: string, label: string): void {
     navigator.clipboard.writeText(text).then(() => {
       this.snackBar.open(`${label} copied to clipboard`, 'Close', {
@@ -529,9 +587,6 @@ export class HostPropertyDetailComponent implements OnInit {
     });
   }
 
-  /**
-   * Open Google Maps
-   */
   openGoogleMaps(lat: number, lng: number): void {
     window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
   }

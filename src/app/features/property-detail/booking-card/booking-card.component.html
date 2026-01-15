@@ -7,13 +7,21 @@
        ======================================== -->
   <div class="price-header">
     <div class="price">
-      <span class="amount">{{ pricePerNight }}ETH</span>
+      <span class="amount">{{ pricePerNight | ethPrice:false:true }}</span>
       <span class="period">/ night</span>
     </div>
 
+    <!-- Conversion EUR sous le prix principal -->
+    <div class="price-conversion">
+      ≈ €{{ (pricePerNight * 3200).toFixed(0) }} EUR
+    </div>
+
     <div *ngIf="hasWeekendPrice" class="weekend-price">
-      <span class="amount">{{ weekendPrice }}ETH</span>
+      <span class="amount">{{ weekendPrice | ethPrice:false:true }}</span>
       <span class="period">/ night weekend</span>
+      <div class="price-conversion-small">
+        ≈ €{{ (weekendPrice! * 3200).toFixed(0) }}
+      </div>
     </div>
 
     <mat-chip *ngIf="property.instantBooking" class="instant-booking-chip">

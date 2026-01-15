@@ -69,8 +69,16 @@
     <!-- Price -->
     <div class="property-footer">
       <div class="property-price">
-        <span class="price-amount">{{ getDisplayPrice() }} ETH</span>
-        <span class="price-label">/ {{ getPriceLabel() }}</span>
+        <!-- Prix principal en ETH -->
+        <div class="price-main">
+          <span class="price-amount">{{ getDisplayPrice() | ethPrice:false:true }}</span>
+          <span class="price-label">/ {{ getPriceLabel() }}</span>
+        </div>
+
+        <!-- Conversion EUR (sous le prix ETH) -->
+        <div class="price-conversion">
+          ≈ €{{ (getDisplayPrice() | ethPrice:true:true).split('€')[1] }}
+        </div>
       </div>
 
       <!-- Nights (mode search) -->

@@ -112,26 +112,7 @@
         </mat-tab>
 
 
-        <!-- TAB: Messages -->
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <mat-icon
-              [matBadge]="unreadCount$ | async"
-              [matBadgeHidden]="(unreadCount$ | async) === 0"
-              matBadgeColor="warn">
-              message
-            </mat-icon>
-            <span>Messages</span>
-          </ng-template>
 
-          <div class="messages-preview">
-            <p>You have {{ unreadCount$ | async }} unread messages</p>
-            <button mat-raised-button color="primary" routerLink="/messages">
-              <mat-icon>chat</mat-icon>
-              Go to Messages
-            </button>
-          </div>
-        </mat-tab>
       </mat-tab-group>
     </div>
 

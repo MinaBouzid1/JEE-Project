@@ -100,8 +100,14 @@
                   <span><mat-icon>people</mat-icon> {{ property.maxGuests }} guests</span>
                 </div>
                 <div class="property-price">
-                  <strong>{{ property.pricePerNight | currency:'USD' }}</strong>
-                  <span>/night</span>
+                  <div class="price-main">
+                    <strong>{{ property.pricePerNight | ethPrice:false:true }}</strong>
+                    <span>/night</span>
+                  </div>
+
+                  <div class="price-conversion">
+                    ≈ €{{ (property.pricePerNight * 3200).toFixed(2) }}
+                  </div>
                 </div>
               </mat-card-content>
 

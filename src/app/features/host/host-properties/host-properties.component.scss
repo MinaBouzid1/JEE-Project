@@ -164,15 +164,31 @@
     }
 
     .property-price {
-      font-size: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 12px;
 
-      strong {
-        color: #1a1a1a;
+      .price-main {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+
+        strong {
+          font-size: 18px;
+          font-weight: 600;
+          color: #222;
+        }
+
+        span {
+          font-size: 13px;
+          color: #717171;
+        }
       }
 
-      span {
-        color: #666;
-        font-size: 14px;
+      .price-conversion {
+        font-size: 15px;
+        color: #999;
       }
     }
   }

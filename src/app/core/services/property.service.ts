@@ -15,7 +15,7 @@ import {PropertyDetail} from "../models/property-detail.model";
 import {PropertyCard} from "../models/property-card.model";
 import {Discount} from "../models/discount.model";
 
-
+import { PricePredictionRequest, PricePredictionResponse } from '../models/price-prediction.model';
 /**
  * ============================
  * SERVICE PROPERTY
@@ -387,6 +387,37 @@ export class PropertyService {
       { photoIds }
     );
   }
+
+
+  /**
+   * ============================
+   * PRÉDICTION DE PRIX (NOUVELLE PROPRIÉTÉ)
+   * POST /listings/properties/suggest-price
+   *
+   * Utilisé dans le formulaire de création
+   * ============================
+   */
+  suggestPriceForNewProperty(request: PricePredictionRequest): Observable<PricePredictionResponse> {
+    return this.apiService.post<PricePredictionResponse>(
+      `${this.baseUrl}/properties/suggest-price`,
+      request
+    );
+  }
+
+  /**
+   * ============================
+   * PRÉDICTION DE PRIX (PROPRIÉTÉ EXISTANTE)
+   * GET /listings/properties/{id}/suggest-price
+   *
+   * Utilisé pour ajuster le prix d'une propriété existante
+   * ============================
+   */
+  suggestPriceForExistingProperty(propertyId: number): Observable<PricePredictionResponse> {
+    return this.apiService.get<PricePredictionResponse>(
+      `${this.baseUrl}/properties/${propertyId}/suggest-price`
+    );
+  }
+
 }
 export interface Page<T> {
   content: T[];

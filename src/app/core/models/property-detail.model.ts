@@ -96,6 +96,5 @@ export interface PropertyRules {
 export interface HostPreferences {
   communicationStyle?: string;
   responseTime?: string;
-  languagesSpoken?: string;
   checkInProcess?: string;
 }

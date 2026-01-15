@@ -9,6 +9,7 @@ import { RouterLink } from '@angular/router';
 // Models
 import { PropertyCard } from './../../core/models/property-card.model';
 import { PropertySearchResultDTO } from './../../core/models/property.model';
+import {EthPricePipe} from "../../core/pipes/eth-price.pipe";
 
 /**
  * ============================
@@ -27,7 +28,8 @@ import { PropertySearchResultDTO } from './../../core/models/property.model';
     CommonModule,
     MatIconModule,
     MatButtonModule,
-    RouterLink
+    RouterLink,
+    EthPricePipe // ✅ Import du pipe
   ],
   templateUrl: './property-card.component.html',
   styleUrl: './property-card.component.scss'
@@ -52,11 +54,9 @@ export class PropertyCardComponent {
    * ============================
    */
   getCoverImage(): string {
-    // PropertyCard a mainPhotoUrl
     if ('mainPhotoUrl' in this.property && this.property.mainPhotoUrl) {
       return this.property.mainPhotoUrl;
     }
-
     return 'assets/images/hero.jpg';
   }
 
@@ -72,14 +72,14 @@ export class PropertyCardComponent {
 
   /**
    * ============================
-   * OBTENIR LE PRIX À AFFICHER
+   * OBTENIR LE PRIX À AFFICHER (toujours en ETH)
    * ============================
    */
   getDisplayPrice(): number {
     if (this.isSearchMode && this.isSearchResult(this.property)) {
-      return this.property.totalPrice;
+      return this.property.totalPrice; // Total en ETH
     }
-    return (this.property as PropertyCard).pricePerNight || 0;
+    return (this.property as PropertyCard).pricePerNight || 0; // Prix/nuit en ETH
   }
 
   /**
@@ -120,7 +120,7 @@ export class PropertyCardComponent {
 
   /**
    * ============================
-   * OBTENIR LA NOTE MOYENNE (si disponible)
+   * OBTENIR LA NOTE MOYENNE
    * ============================
    */
   getAverageRating(): number | null {
@@ -132,7 +132,7 @@ export class PropertyCardComponent {
 
   /**
    * ============================
-   * OBTENIR LE NOMBRE D'AVIS (si disponible)
+   * OBTENIR LE NOMBRE D'AVIS
    * ============================
    */
   getReviewCount(): number | null {

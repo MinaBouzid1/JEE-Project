@@ -55,8 +55,10 @@
             <mat-icon>payments</mat-icon>
           </div>
         </div>
-        <span class="stat-value">{{ stats.totalRevenue | currency:'USD':'symbol':'1.0-0' }}</span>
-        <span class="stat-trend">This month</span>
+        <!-- ✅ AVANT: {{ stats.totalRevenue | currency:'USD':'symbol':'1.0-0' }} -->
+        <!-- ✅ APRÈS: -->
+        <span class="stat-value">{{ stats.totalRevenue | ethPrice:false:true }}</span>
+        <span class="stat-trend">≈ €{{ (stats.totalRevenue * 3200).toFixed(0) }}</span>
       </div>
     </div>
   </div>
@@ -297,7 +299,10 @@
         <div class="booking-footer">
           <div class="booking-price">
             <span class="price-label">Total</span>
-            <span class="price-value">{{ booking.priceBreakdown.totalAmount | currency:'USD' }}</span>
+            <div class="price-column">
+              <span class="price-value">{{ booking.priceBreakdown.totalAmount | ethPrice:false:true }}</span>
+              <span class="price-conversion">≈ €{{ (booking.priceBreakdown.totalAmount * 3200).toFixed(2) }}</span>
+            </div>
           </div>
           <button mat-icon-button class="view-btn" matTooltip="View details">
             <mat-icon>chevron_right</mat-icon>

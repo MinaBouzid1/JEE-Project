@@ -1,8 +1,7 @@
 // src/app/core/services/booking.service.ts
-// ✅ VERSION TEST - Appel DIRECT sans /api
 
 import { inject, Injectable } from '@angular/core';
-import {Observable, throwError} from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   Booking,
@@ -10,7 +9,8 @@ import {
   ReservationStatus
 } from '../models/booking.model';
 import { BookingWithSnapshot } from '../models/booking-with-snapshot.model';
-import {catchError, tap} from "rxjs/operators";
+import { catchError, tap } from "rxjs/operators";
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -18,38 +18,45 @@ import {catchError, tap} from "rxjs/operators";
 export class BookingService {
 
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080';  // ✅ URL directe
+  // ✅ Utilisation de l'URL depuis environment
+  private baseUrl = environment.apiUrl.replace('/api', ''); // Enlève '/api' pour avoir 'http://localhost:8080'
+
+  // Alternative si vous voulez garder '/api' :
+  // private baseUrl = environment.apiUrl; // 'http://localhost:8080/api'
 
   constructor() {
-    console.log('✅ BookingService initialized - Direct mode');
+    console.log('✅ BookingService initialized');
+    console.log('📍 Base URL:', this.baseUrl);
   }
 
   /**
    * Headers avec token
    */
   private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem(environment.tokenKey);
     console.log('🔑 Token from localStorage:', token ? token.substring(0, 50) + '...' : 'NULL');
 
     let headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
+
     if (token) {
       headers = headers.set('Authorization', `Bearer ${token}`);
       console.log('🔑 Authorization header set');
     } else {
       console.error('❌ No token found in localStorage!');
     }
+
     return headers;
   }
 
   /**
    * CRÉER UNE RÉSERVATION
-   * POST http://localhost:8080/bookings
+   * POST http://localhost:8080/bookings/new
    */
   createBooking(booking: CreateBookingDTO): Observable<Booking> {
     console.log('📤 Creating booking:', booking);
-    console.log('📤 JSON being sent:', JSON.stringify(booking));  // ✅ Debug JSON exact
+    console.log('📤 JSON being sent:', JSON.stringify(booking));
 
     return this.http.post<Booking>(
       `${this.baseUrl}/bookings/new`,
@@ -58,7 +65,6 @@ export class BookingService {
     ).pipe(
       tap(response => console.log('✅ Booking created:', response)),
       catchError(error => {
-        // ✅ AFFICHER L'ERREUR COMPLÈTE DU BACKEND
         console.error('❌ Backend error status:', error.status);
         console.error('❌ Backend error message:', error.error);
         console.error('❌ Full error:', error);
@@ -72,7 +78,7 @@ export class BookingService {
    * GET http://localhost:8080/bookings/user/me
    */
   getMyBookings(): Observable<Booking[]> {
-    console.log('📤 GET http://localhost:8080/bookings/user/me');
+    console.log('📤 GET', `${this.baseUrl}/bookings/user/me`);
     return this.http.get<Booking[]>(
       `${this.baseUrl}/bookings/user/me`,
       { headers: this.getHeaders() }
@@ -183,9 +189,12 @@ export class BookingService {
     );
   }
 
-
+  /**
+   * RÉSERVATIONS EN TANT QUE HOST
+   * GET http://localhost:8080/bookings/host/me
+   */
   getHostBookings(): Observable<Booking[]> {
-    console.log('📤 GET /bookings/host/me');
+    console.log('📤 GET', `${this.baseUrl}/bookings/host/me`);
     return this.http.get<Booking[]>(
       `${this.baseUrl}/bookings/host/me`,
       { headers: this.getHeaders() }
@@ -202,8 +211,4 @@ export class BookingService {
       { headers: this.getHeaders() }
     );
   }
-
-
 }
-
-

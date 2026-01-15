@@ -91,31 +91,25 @@ export class PaymentEffects {
   loadWalletBalance$ = createEffect(() =>
     this.actions$.pipe(
       ofType(PaymentActions.loadWalletBalance),
-      tap(action => console.log('🔥 Effect: loadWalletBalance', action.walletAddress)),
-      exhaustMap(({ walletAddress }) =>
+      switchMap(({ walletAddress, requiredAmountEth }) =>
         this.paymentService.getWalletBalance(walletAddress).pipe(
-          map(response => {
-            console.log('✅ Wallet balance loaded:', response);
-
-            // ✅ Créer un objet BalanceResponse complet
-            const balance = {
-              walletAddress: walletAddress,
-              balanceEth: response.balanceEth,
-              message: 'Balance retrieved successfully'
-            };
-
-            return PaymentActions.loadWalletBalanceSuccess({ balance });
-          }),
-          catchError(error => {
-            console.error('❌ Error loading wallet balance:', error);
-            return of(PaymentActions.loadWalletBalanceFailure({
-              error: error.message || 'Erreur lors du chargement du solde'
-            }));
-          })
+          map(({ balanceEth }) =>
+            PaymentActions.verifyBalanceSuccess({
+              hasSufficientBalance: balanceEth >= requiredAmountEth,
+              currentBalance: balanceEth,
+              requiredAmount: requiredAmountEth
+            })
+          ),
+          catchError(err =>
+            of(PaymentActions.verifyBalanceFailure({
+              error: 'Impossible de récupérer le solde'
+            }))
+          )
         )
       )
     )
   );
+
 
   // ========================================
   // CONFIRMATION DE PAIEMENT

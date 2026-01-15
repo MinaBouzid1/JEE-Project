@@ -1,4 +1,5 @@
 <!-- src/app/features/my-bookings/booking-detail-dialog/booking-detail-dialog.component.html -->
+<!-- ✅ VERSION RESTRUCTURÉE - Sans double scrollbar -->
 
 <div class="booking-detail-dialog">
 
@@ -11,7 +12,9 @@
   <!-- Content -->
   <ng-container *ngIf="(booking$ | async) || data.booking as booking">
 
-    <!-- Header with Photo -->
+    <!-- ========================================
+         HEADER - FIXED (ne scroll pas)
+         ======================================== -->
     <div class="dialog-header">
       <div
         class="photo-banner"
@@ -33,7 +36,9 @@
       </div>
     </div>
 
-    <!-- Dialog Content -->
+    <!-- ========================================
+         SCROLLABLE CONTENT
+         ======================================== -->
     <mat-dialog-content>
 
       <!-- Booking Summary -->
@@ -61,7 +66,7 @@
       <!-- Tabs -->
       <mat-tab-group class="detail-tabs">
 
-        <!-- Property Tab -->
+        <!-- ========== TAB: Property ========== -->
         <mat-tab label="Property">
           <div class="tab-content">
 
@@ -118,7 +123,7 @@
           </div>
         </mat-tab>
 
-        <!-- Rules Tab -->
+        <!-- ========== TAB: House Rules ========== -->
         <mat-tab label="House Rules">
           <div class="tab-content">
             <div class="rules-list" *ngIf="booking.propertySnapshot.rules as rules">
@@ -154,43 +159,58 @@
               </div>
             </div>
 
-            <div class="custom-rules" *ngIf="booking.propertySnapshot.rules && booking.propertySnapshot.rules.customRules">
-              <h4>Additional Rules</h4>
-              <p>{{ booking.propertySnapshot.rules.customRules }}</p>
-            </div>
+
           </div>
         </mat-tab>
 
-        <!-- Price Tab -->
+        <!-- ========== TAB: Price Details ========== -->
         <mat-tab label="Price Details">
           <div class="tab-content">
             <div class="price-breakdown">
               <div class="price-row">
                 <span>Price per night</span>
-                <span>€{{ (booking.propertySnapshot.pricePerNight || 0) | number:'1.2-2' }}</span>
+                <div class="price-column">
+                  <span class="price-value">{{ (booking.propertySnapshot.pricePerNight || 0) | ethPrice:false:true }}</span>
+                  <span class="price-conversion">≈ €{{ ((booking.propertySnapshot.pricePerNight || 0) * 3200).toFixed(2) }}</span>
+                </div>
               </div>
+
               <div class="price-row" *ngIf="booking.propertySnapshot.weekendPricePerNight">
                 <span>Weekend price per night</span>
-                <span>€{{ booking.propertySnapshot.weekendPricePerNight | number:'1.2-2' }}</span>
+                <div class="price-column">
+                  <span class="price-value">{{ (booking.propertySnapshot.weekendPricePerNight || 0) | ethPrice:false:true }}</span>
+                  <span class="price-conversion">≈ €{{ ((booking.propertySnapshot.weekendPricePerNight || 0) * 3200).toFixed(2) }}</span>
+                </div>
               </div>
+
               <div class="price-row" *ngIf="booking.propertySnapshot.cleaningFee">
                 <span>Cleaning fee</span>
-                <span>€{{ booking.propertySnapshot.cleaningFee | number:'1.2-2' }}</span>
+                <div class="price-column">
+                  <span class="price-value">{{ (booking.propertySnapshot.cleaningFee || 0) | ethPrice:false:true }}</span>
+                  <span class="price-conversion">≈ €{{ ((booking.propertySnapshot.cleaningFee || 0) * 3200).toFixed(2) }}</span>
+                </div>
               </div>
+
               <div class="price-row" *ngIf="booking.propertySnapshot.petFee">
                 <span>Pet fee</span>
-                <span>€{{ booking.propertySnapshot.petFee | number:'1.2-2' }}</span>
+                <div class="price-column">
+                  <span class="price-value">{{ (booking.propertySnapshot.petFee || 0) | ethPrice:false:true }}</span>
+                  <span class="price-conversion">≈ €{{ ((booking.propertySnapshot.petFee || 0) * 3200).toFixed(2) }}</span>
+                </div>
               </div>
-              <mat-divider></mat-divider>
+
               <div class="price-row total">
                 <span>Total</span>
-                <span>€{{ booking.totalPrice | number:'1.2-2' }}</span>
+                <div class="price-column">
+                  <span class="price-value">{{ booking.totalPrice | ethPrice:false:true }}</span>
+                  <span class="price-conversion">≈ €{{ (booking.totalPrice * 3200).toFixed(2) }}</span>
+                </div>
               </div>
             </div>
           </div>
         </mat-tab>
 
-        <!-- Photos Tab -->
+        <!-- ========== TAB: Photos ========== -->
         <mat-tab label="Photos" *ngIf="booking.propertySnapshot.photos && booking.propertySnapshot.photos.length > 1">
           <div class="tab-content">
             <div class="photos-grid">
@@ -207,9 +227,16 @@
 
     </mat-dialog-content>
 
-    <!-- Actions -->
-    <mat-dialog-actions align="end">
-      <button mat-button (click)="onClose()">Close</button>
+    <!-- ========================================
+         ACTIONS - FIXED (ne scroll pas)
+         ======================================== -->
+    <mat-dialog-actions>
+
+
+      <!-- Spacer -->
+      <span style="flex: 1"></span>
+
+      <!-- Cancel Button -->
       <button
         mat-raised-button
         color="warn"
@@ -219,19 +246,12 @@
         Cancel Booking
       </button>
 
+      <!-- Close Button -->
+      <button mat-stroked-button (click)="onClose()">
+        Close
+      </button>
     </mat-dialog-actions>
 
   </ng-container>
 
 </div>
-<div class="chat-section">
-  <button
-    mat-raised-button
-    color="primary"
-    (click)="openChat()"
-    class="chat-button">
-    <mat-icon>chat</mat-icon>
-    Chat with Host
-  </button>
-</div>
-

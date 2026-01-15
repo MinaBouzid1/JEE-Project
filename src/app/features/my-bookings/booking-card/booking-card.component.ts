@@ -19,6 +19,7 @@ import { of } from 'rxjs';
 // ✅ NOUVEAU: Import messaging
 import * as MessagingActions from '../../../store/messaging/messaging.actions';
 import * as MessagingSelectors from '../../../store/messaging/messaging.selectors';
+import {EthPricePipe} from "../../../core/pipes/eth-price.pipe";
 
 @Component({
   selector: 'app-booking-card',
@@ -27,7 +28,8 @@ import * as MessagingSelectors from '../../../store/messaging/messaging.selector
     CommonModule,
     MatButtonModule,
     MatIconModule,
-    MatChipsModule
+    MatChipsModule,
+    EthPricePipe
   ],
   templateUrl: './booking-card.component.html',
   styleUrl: './booking-card.component.scss'

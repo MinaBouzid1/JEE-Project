@@ -36,6 +36,7 @@ import { BookingDetailDialogComponent } from './booking-detail-dialog/booking-de
 
 // Services
 import { BookingReviewService } from '../../core/services/booking-review.service';
+import {EthPricePipe} from "../../core/pipes/eth-price.pipe";
 
 @Component({
   selector: 'app-my-bookings',
@@ -46,7 +47,8 @@ import { BookingReviewService } from '../../core/services/booking-review.service
     MatIconModule,
     MatProgressSpinnerModule,
     MatTabsModule,
-    BookingCardComponent
+    BookingCardComponent,
+    EthPricePipe
   ],
   templateUrl: './my-bookings.component.html',
   styleUrl: './my-bookings.component.scss'

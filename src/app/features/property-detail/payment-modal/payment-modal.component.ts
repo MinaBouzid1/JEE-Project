@@ -1,4 +1,4 @@
-// src/app/features/property-detail/components/payment-modal/payment-modal.component.ts
+// src/app/features/property-detail/payment-modal/payment-modal.component.ts
 
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -24,7 +24,6 @@ import {
   selectIsWalletConnected,
   selectWalletAddress,
   selectHasSufficientBalance,
-  selectPaymentSteps,
   selectCurrentTransaction,
   selectIsPolling,
   selectPollingProgress,
@@ -35,37 +34,22 @@ import {
   selectCurrentBooking,
   selectBookingError
 } from '../../../store/booking/booking.selectors';
-import { selectCurrentUser } from '../../../store/auth/auth.selectors';
 
 // Services
 import { Web3Service } from '../../../core/services/web3.service';
+import { UserService } from '../../../core/services/user.service';
+import { UserResponseDTO } from '../../../core/models/user.model';
 
-/**
- * ============================
- * PAYMENT MODAL DATA
- * Données passées à la modal
- * ============================
- */
 export interface PaymentModalData {
   property: PropertyDetail;
-  totalAmount: number;
+  totalAmount: number; // ✅ EN ETH (ex: 0.044)
   totalNights: number;
   checkIn: Date;
   checkOut: Date;
   numGuests: number;
+  reservationId?: number;
 }
 
-/**
- * ============================
- * PAYMENT MODAL COMPONENT
- * Gère le processus complet de paiement :
- * 1. Connexion MetaMask
- * 2. Vérification solde
- * 3. Signature transaction
- * 4. Confirmation backend
- * 5. Polling confirmation on-chain
- * ============================
- */
 @Component({
   selector: 'app-payment-modal',
   standalone: true,
@@ -103,15 +87,30 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
   loading = false;
 
   private destroy$ = new Subject<void>();
+  ownerWalletAddress: string | null = null;
 
   constructor(
     public dialogRef: MatDialogRef<PaymentModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: PaymentModalData,
     private store: Store,
-    private web3Service: Web3Service
-  ) {}
+    private web3Service: Web3Service,
+    private userService: UserService
+  ) {
+    // ✅ LOG pour vérifier les données reçues
+    console.log('📦 Payment Modal Data:', {
+      totalAmount: this.data.totalAmount,
+      totalAmountEth: this.totalAmountEth,
+      property: this.data.property.title,
+      nights: this.data.totalNights
+    });
+  }
 
   ngOnInit(): void {
+    if (this.data.reservationId) {
+      this.reservationId = this.data.reservationId;
+      console.log('✅ ReservationId reçu:', this.reservationId);
+    }
+    this.loadOwnerWallet();
     this.initPaymentSteps();
     this.subscribeToStore();
   }
@@ -120,26 +119,34 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
 
-    // Arrêter le polling si en cours
     if (this.isPolling) {
       this.store.dispatch(PaymentActions.stopPolling());
     }
   }
 
-  /**
-   * ============================
-   * INITIALISER LES ÉTAPES
-   * ============================
-   */
   private initPaymentSteps(): void {
     this.store.dispatch(PaymentActions.initPaymentSteps());
   }
 
-  /**
-   * ============================
-   * SOUSCRIPTIONS AU STORE
-   * ============================
-   */
+  private loadOwnerWallet(): void {
+    const ownerId = this.data.property.userId;
+
+    this.userService.getUserById(ownerId).subscribe({
+      next: (user: UserResponseDTO) => {
+        if (!user.walletAdresse) {
+          this.error = 'Le propriétaire n\'a pas de wallet configuré';
+          return;
+        }
+
+        this.ownerWalletAddress = user.walletAdresse;
+        console.log('✅ Wallet propriétaire:', this.ownerWalletAddress);
+      },
+      error: () => {
+        this.error = 'Impossible de récupérer le wallet du propriétaire';
+      }
+    });
+  }
+
   private subscribeToStore(): void {
     // Wallet
     combineLatest([
@@ -173,17 +180,19 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
       });
 
     // Réservation créée
-    this.store.select(selectCurrentBooking)
-      .pipe(
-        filter(booking => booking !== null),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(booking => {
-        if (booking) {
-          this.reservationId = booking.id;
-          console.log('✅ Réservation créée:', booking.id);
-        }
-      });
+    if (!this.reservationId) {
+      this.store.select(selectCurrentBooking)
+        .pipe(
+          filter(booking => booking !== null),
+          takeUntil(this.destroy$)
+        )
+        .subscribe(booking => {
+          if (booking) {
+            this.reservationId = booking.id;
+            console.log('✅ Réservation créée:', booking.id);
+          }
+        });
+    }
 
     // Transaction créée
     this.store.select(selectCurrentTransaction)
@@ -198,7 +207,6 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
           this.updateStep(3, 'completed');
           console.log('✅ Transaction enregistrée:', this.txHash);
 
-          // Démarrer le polling
           this.startPolling();
         }
       });
@@ -232,7 +240,6 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
 
         console.log('✅ Transaction confirmée on-chain!');
 
-        // Fermer la modal après 2 secondes
         setTimeout(() => {
           this.close(true);
         }, 2000);
@@ -249,11 +256,6 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
       });
   }
 
-  /**
-   * ============================
-   * ÉTAPE 1 : CONNECTER WALLET
-   * ============================
-   */
   connectWallet(): void {
     console.log('🔥 Connexion MetaMask...');
     this.loading = true;
@@ -261,56 +263,58 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
 
     this.store.dispatch(PaymentActions.connectWallet());
 
-    // Le résultat sera géré par les souscriptions
     setTimeout(() => {
       this.loading = false;
     }, 1000);
   }
 
-  /**
-   * ============================
-   * ÉTAPE 2 : VÉRIFIER SOLDE
-   * ============================
-   */
   verifyBalance(): void {
     if (!this.walletAddress) {
       this.error = 'Wallet non connecté';
       return;
     }
 
-    console.log('🔥 Vérification du solde...');
     this.loading = true;
     this.updateStep(2, 'processing');
 
-    this.store.dispatch(PaymentActions.verifyBalance({
-      request: {
-        walletAddress: this.walletAddress,
-        requiredAmountEth: this.totalAmountEth
-      }
+    console.log('🔍 Vérification du solde pour:', this.totalAmountEth, 'ETH');
+
+    this.store.dispatch(PaymentActions.loadWalletBalance({
+      walletAddress: this.walletAddress,
+      requiredAmountEth: this.totalAmountEth
     }));
 
-    setTimeout(() => {
-      this.loading = false;
-    }, 1000);
+    setTimeout(() => this.loading = false, 1000);
   }
 
-  /**
-   * ============================
-   * ÉTAPE 3 : SIGNER TRANSACTION METAMASK
-   * ============================
-   */
   async signTransaction(): Promise<void> {
     if (!this.walletAddress || !this.reservationId) {
-      this.error = 'Données manquantes';
+      this.error = 'Données manquantes (wallet ou reservationId)';
+      console.error('❌ Missing:', {
+        walletAddress: this.walletAddress,
+        reservationId: this.reservationId
+      });
+      return;
+    }
+
+    if (!this.ownerWalletAddress) {
+      this.error = 'Adresse du propriétaire introuvable';
+      console.error('❌ Owner wallet address missing');
       return;
     }
 
     console.log('🔥 Signature de la transaction MetaMask...');
+    console.log('📊 Détails transaction:', {
+      from: this.walletAddress,
+      to: this.ownerWalletAddress,
+      amountEth: this.totalAmountEth,
+      reservationId: this.reservationId
+    });
+
     this.loading = true;
     this.updateStep(3, 'processing');
 
     try {
-      // Ouvrir MetaMask pour signer
       const txHash = await this.requestMetaMaskTransaction();
 
       if (!txHash) {
@@ -318,8 +322,6 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
       }
 
       console.log('✅ Transaction signée:', txHash);
-
-      // Envoyer au backend
       this.confirmPaymentToBackend(txHash);
 
     } catch (error: any) {
@@ -331,9 +333,7 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * ============================
-   * DEMANDER SIGNATURE METAMASK
-   * ============================
+   * ✅ CORRECTION : Requête MetaMask avec montant correct
    */
   private async requestMetaMaskTransaction(): Promise<string | null> {
     if (!window.ethereum) {
@@ -341,15 +341,24 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
     }
 
     try {
-      // Préparer la transaction
+      // ✅ Conversion ETH → Wei (hexadécimal)
+      const amountInWei = this.web3Service.ethToWei(this.totalAmountEth);
+
+      console.log('💰 Montant transaction:', {
+        eth: this.totalAmountEth,
+        wei: amountInWei,
+        from: this.walletAddress,
+        to: this.ownerWalletAddress
+      });
+
       const transactionParameters = {
-        to: this.data.property.userId.toString(), // TODO: Récupérer wallet du host
+        to: this.ownerWalletAddress!,
         from: this.walletAddress!,
-        value: this.web3Service.ethToWei(this.totalAmountEth),
-        gas: '0x5208', // 21000 gas
+        value: amountInWei, // ✅ EN WEI (hexadécimal)
       };
 
-      // Demander signature
+      console.log('📤 Envoi transaction à MetaMask:', transactionParameters);
+
       const txHash = await window.ethereum.request({
         method: 'eth_sendTransaction',
         params: [transactionParameters],
@@ -365,11 +374,6 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * ============================
-   * CONFIRMER AU BACKEND
-   * ============================
-   */
   private confirmPaymentToBackend(txHash: string): void {
     if (!this.reservationId || !this.walletAddress) return;
 
@@ -377,19 +381,16 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
       reservationId: this.reservationId,
       transactionHash: txHash,
       fromAddress: this.walletAddress,
-      amountEth: this.totalAmountEth,
+      amountEth: this.totalAmountEth, // ✅ EN ETH
       tenantId: 1 // TODO: Récupérer depuis currentUser
     };
+
+    console.log('📤 Envoi confirmation au backend:', request);
 
     this.store.dispatch(PaymentActions.confirmPayment({ request }));
     this.loading = false;
   }
 
-  /**
-   * ============================
-   * DÉMARRER POLLING
-   * ============================
-   */
   private startPolling(): void {
     if (!this.txHash || !this.reservationId) return;
 
@@ -400,11 +401,6 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
     }));
   }
 
-  /**
-   * ============================
-   * METTRE À JOUR ÉTAPE
-   * ============================
-   */
   private updateStep(
     step: number,
     status: 'pending' | 'processing' | 'completed' | 'failed',
@@ -417,13 +413,7 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
     }));
   }
 
-  /**
-   * ============================
-   * ANNULER
-   * ============================
-   */
   cancel(): void {
-    // Annuler la réservation si elle existe
     if (this.reservationId) {
       this.store.dispatch(BookingActions.cancelBooking({
         id: this.reservationId,
@@ -434,11 +424,6 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
     this.close(false);
   }
 
-  /**
-   * ============================
-   * FERMER MODAL
-   * ============================
-   */
   close(success: boolean): void {
     this.dialogRef.close({
       success,
@@ -448,15 +433,19 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * ============================
-   * GETTERS
-   * ============================
+   * ✅ GETTER : Montant total en ETH
+   * data.totalAmount est déjà en ETH depuis booking-card
    */
   get totalAmountEth(): number {
-    // Convertir EUR en ETH (prix fixe pour démo)
-    // TODO: Récupérer taux de change réel EUR/ETH
-    const ethPrice = 2000; // 1 ETH = 2000 EUR
-    return this.data.totalAmount / ethPrice;
+    return this.data.totalAmount;
+  }
+
+  /**
+   * ✅ NOUVEAU : Conversion EUR pour affichage
+   * (approximatif à 3200 EUR/ETH)
+   */
+  get totalAmountEur(): number {
+    return this.data.totalAmount * 3200;
   }
 
   get canProceed(): boolean {
@@ -486,7 +475,6 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
   }
 }
 
-// Déclaration globale pour TypeScript
 declare global {
   interface Window {
     ethereum?: any;

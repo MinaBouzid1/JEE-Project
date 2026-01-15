@@ -215,24 +215,38 @@
   margin-top: auto;  // ✅ Pousse le footer en bas
 }
 
+
+
+
 .property-price {
   display: flex;
   align-items: baseline;
   gap: 4px;
 
-  .price-amount {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #222;
-    letter-spacing: -0.02em;
+  .price-main {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+
+    .price-amount {
+      font-size: 18px;
+      font-weight: 600;
+      color: #222;
+    }
+
+    .price-label {
+      font-size: 13px;
+      color: #717171;
+    }
   }
 
-  .price-label {
-    font-size: 0.9rem;
-    color: #717171;
-    font-weight: 500;
+  .price-conversion {
+    font-size: 15px;
+    color: #999;
+    font-weight: 400;
   }
 }
+
 
 .property-nights {
   display: flex;
@@ -265,4 +279,11 @@
   .price-amount {
     font-size: 1.2rem;
   }
+
+
+
+
+
+
+
 }

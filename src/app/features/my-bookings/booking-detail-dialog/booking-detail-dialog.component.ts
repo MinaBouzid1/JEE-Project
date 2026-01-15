@@ -22,6 +22,7 @@ import {Router} from "@angular/router";
 
 import * as MessagingActions from '../../../store/messaging/messaging.actions';
 import * as MessagingSelectors from '../../../store/messaging/messaging.selectors';
+import {EthPricePipe} from "../../../core/pipes/eth-price.pipe";
 
 @Component({
   selector: 'app-booking-detail-dialog',
@@ -34,7 +35,8 @@ import * as MessagingSelectors from '../../../store/messaging/messaging.selector
     MatTabsModule,
     MatChipsModule,
     MatDividerModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    EthPricePipe
   ],
   templateUrl: './booking-detail-dialog.component.html',
   styleUrl: './booking-detail-dialog.component.scss'

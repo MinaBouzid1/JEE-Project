@@ -78,7 +78,12 @@
 
     <!-- Step 5: Pricing -->
     <mat-step [stepControl]="pricingForm" label="Pricing">
-      <app-step-pricing [form]="pricingForm"></app-step-pricing>
+      <app-step-pricing
+        [form]="pricingForm"
+        [surfaceArea]="detailsForm.get('surfaceArea')?.value || 80"
+        [bedrooms]="detailsForm.get('bedrooms')?.value || 2"
+        [amenitiesCount]="3">
+      </app-step-pricing>
 
       <div class="step-actions">
         <button mat-button matStepperPrevious>

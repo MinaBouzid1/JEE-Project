@@ -74,7 +74,7 @@ export const verifyBalanceFailure = createAction(
  */
 export const loadWalletBalance = createAction(
   '[Payment] Load Wallet Balance',
-  props<{ walletAddress: string }>()
+  props<{ walletAddress: string; requiredAmountEth: number }>()
 );
 
 export const loadWalletBalanceSuccess = createAction(

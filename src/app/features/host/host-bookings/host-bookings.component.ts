@@ -24,6 +24,7 @@ import { HostBooking, HostBookingStats } from '../../../core/models/host-booking
 import { selectUserId } from '../../../store/auth/auth.selectors'; // ✅ Importer le sélecteur
 import { forkJoin, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
+import {EthPricePipe} from "../../../core/pipes/eth-price.pipe";
 
 @Component({
   selector: 'app-host-bookings',
@@ -42,7 +43,8 @@ import { catchError, map, switchMap, take } from 'rxjs/operators';
     MatProgressSpinnerModule,
     MatMenuModule,
     MatTooltipModule,
-    MatBadgeModule
+    MatBadgeModule,
+    EthPricePipe
   ],
   templateUrl: './host-bookings.component.html',
   styleUrl: './host-bookings.component.scss'

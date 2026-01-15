@@ -20,13 +20,15 @@ export const environment = {
 
   // Configuration Blockchain
   blockchain: {
-    chainId: '0x539', // 1337 en hexadécimal (Ganache local)
-    chainName: 'Localhost 8545', // nom du réseau , sert seulement à identifier le réseau => Le nom n’a aucun impact technique
-    rpcUrl: 'http://localhost:8w545'
+    chainId: '0xaa36a7', // 11155111 = Sepolia
+    chainName: 'Sepolia Test Network',
+    rpcUrl: 'https://sepolia.infura.io/v3/50e3d616c7ae4bb4bb5d48d97ab6d5a8'
   },
 
   // Configuration Socket.io
   socketUrl: 'http://localhost:8085', // Messaging Service
+
+  //wsUrl: 'ws://localhost:8080/messaging-service/ws', // WebSocket pour temps réel
 
   // Configuration Upload
   maxFileSize: 5 * 1024 * 1024, // 5 MB

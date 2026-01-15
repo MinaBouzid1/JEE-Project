@@ -14,7 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { PropertyService } from '../../../core/services/property.service';
 import { Discount, DiscountType } from '../../../core/models/discount.model';
-
+import { EthPricePipe } from '../../../core/pipes/eth-price.pipe';
 interface DiscountTypeOption {
   value: string;
   label: string;
@@ -37,7 +37,8 @@ interface DiscountTypeOption {
     MatSelectModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
-    MatTooltipModule
+    MatTooltipModule,
+    EthPricePipe
   ],
   templateUrl: './discounts-manager.component.html',
   styleUrl: './discounts-manager.component.scss'

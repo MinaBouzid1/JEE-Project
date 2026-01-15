@@ -44,13 +44,14 @@
         <strong>{{ data.numGuests }}</strong>
       </div>
       <mat-divider></mat-divider>
+
+      <!-- ✅ CORRECTION : Affichage du montant en ETH d'abord -->
       <div class="summary-row total-row">
-        <span><strong>Total</strong></span>
-        <strong class="total-amount">{{ data.totalAmount.toFixed(2) }}€</strong>
-      </div>
-      <div class="summary-row eth-row">
-        <span>Montant en ETH</span>
-        <strong>≈ {{ totalAmountEth.toFixed(4) }} ETH</strong>
+        <span><strong>Montant à payer</strong></span>
+        <div class="amount-display">
+          <strong class="total-amount">{{ totalAmountEth.toFixed(4) }} ETH</strong>
+          <span class="eur-conversion">≈ {{ totalAmountEur.toFixed(2) }}€</span>
+        </div>
       </div>
     </div>
 
@@ -104,12 +105,14 @@
           </div>
           <div class="step-content">
             <h4>2. Vérification du solde</h4>
-            <p *ngIf="hasSufficientBalance === null">Vérification en cours...</p>
+            <p *ngIf="hasSufficientBalance === null">
+              Vérifiez que vous avez au moins <strong>{{ totalAmountEth.toFixed(4) }} ETH</strong>
+            </p>
             <p *ngIf="hasSufficientBalance === true" class="success-text">
               Solde suffisant
             </p>
             <p *ngIf="hasSufficientBalance === false" class="error-text">
-              Solde insuffisant
+              Solde insuffisant ({{ totalAmountEth.toFixed(4) }} ETH requis)
             </p>
           </div>
         </div>
@@ -140,7 +143,9 @@
           </div>
           <div class="step-content">
             <h4>3. Signature de la transaction</h4>
-            <p *ngIf="!txHash">Signez la transaction dans MetaMask</p>
+            <p *ngIf="!txHash">
+              Signez la transaction de <strong>{{ totalAmountEth.toFixed(4) }} ETH</strong> dans MetaMask
+            </p>
             <p *ngIf="txHash" class="success-text">
               Transaction signée
             </p>

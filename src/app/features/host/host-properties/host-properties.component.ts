@@ -20,7 +20,8 @@ import {
   selectListingsError
 } from '../../../store/listings/listing.selectors';
 import { selectCurrentUser } from '../../../store/auth/auth.selectors';
-import { PropertyCard } from '../../../core/models/property-card.model'; // ✅ Changer ici
+import { PropertyCard } from '../../../core/models/property-card.model';
+import {EthPricePipe} from "../../../core/pipes/eth-price.pipe"; // ✅ Changer ici
 
 @Component({
   selector: 'app-host-properties',
@@ -35,7 +36,8 @@ import { PropertyCard } from '../../../core/models/property-card.model'; // ✅ 
     MatMenuModule,
     MatProgressSpinnerModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    EthPricePipe
   ],
   templateUrl: './host-properties.component.html',
   styleUrl: './host-properties.component.scss'

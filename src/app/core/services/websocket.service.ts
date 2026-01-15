@@ -27,6 +27,7 @@ export interface WebSocketAction {
 }
 
 @Injectable({
+
   providedIn: 'root'
 })
 export class WebSocketService {
@@ -49,7 +50,8 @@ export class WebSocketService {
       return;
     }
 
-    const wsUrl = environment.wsUrl || 'ws://localhost:8080/messaging-service/ws';
+    // ✅ Utilisation de environment.wsUrl
+    const wsUrl = environment.wsUrl;
     const urlWithToken = `${wsUrl}?token=${token}`;
 
     console.log('🔌 Connecting to WebSocket...', wsUrl);

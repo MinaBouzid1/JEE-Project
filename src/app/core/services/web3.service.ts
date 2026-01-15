@@ -2,57 +2,30 @@
 
 import { Injectable } from '@angular/core';
 import { BrowserProvider, JsonRpcSigner } from 'ethers';
-//BrowserProvider = connexion à MetaMask qui tourne dans le navigateur
-// JsonRpcSigner = permet signer un message avec MetaMask
 import { Observable, from, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-//map pour Transformer une valeur en une autre
 import { environment } from '../../../environments/environment';
+import { parseEther, formatEther } from "ethers";
 
-/**
- * Déclaration globale pour TypeScript
- * declare = dire à TypeScript "cette chose existe quelque part, fais-moi confiance, ne vérifie pas".
- * global = permet de modifier les types globaux du navigateur, comme window
- * on étend cette interface qui représente l'objet global du navigateur pour ajouter une nouvelle propriété.
- */
 declare global {
   interface Window {
-    ethereum?: any; //? peut etre ou non c'est optionnel
+    ethereum?: any;
   }
 }
 
-/**
- * ============================
- * SERVICE WEB3 / METAMASK
- * Gère la connexion MetaMask et la signature de messages
- * ============================
- */
 @Injectable({
   providedIn: 'root'
 })
 export class Web3Service {
-  private provider: BrowserProvider | null = null; // Provider Ethereum
-  private signer: JsonRpcSigner | null = null;     // Signer pour signer des messages
+  private provider: BrowserProvider | null = null;
+  private signer: JsonRpcSigner | null = null;
 
   constructor() {}
 
-  /**
-   * ============================
-   * VÉRIFIER SI METAMASK EST INSTALLÉ
-   * ============================
-   */
   isMetaMaskInstalled(): boolean {
     return typeof window.ethereum !== 'undefined';
   }
 
-  /**
-   * ============================
-   * CONNECTER METAMASK
-   * 1. Demande l'autorisation d'accéder aux comptes
-   * 2. Récupère l'adresse du wallet
-   * Retourne : Observable<string> avec l'adresse wallet
-   * ============================
-   */
   connectWallet(): Observable<string> {
     if (!this.isMetaMaskInstalled()) {
       return throwError(() => new Error(
@@ -60,11 +33,10 @@ export class Web3Service {
       ));
     }
 
-    return from(this.connectMetaMask()).pipe( // from sert a transformer quelque chose qui n'est pas un Observable en Observable.
+    return from(this.connectMetaMask()).pipe(
       catchError(error => {
         console.error('❌ Erreur connexion MetaMask:', error);
 
-        // Code 4001 = User rejected the request
         if (error.code === 4001) {
           return throwError(() => new Error('Connexion refusée par l\'utilisateur'));
         }
@@ -74,42 +46,18 @@ export class Web3Service {
     );
   }
 
-  /**
-   * ============================
-   * CONNEXION METAMASK (PRIVATE)
-   * ============================
-   */
-  //Prépare la connexion MetaMask (provider)
-  // Ouvre la popup MetaMask
-  // Récupère la signature (signer)
-  // Récupère l'adresse du wallet
   private async connectMetaMask(): Promise<string> {
     try {
-      // 1. Initialiser le provider Ethereum
       this.provider = new BrowserProvider(window.ethereum);
-
-      // 2. Demander l'accès aux comptes (popup MetaMask)
       await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-      // 3. Récupérer le signer (permet de signer des messages)
       this.signer = await this.provider.getSigner();
-
-      // 4. Récupérer l'adresse du wallet
       const address = await this.signer.getAddress();
-
       return address;
     } catch (error) {
       throw error;
     }
   }
 
-  /**
-   * ============================
-   * SIGNER UN MESSAGE AVEC METAMASK
-   * Utilisé pour prouver la possession du wallet
-   * Retourne : Observable<string> avec la signature
-   * ============================
-   */
   signMessage(message: string): Observable<string> {
     if (!this.signer) {
       return throwError(() => new Error('Wallet non connecté. Connectez-vous d\'abord.'));
@@ -119,7 +67,6 @@ export class Web3Service {
       catchError(error => {
         console.error('❌ Erreur signature:', error);
 
-        // Code 4001 = User rejected the request
         if (error.code === 4001) {
           return throwError(() => new Error('Signature refusée par l\'utilisateur'));
         }
@@ -129,66 +76,34 @@ export class Web3Service {
     );
   }
 
-  /**
-   * ============================
-   * RÉCUPÉRER L'ADRESSE DU WALLET CONNECTÉ
-   * Sans demander de nouvelle connexion
-   * ============================
-   */
-  //Récupérer l'adresse actuellement connectée dans MetaMask
   getCurrentAccount(): Observable<string | null> {
     if (!this.isMetaMaskInstalled()) {
       return throwError(() => new Error('MetaMask non installé'));
     }
 
-    return from(window.ethereum.request({ method: 'eth_accounts' }) as Promise<string[]>).pipe( // as Promise<string[]> :  dire a ts je te garantis que ce Promise va retourner un string[]
+    return from(window.ethereum.request({ method: 'eth_accounts' }) as Promise<string[]>).pipe(
       map((accounts: string[]) => accounts.length > 0 ? accounts[0] : null),
       catchError(() => throwError(() => new Error('Impossible de récupérer le compte')))
     );
   }
 
-  /**
-   * ============================
-   * DÉCONNECTER LE WALLET
-   * Note : Côté application seulement, MetaMask reste connecté
-   * ============================
-   */
   disconnectWallet(): void {
     this.provider = null;
     this.signer = null;
   }
 
-  /**
-   * ============================
-   * ÉCOUTER LES CHANGEMENTS DE COMPTE METAMASK
-   * Appelé automatiquement quand l'utilisateur change de compte dans MetaMask
-   * ============================
-   */
   onAccountsChanged(callback: (accounts: string[]) => void): void {
     if (this.isMetaMaskInstalled()) {
       window.ethereum.on('accountsChanged', callback);
     }
   }
 
-  /**
-   * ============================
-   * ÉCOUTER LES CHANGEMENTS DE RÉSEAU
-   * Appelé automatiquement quand l'utilisateur change de réseau dans MetaMask
-   * ============================
-   */
-  // On passe une fonction callback=> MetaMask va appeler cette callback automatiquement quand l'utilisateur change de réseau.
-  onChainChanged(callback: (chainId: string) => void): void { //  fonction prend un argument chainId: stringcette fonction ne retourne rien :=> void
+  onChainChanged(callback: (chainId: string) => void): void {
     if (this.isMetaMaskInstalled()) {
-      window.ethereum.on('chainChanged', callback); // 'chainChanged' = nom de l'événement MetaMask => Quand MetaMask change de réseau, exécute la callback.
+      window.ethereum.on('chainChanged', callback);
     }
   }
 
-  /**
-   * ============================
-   * GÉNÉRER UN MESSAGE D'AUTHENTIFICATION
-   * Ce message sera signé par MetaMask pour prouver la possession du wallet
-   * ============================
-   */
   generateAuthMessage(walletAddress: string): string {
     const timestamp = Date.now();
     return `Sign this message to authenticate with Real Estate Rent DApp.
@@ -197,12 +112,6 @@ Wallet: ${walletAddress}
 Timestamp: ${timestamp}`;
   }
 
-  /**
-   * ============================
-   * VÉRIFIER LA CONNEXION AU BON RÉSEAU
-   * Retourne true si le réseau correspond à celui configuré dans environment
-   * ============================
-   */
   async checkNetwork(): Promise<boolean> {
     try {
       const chainId = await window.ethereum.request({ method: 'eth_chainId' });
@@ -213,16 +122,6 @@ Timestamp: ${timestamp}`;
     }
   }
 
-  /**
-   * ============================
-   * CHANGER DE RÉSEAU ETHEREUM
-   // La fonction switchNetwork() sert uniquement à changer le réseau (blockchain)
-   // auquel MetaMask est connecté (ex : Ethereum, Polygon, BSC, etc.).
-   // Chaque réseau a son propre solde et ses propres tokens, même si l'adresse est identique.
-   // Exemple : même adresse peut avoir 0.2 ETH sur Ethereum et 120 MATIC sur Polygon.
-   // Cette fonction demande simplement à MetaMask de se connecter au réseau demandé.
-   * ============================
-   */
   async switchNetwork(): Promise<void> {
     try {
       await window.ethereum.request({
@@ -230,7 +129,6 @@ Timestamp: ${timestamp}`;
         params: [{ chainId: environment.blockchain.chainId }]
       });
     } catch (error: any) {
-      // Code 4902 = Réseau non ajouté dans MetaMask
       if (error.code === 4902) {
         await this.addNetwork();
       } else {
@@ -239,11 +137,6 @@ Timestamp: ${timestamp}`;
     }
   }
 
-  /**
-   * ============================
-   * AJOUTER UN RÉSEAU PERSONNALISÉ DANS METAMASK
-   * ============================
-   */
   private async addNetwork(): Promise<void> {
     await window.ethereum.request({
       method: 'wallet_addEthereumChain',
@@ -256,26 +149,60 @@ Timestamp: ${timestamp}`;
   }
 
   /**
-   * ============================
-   * ✅ NOUVEAU : CONVERTIR ETH EN WEI
-   * 1 ETH = 1,000,000,000,000,000,000 Wei (10^18)
-   * Utilisé pour préparer les transactions MetaMask
-   * ============================
+   * ✅ CORRECTION CRITIQUE : Convertir ETH en Wei
+   * IMPORTANT : Vous DEVEZ passer le montant en ETH (ex: 0.044)
+   * Cette fonction va le convertir en Wei (0.044 ETH = 44000000000000000 Wei)
+   *
+   * @param eth - Montant en ETH (nombre décimal comme 0.044)
+   * @returns String en Wei (format hexadécimal pour MetaMask)
    */
   ethToWei(eth: number): string {
-    // 1 ETH = 10^18 Wei
-    const wei = eth * 1e18;
-    return '0x' + wei.toString(16); // Convertir en hexadécimal pour MetaMask
+    console.log('🔄 Conversion ETH → Wei:', eth, 'ETH');
+
+    // ✅ CORRECTION : Arrondir à 6 décimales pour éviter les erreurs de précision
+    const ethRounded = Number(eth.toFixed(6));
+
+    // Convertir en Wei (1 ETH = 10^18 Wei)
+    const weiValue = parseEther(ethRounded.toString());
+
+    // Convertir en format hexadécimal pour MetaMask
+    const hexValue = '0x' + weiValue.toString(16);
+
+    console.log('✅ Résultat:', {
+      ethInput: eth,
+      ethRounded: ethRounded,
+      weiBigInt: weiValue.toString(),
+      hexValue: hexValue
+    });
+
+    return hexValue;
   }
 
   /**
-   * ============================
-   * ✅ NOUVEAU : CONVERTIR WEI EN ETH
-   * Pour afficher les montants de manière lisible
-   * ============================
+   * ✅ Convertir Wei en ETH
+   * @param wei - Montant en Wei (string ou nombre)
+   * @returns Nombre en ETH
    */
-  weiToEth(wei: string | number): number {
-    const weiValue = typeof wei === 'string' ? parseFloat(wei) : wei;
-    return weiValue / 1e18;
+  weiToEth(wei: string | bigint): number {
+    return parseFloat(formatEther(wei));
+  }
+
+  /**
+   * ✅ NOUVEAU : Vérifier le solde du wallet
+   * @param walletAddress - Adresse du wallet
+   * @returns Observable<number> - Solde en ETH
+   */
+  getBalance(walletAddress: string): Observable<number> {
+    if (!this.provider) {
+      return throwError(() => new Error('Provider non initialisé'));
+    }
+
+    return from(this.provider.getBalance(walletAddress)).pipe(
+      map(balance => this.weiToEth(balance)),
+      catchError(error => {
+        console.error('❌ Erreur récupération solde:', error);
+        return throwError(() => new Error('Impossible de récupérer le solde'));
+      })
+    );
   }
 }

@@ -285,7 +285,7 @@
                       @if (descriptionForm.get('description')?.hasError('minlength')) {
                         <mat-error>Description must be at least 50 characters</mat-error>
                       }
-                      <mat-hint align="end">{{ descriptionForm.get('description')?.value?.length || 0 }} characters</mat-hint>
+                      <mat-hint align="end">{{ descriptionForm.get('description')?.value || 0 }} characters</mat-hint>
                     </mat-form-field>
 
                     <div class="form-actions">
@@ -637,9 +637,121 @@
         <span>Pricing</span>
       </ng-template>
 
+      <!-- Section à insérer dans le TAB PRICING -->
+      <!-- Remplace la section "Base Pricing Card" existante -->
+
+      <!-- Section à insérer dans le TAB PRICING -->
+      <!-- Remplace la section "Base Pricing Card" existante -->
+
       <div class="tab-content">
         <div class="pricing-grid">
-          <!-- Base Pricing Card - GARDER TEL QUEL -->
+          <!-- AI Price Suggestion Card - NOUVEAU -->
+          @if (!editMode['pricing'] && property) {
+            <mat-card class="info-card ai-suggestion-card full-width">
+              <mat-card-header>
+                <mat-icon mat-card-avatar class="ai-icon">psychology</mat-icon>
+                <mat-card-title>AI Price Optimization</mat-card-title>
+                <mat-card-subtitle>Get smart pricing recommendations powered by machine learning</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                @if (!showPriceSuggestion) {
+                  <!-- Initial State - Get Suggestion -->
+                  <div class="ai-prompt">
+                    <p class="prompt-text">
+                      <mat-icon>lightbulb</mat-icon>
+                      Our AI can analyze your property and market data to suggest an optimal price
+                    </p>
+                    <button
+                      mat-raised-button
+                      color="accent"
+                      (click)="getPricePrediction()"
+                      [disabled]="loadingPrediction$ | async"
+                    >
+                      @if (loadingPrediction$ | async) {
+                        <mat-spinner diameter="20"></mat-spinner>
+                        <span>Analyzing...</span>
+                      } @else {
+                        <mat-icon>auto_awesome</mat-icon>
+                        <span>Get AI Price Suggestion</span>
+                      }
+                    </button>
+                  </div>
+                } @else if (pricePrediction) {
+                  <!-- AI Suggestion Display -->
+                  <div class="ai-suggestion-content">
+                    <!-- Main Price Comparison -->
+                    <div class="price-comparison">
+                      <div class="current-price-section">
+                        <span class="label">Current Price</span>
+                        <span class="current-price">{{ property.pricePerNight }} ETH</span>
+                        <span class="eur-equivalent">≈ {{ pricePrediction.current_price_eur | number:'1.2-2' }} EUR</span>
+                      </div>
+
+                      <mat-icon class="arrow-icon">trending_flat</mat-icon>
+
+                      <div class="suggested-price-section">
+                        <span class="label">AI Suggested Price</span>
+                        <span class="suggested-price">{{ pricePrediction.predicted_price_eth | number:'1.4-4' }} ETH</span>
+                        <span class="eur-equivalent">≈ {{ pricePrediction.predicted_price_eur | number:'1.2-2' }} EUR</span>
+
+                        @if (getPriceDifferencePercentage(); as diff) {
+                          <span
+                            class="price-difference"
+                            [style.color]="getPriceDifferenceColor()"
+                          >
+                      {{ diff > 0 ? '+' : '' }}{{ diff | number:'1.1-1' }}%
+                    </span>
+                        }
+                      </div>
+                    </div>
+
+                    <!-- Confidence Range -->
+                    @if (pricePrediction.confidence_range_eth) {
+                      <div class="confidence-range">
+                        <mat-icon>show_chart</mat-icon>
+                        <div class="range-content">
+                          <span class="range-label">Confidence Range:</span>
+                          <span class="range-values">
+                      {{ pricePrediction.confidence_range_eth.min | number:'1.4-4' }} -
+                            {{ pricePrediction.confidence_range_eth.max | number:'1.4-4' }} ETH
+                    </span>
+                        </div>
+                      </div>
+                    }
+
+                    <!-- AI Recommendation -->
+                    @if (pricePrediction.recommendation) {
+                      <div class="ai-recommendation">
+                        <mat-icon>info</mat-icon>
+                        <p>{{ pricePrediction.recommendation }}</p>
+                      </div>
+                    }
+
+                    <!-- Action Buttons -->
+                    <div class="suggestion-actions">
+                      <button
+                        mat-button
+                        (click)="dismissSuggestion()"
+                      >
+                        <mat-icon>close</mat-icon>
+                        Dismiss
+                      </button>
+                      <button
+                        mat-raised-button
+                        color="primary"
+                        (click)="applySuggestedPrice(); toggleEditMode('pricing')"
+                      >
+                        <mat-icon>check</mat-icon>
+                        Apply Suggested Price
+                      </button>
+                    </div>
+                  </div>
+                }
+              </mat-card-content>
+            </mat-card>
+          }
+
+          <!-- Base Pricing Card -->
           <mat-card class="info-card pricing-card">
             <mat-card-header>
               <mat-icon mat-card-avatar>payments</mat-icon>
@@ -658,25 +770,51 @@
                 <div class="price-items">
                   <div class="price-item main">
                     <span class="label">Price per Night</span>
-                    <span class="price">{{ property.pricePerNight | currency:'USD' }}</span>
+                    <span class="price">{{ property.pricePerNight }} ETH</span>
                   </div>
                   <div class="price-item">
                     <span class="label">Weekend Price</span>
-                    <span class="price">{{ property.weekendPricePerNight | currency:'USD' }}</span>
+                    <span class="price">{{ property.weekendPricePerNight }} ETH</span>
                   </div>
                 </div>
               } @else {
                 <form [formGroup]="pricingForm" class="edit-form">
+                  <!-- Show AI suggestion hint if available -->
+                  @if (pricePrediction && showPriceSuggestion) {
+                    <div class="form-hint ai-hint">
+                      <mat-icon>tips_and_updates</mat-icon>
+                      <span>AI suggests {{ pricePrediction.predicted_price_eth | number:'1.4-4' }} ETH per night</span>
+                    </div>
+                  }
+
                   <mat-form-field appearance="outline">
-                    <mat-label>Price per Night ($)</mat-label>
-                    <input matInput type="number" formControlName="pricePerNight" min="1">
-                    <span matTextPrefix>$&nbsp;</span>
+                    <mat-label>Price per Night (ETH)</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      formControlName="pricePerNight"
+                      min="0.0001"
+                      step="any"
+                      lang="en"
+                      [value]="pricingForm.get('pricePerNight')?.value"
+                    >
+                    <span matTextSuffix>ETH</span>
+                    <mat-hint>Enter decimal values (e.g., 0.0125)</mat-hint>
                   </mat-form-field>
 
                   <mat-form-field appearance="outline">
-                    <mat-label>Weekend Price ($)</mat-label>
-                    <input matInput type="number" formControlName="weekendPricePerNight" min="1">
-                    <span matTextPrefix>$&nbsp;</span>
+                    <mat-label>Weekend Price (ETH)</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      formControlName="weekendPricePerNight"
+                      min="0.0001"
+                      step="any"
+                      lang="en"
+                      [value]="pricingForm.get('weekendPricePerNight')?.value"
+                    >
+                    <span matTextSuffix>ETH</span>
+                    <mat-hint>Enter decimal values (e.g., 0.0150)</mat-hint>
                   </mat-form-field>
 
                   <div class="form-actions">
@@ -695,7 +833,7 @@
             </mat-card-content>
           </mat-card>
 
-          <!-- Additional Fees Card - GARDER TEL QUEL -->
+          <!-- Additional Fees Card - Reste identique -->
           <mat-card class="info-card pricing-card">
             <mat-card-header>
               <mat-icon mat-card-avatar>receipt</mat-icon>
@@ -714,11 +852,11 @@
                 <div class="price-items">
                   <div class="price-item">
                     <span class="label">Cleaning Fee</span>
-                    <span class="price">{{ property.cleaningFee | currency:'USD' }}</span>
+                    <span class="price">{{ property.cleaningFee }} ETH</span>
                   </div>
                   <div class="price-item">
                     <span class="label">Pet Fee</span>
-                    <span class="price">{{ property.petFee | currency:'USD' }}</span>
+                    <span class="price">{{ property.petFee }} ETH</span>
                   </div>
                   <div class="price-item">
                     <span class="label">Platform Fee</span>
@@ -728,15 +866,29 @@
               } @else {
                 <form [formGroup]="feesForm" class="edit-form">
                   <mat-form-field appearance="outline">
-                    <mat-label>Cleaning Fee ($)</mat-label>
-                    <input matInput type="number" formControlName="cleaningFee" min="0">
-                    <span matTextPrefix>$&nbsp;</span>
+                    <mat-label>Cleaning Fee (ETH)</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      formControlName="cleaningFee"
+                      min="0"
+                      step="any"
+                      lang="en"
+                    >
+                    <span matTextSuffix>ETH</span>
                   </mat-form-field>
 
                   <mat-form-field appearance="outline">
-                    <mat-label>Pet Fee ($)</mat-label>
-                    <input matInput type="number" formControlName="petFee" min="0">
-                    <span matTextPrefix>$&nbsp;</span>
+                    <mat-label>Pet Fee (ETH)</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      formControlName="petFee"
+                      min="0"
+                      step="any"
+                      lang="en"
+                    >
+                    <span matTextSuffix>ETH</span>
                   </mat-form-field>
 
                   <mat-form-field appearance="outline">
@@ -760,10 +912,9 @@
               }
             </mat-card-content>
           </mat-card>
-
         </div>
 
-        <!-- Discounts Manager - NOUVELLE SECTION -->
+        <!-- Discounts Manager - Reste identique -->
         <div class="discounts-section">
           <app-discounts-manager
             [propertyId]="propertyId"
@@ -800,7 +951,7 @@
         <app-amenities-manager
           [propertyId]="propertyId"
           [currentAmenities]="property.amenities || []"
-          (amenitiesChanged)="loadProperty()"
+          (amenitiesChanged)="reloadProperty()"
         ></app-amenities-manager>
       </div>
     </mat-tab>
