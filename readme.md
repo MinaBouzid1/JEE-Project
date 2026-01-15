@@ -48,6 +48,9 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 - **Communication temps réel** : Chat intégré
 - **Géolocalisation** : Cartographie interactive des propriétés
 
+### Conception UML:
+
+
 ### Fonctionnalités Principales
 
 ✅ Inscription et authentification sécurisée (JWT)  
