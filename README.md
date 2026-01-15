@@ -598,10 +598,7 @@ src/
 - Indicateurs de présence
 - Notifications de nouveaux messages
 
----
-##### Documentation Technique
-Pour une documentation technique complète (architecture détaillée, services, store NgRx, composants), consultez :
-📖 **[README-DETAILED.md](./README-DETAILED.md)**
+ 
  
 ---
 
