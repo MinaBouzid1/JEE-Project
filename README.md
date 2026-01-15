@@ -120,7 +120,6 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 ### ⛓ Blockchain And AI  Engineer
 **Nom** : Ikrame Houzane 
-
 **Rôle** : Blockchain & AI Engineer
 
 **Responsabilités** :
@@ -132,10 +131,9 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 ---
 
-### ⚛️ Frontend Developer
+### ⚛️ Frontend Developer   
 
 **Nom** : Allali Fatima-ezzahra 
-
 **Rôle** : Développeur Frontend  
 
 **Responsabilités** :
