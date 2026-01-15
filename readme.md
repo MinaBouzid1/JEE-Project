@@ -75,19 +75,19 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 ┌─────────────────────────────────────────────────────────────┐
 │                   API GATEWAY LAYER                         │
 │     Spring Cloud Gateway (Port 8080)                        │
-│   Routage | Sécurité JWT | Rate Limiting | Load Balancing  │
+│   Routage | Sécurité JWT | Rate Limiting | Load Balancing   │
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
 │                  MICROSERVICES LAYER                        │
-│  User (8081) | Listing (8082) | Booking (8083)             │
-│  Payment (8084) | Messaging (8085) | Notification (8086)   │
-│  Review (8087) | Media (8088) | Blockchain (8089)          │
+│  User (8081) | Listing (8082) | Booking (8083)              │
+│  Payment (8084) | Messaging (8085) | Notification (8086)    │
+│  Review (8087) | Media (8088) | Blockchain (8089)           │
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
 │               SERVICES INFRASTRUCTURE                       │
-│  Eureka (8761) | Config Server (8888) | RabbitMQ (5672)    │
+│  Eureka (8761) | Config Server (8888) | RabbitMQ (5672)     │
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -170,8 +170,31 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 ---
 
 ##  Conception UML:
-### Diagramme de classes
-<img width="342" height="296" alt="image" src="https://github.com/user-attachments/assets/8b64f32b-d360-46bf-ae93-9ce5cd2adb97" />
+**Diagramme des Classes** 
+<img width="342" height="296" alt="image" src="https://github.com/user-attachments/assets/8b64f32b-d360-46bf-ae93-9ce5cd2adb97" 
+### Package Users:
+**Diagramme de Classes** 
+<img width="480" height="347" alt="image" src="https://github.com/user-attachments/assets/f56f4867-1ef8-40b8-b813-3552b26e6aff" />
+**Diagramme d’activités**
+<img width="708" height="366" alt="image" src="https://github.com/user-attachments/assets/59b205ea-7f9b-4eed-9036-bc55d76a248f" />
+**Diagramme des cas d’utilisation**
+<img width="501" height="291" alt="image" src="https://github.com/user-attachments/assets/06a92f90-d362-4db6-8ff7-248cc298d95e" />
+### Package Réservations:
+**Diagramme d’activités**
+<img width="513" height="387" alt="image" src="https://github.com/user-attachments/assets/a44ca414-94f7-4e7c-bf2b-4d9659ed47ee" />
+**Diagramme des cas d’utilisation**
+<img width="609" height="388" alt="image" src="https://github.com/user-attachments/assets/e8bba779-bf0a-431e-9f8e-99acea2d30c3" />
+### Package Annonces:
+**Diagramme des cas d’utilisation**
+<img width="604" height="365" alt="image" src="https://github.com/user-attachments/assets/a0d8851b-ccbc-4b39-9630-45786a9717fe" />
+**Diagramme d’activités**
+<img width="563" height="388" alt="image" src="https://github.com/user-attachments/assets/ec871f3d-605f-492a-89f1-95493fbd3f9d" />
+### Package Communication:
+**Diagramme des cas d’utilisation**
+<img width="493" height="274" alt="image" src="https://github.com/user-attachments/assets/8e67fc72-5a64-40e9-b16b-15be34f30c30" />
+**Diagramme d’activités**
+<img width="714" height="389" alt="image" src="https://github.com/user-attachments/assets/e15b840a-6e73-46fa-a40f-35f81ef423b5" />
+
 
 --- 
 
