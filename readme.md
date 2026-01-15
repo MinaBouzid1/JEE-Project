@@ -109,14 +109,14 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 - **Blockchain** : Web3j (Java Ethereum Client)
 
 ### Frontend
-- **Framework** : React 18 avec TypeScript
-- **State Management** : Redux Toolkit
-- **UI Library** : Material-UI (MUI)
+- **Framework** : Angular 18.2 avec TypeScript
+- **State Management** : NgRx 18.0
+- **UI Library** : Angular Material 18.2
 - **Blockchain** : Web3.js / Ethers.js
-- **Maps** : React-Leaflet
-- **Real-time** : Socket.io-client
-- **HTTP Client** : Axios
-
+- **Maps** : ngx-leaflet 18.0
+- **Real-time** : Socket.io-client 4.8
+- **HTTP Client** : Axios 1.13
+  
 ### Blockchain
 - **Network** : Ethereum (Sepolia Testnet / Mainnet)
 - **Smart Contracts** : Solidity 0.8.x
@@ -160,14 +160,15 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 ---
 
 ### ⚛️ Frontend Developer
-**Nom** : [À compléter]  
+**Nom** : Allali Fatima-ezzahra 
 **Rôle** : Développeur Frontend  
 **Responsabilités** :
-- Développement de l'interface React avec TypeScript
+- Développement de l'interface Angular avec TypeScript
 - Intégration Web3.js et MetaMask
 - Développement des composants Material-UI
-- Gestion d'état avec Redux Toolkit
 - Cartographie avec React-Leaflet
+- Gestion d'état avec NgRx (Store, Effects, Selectors)
+
 
 ---
 
@@ -195,462 +196,78 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 ---
 
-## 🔧 Backend Architecture
+## 🔧 Backend 
 
-## 🏗 Architecture Microservices 5 Couches
-
-### ✅ **Conception de l'architecture microservices 5 couches**
+### Conception de l'Architecture Microservices
 Conception et implémentation d'une architecture modulaire et évolutive basée sur les principes des microservices, permettant une scalabilité horizontale et une maintenabilité optimale.
 
-### ✅ **Mise en place complète de l'infrastructure Spring Cloud**
+### Infrastructure Spring Cloud Complète
+- **Eureka Server (Port 8761)** : Service Discovery avec health checking
+- **Config Server (Port 8888)** : Configuration centralisée avec backend Git
+- **API Gateway (Port 8080)** : Routage intelligent, sécurité JWT, rate limiting, CORS
+- **RabbitMQ** : Communication asynchrone avec gestion des files d'attente
+- **Base de données MySQL** : Schéma normalisé avec 37 tables optimisées
 
-#### **Eureka Server (Port 8761)** - Service Discovery avec health checking
-- Configuration du serveur de découverte de services
-- Implémentation du health checking automatisé
-- Gestion des instances de services et de leur disponibilité
-- Load balancing côté client intégré
+### Les 9 Microservices Backend
 
-#### **Config Server (Port 8888)** - Configuration centralisée avec backend Git
-- Création d'un repository Git pour la gestion des configurations
-- Support multi-environnement (dev, staging, prod)
-- Refresh dynamique des configurations sans redémarrage
-- Chiffrement des propriétés sensibles
+#### 1. User Service (Port 8081)
+- Authentification JWT avec refresh tokens
+- Vérification email/SMS
+- Gestion des profils et wallets Ethereum
+- Support multi-langues (20 langues)
+- Spring Security avec BCrypt
 
-#### **API Gateway (Port 8080)** - Routage intelligent, sécurité JWT, rate limiting, CORS
-- Configuration des routes dynamiques pour les microservices
-- Implémentation de la sécurité JWT avec validation des tokens
-- Rate limiting pour la protection contre les attaques DDoS
-- Configuration CORS pour la sécurité des requêtes cross-origin
-- Filtres personnalisés pour le logging et le monitoring
+#### 2. Listing Service (Port 8082)
+- CRUD complet des propriétés
+- Système de disponibilités et calendrier
+- Tarification dynamique
+- Recherche et filtrage avancés
+- Versioning des propriétés
 
-### ✅ **Configuration RabbitMQ pour la communication asynchrone**
-- Configuration des exchanges, queues et bindings
-- Implémentation de patterns publish/subscribe
-- Gestion des dead letter queues pour les messages en échec
-- Configuration de la persistance des messages
-- Optimisation des performances pour le message broker
+#### 3. Booking Service (Port 8083)
+- Système de demandes de réservation
+- Validation des disponibilités temps réel
+- Calcul automatique des prix
+- Machine à états pour les statuts
+- Intégration blockchain
 
-### ✅ **Conception complète de la base de données MySQL**
-- Conception du schéma de données normalisé
-- Définition des relations (One-to-Many, Many-to-Many, One-to-One)
-- Optimisation des indexes pour les performances
-- Configuration des contraintes d'intégrité référentielle
-- Design des vues et stored procedures
+#### 4. Payment Service (Port 8084)
+- Intégration Web3j avec Ethereum
+- Gestion des transactions blockchain
+- Escrow de fonds décentralisé
+- Suivi des gas fees
+- Gestion des remboursements
 
-### ✅ **Documentation technique exhaustive**
-- Documentation de l'architecture globale
-- Guides d'installation et de configuration
-- Documentation API 
-- Diagrammes d'activité
+#### 5. Messaging Service (Port 8085)
+- Chat temps réel avec WebSocket/STOMP
+- Gestion des conversations
+- Statut de lecture et notifications
+- Archivage automatique
 
----
+#### 6. Notification Service (Port 8086)
+- Envoi d'emails via SMTP
+- File d'attente RabbitMQ pour async
+- Templates HTML personnalisés
 
-## 🔧 Développement des 9 Microservices
+#### 7. Review Service (Port 8087)
+- Système complet d'avis et notations
+- Calcul des moyennes de notes
+- Modération de contenu
+- Gestion de la visibilité
 
-### 1. **User Service (Port 8081)** ✅
-#### **Authentification complète (JWT avec refresh tokens)**
-- Implémentation du flow d'authentification JWT
-- Gestion des tokens d'actualisation (refresh tokens)
-- Blacklisting des tokens révoqués
-- Expiration et rotation des tokens
-
-#### **Système de vérification email (SMTP) et SMS (Twilio)**
-- Intégration avec service SMTP 
-- Génération de tokens de vérification uniques
-- Logique de ré-émission de codes de vérification
-
-#### **Gestion des profils et wallets Ethereum**
-- Création et mise à jour des profils utilisateurs
-- Association des adresses Ethereum aux utilisateurs
-- Vérification de la propriété des wallets
-- Historique des transactions utilisateur
-
-#### **Blacklist JWT et audit logs**
-- Système de blacklist pour les tokens révoqués
-- Audit logs pour toutes les actions sensibles
-- Conformité RGPD pour les données personnelles
-- Rotation automatique des logs d'audit
-
-#### **Support multi-langues (20 langues)**
-- Table des langues supportées
-- Association utilisateur-langue
-- Traduction des emails et notifications
-- Gestion des préférences linguistiques
-
-#### **Spring Security avec BCrypt**
-- Configuration de la sécurité Spring Boot 3
-- Hashing des mots de passe avec BCrypt
-- Rôles et permissions (USER, HOST, ADMIN)
-- Protection contre les attaques par force brute
-
----
-
-### 2. **Listing Service (Port 8082)** ✅
-#### **CRUD complet des propriétés immobilières**
-- Opérations Create, Read, Update, Delete
-- Validation des données d'entrée
-- Gestion des relations propriété-utilisateur
-- Versioning des modifications
-
-#### **Système de disponibilités et calendrier**
-- Interface de calendrier interactive
-- Blocage/déblocage des dates
-- Validation des chevauchements de réservations
-- Synchronisation avec le booking service
-
-#### **Tarification dynamique (weekend, semaine, mois)**
-- Calcul des prix selon la saisonnalité
-- Discounts pour séjours prolongés
-- Frais de service et de nettoyage
-- Historique des changements de prix
-
-#### **Gestion des équipements (amenities)**
-- Catalogue d'équipements prédéfinis
-- Association propriété-équipements
-- Recherche par équipements disponibles
-- Images et descriptions des équipements
-
-#### **Versioning des propriétés avec snapshots**
-- Snapshots des modifications importantes
-- Restauration de versions précédentes
-- Historique complet des changements
-- Audit des modifications
-
-#### **Recherche et filtrage avancés**
-- Recherche textuelle sur titre et description
-- Filtrage par localisation, prix, équipements
-- Tri par pertinence, prix, note
-- Pagination et lazy loading
-
----
-
-### 3. **Booking Service (Port 8083)** ✅
-#### **Système de demandes de réservation**
-- Workflow de demande de réservation
-- Notifications en temps réel aux propriétaires
-- Expiration automatique des demandes non répondues
-- Statistiques de conversion des demandes
-
-#### **Validation des disponibilités en temps réel**
-- Vérification de disponibilité atomique
-- Locking des dates pendant la réservation
-- Rollback en cas d'échec de transaction
-- Cache de disponibilité pour performances
-
-#### **Calcul automatique des prix (nuits, frais, taxes)**
-- Calcul basé sur les dates et le prix par nuit
-- Application des frais de service et de nettoyage
-- Taxes locales et TVA
-- Récapitulatif détaillé des coûts
-
-#### **Machine à états pour les statuts**
-- Gestion des transitions d'état (PENDING, CONFIRMED, CANCELLED, etc.)
-- Validation des transitions autorisées
-- Historique des changements d'état
-- Actions automatiques selon l'état
-
-#### **Historique complet des changements**
-- Tracking de toutes les modifications de réservation
-- Audit trail pour conformité
-- Restauration en cas d'erreur
-- Reporting des modifications
-
-#### **Intégration blockchain pour les confirmations**
-- Synchronisation avec les smart contracts
-- Vérification des paiements on-chain
-- Confirmation automatique après paiement
-- Gestion des échecs de transaction blockchain
-
-#### **Gestion des annulations**
-- Politiques d'annulation configurables
-- Calcul automatique des remboursements
-- Notifications aux parties concernées
-- Historique des annulations
-
----
-
-### 4. **Payment Service (Port 8084)** ✅
-#### **Intégration Web3j avec Ethereum**
-- Configuration du client Web3j
-- Connexion aux nodes Ethereum (Infura/Alchemy)
-- Gestion des connexions HTTP/WebSocket
-- Fallback sur différents providers
-
-#### **Gestion des transactions blockchain**
-- Construction des transactions Ethereum
-- Estimation des gas fees
-- Envoi et suivi des transactions
-- Confirmation des blocs
-
-#### **Escrow de fonds décentralisé**
-- Dépôt des fonds dans le smart contract
-- Vérification des soldes en escrow
-- Libération des fonds selon conditions
-- Gestion des litiges
-
-#### **Vérification des soldes ETH**
-- Vérification des soldes utilisateur
-- Validation des fonds suffisants
-- Notifications de solde insuffisant
-- Suggestions de recharge
-
-#### **Suivi des gas fees**
-- Monitoring des prix du gas
-- Optimisation des frais de transaction
-- Historique des gas fees payés
-- Alertes de gas fees anormalement élevés
-
-#### **Gestion des remboursements**
-- Initiation des remboursements on-chain
-- Suivi du statut des remboursements
-- Notifications de remboursement complété
-- Reporting des remboursements
-
-#### **Confirmation de transactions on-chain**
-- Écoute des événements blockchain
-- Vérification des confirmations
-- Synchronisation avec la base de données
-- Gestion des forks et réorganisations
-
----
-
-### 5. **Messaging Service (Port 8085)** ✅
-#### **Chat temps réel avec WebSocket/STOMP**
-- Configuration du serveur WebSocket
-- Implémentation du protocole STOMP
-- Gestion des sessions utilisateur
-- Reconnexion automatique
-
-#### **Gestion des conversations multi-participants**
-- Création de conversations (1-1)
-- Ajout/retrait de participants
-- Visibilité des conversations
-
-#### **Statut de lecture et notifications**
-- Tracking des messages lus/non lus
-- Notifications push pour nouveaux messages
-- Badges de compteur de messages
-- Préférences de notification
-
-#### **Archivage automatique des conversations**
-- Politiques d'archivage configurables
-- Compression des messages archivés
-- Restauration des conversations archivées
-- Purge automatique des anciennes données
-
-#### **Intégration Socket.io**
-- Alternative WebSocket avec Socket.io
-- Fallback en polling long si nécessaire
-- Compatibilité multi-navigateurs
-- Support mobile natif
-
----
-
-### 6. **Notification Service (Port 8086)** ✅
-#### **Envoi d'emails via SMTP (JavaMail)**
-- Configuration des serveurs SMTP
-- Templates HTML pour les emails
-- Gestion des pièces jointes
-- Tracking des ouvertures et clics
-
-#### **File d'attente RabbitMQ pour async**
-- Découplage de l'envoi des notifications
-- Retry automatique en cas d'échec
-- Priorisation des notifications urgentes
-- Monitoring de la file d'attente
-
----
-
-### 7. **Review Service (Port 8087)** ✅
-#### **Système complet d'avis et notations**
-- Publication d'avis après séjour
-- Modération des avis avant publication
-- Réponses des propriétaires aux avis
-- Signalement d'avis inappropriés
-
-#### **Calcul des moyennes de notes**
-- Moyenne globale par propriété
-- Moyenne par catégorie (propreté, communication, etc.)
-- Tendances des notes dans le temps
-- Comparaison avec la moyenne locale
-
-#### **Modération de contenu**
-- Filtrage automatique de contenu inapproprié
-- Revues manuelles des avis signalés
-- Politiques de contenu configurables
-- Conformité aux régulations locales
-
-#### **Gestion de la visibilité des avis**
-- Contrôle de la visibilité par les utilisateurs
-- Masquage d'avis offensants
-- Highlight des avis les plus utiles
-- Filtrage par note, date, langue
-
----
-
-### 8. **Media Service (Port 8088)** ✅
-#### **Upload de photos avec Multipart**
-- Upload de fichiers multipart
-- Validation des types de fichiers
-- Limites de taille configurables
-- Progress bar pour l'upload
-
-#### **Compression et redimensionnement d'images**
-- Compression JPEG/PNG optimisée
-- Redimensionnement automatique
+#### 8. Media Service (Port 8088)
+- Upload de photos avec Multipart
+- Compression et redimensionnement
+- Intégration AWS S3
 - Génération de thumbnails
-- Conservation des métadonnées EXIF
+- Gestion de l'ordre d'affichage
 
-#### **Intégration AWS S3 pour le stockage**
-- Configuration des buckets S3
-- Gestion des permissions IAM
-- Transfert optimisé des fichiers
-- Politiques de rétention et d'archivage
+#### 9. Blockchain Service (Port 8089)
+- Interface avec smart contracts
+- Décodage des events blockchain
+- Création de réservations on-chain
+- Synchronisation backend ↔ blockchain
 
-#### **Génération de thumbnails**
-- Thumbnails de différentes tailles
-- Cache des thumbnails générés
-- Format WebP pour performances
-- Lazy loading optimisé
-
-#### **Hash de photos pour déduplication**
-- Calcul de hash MD5/SHA des images
-- Détection des doublons
-- Réutilisation des images existantes
-- Optimisation du stockage
-
-#### **Gestion de l'ordre d'affichage**
-- Drag & drop pour réorganiser les photos
-- Photo principale sélectionnable
-- Rotation automatique selon orientation
-- Masquage de photos de mauvaise qualité
-
----
-
-### 9. **Blockchain Service (Port 8089)** ✅
-#### **Interface complète avec smart contracts**
-- Génération des wrappers Java à partir des ABI
-- Appel des fonctions du smart contract
-- Lecture des variables d'état
-- Gestion des erreurs et exceptions
-
-#### **Décodage des events blockchain**
-- Écoute des événements en temps réel
-- Décodage des données d'événement
-- Mapping vers objets Java
-- Persistance dans la base de données
-
-#### **Création de réservations on-chain**
-- Appel de la fonction createBooking
-- Validation des paramètres
-- Gestion des erreurs de transaction
-- Confirmation de la création
-
-#### **Check-in / Check-out automatisés**
-- Trigger automatique aux dates prévues
-- Vérification des conditions préalables
-- Exécution des transactions on-chain
-- Synchronisation avec le booking service
-
-#### **Libération des fonds escrow**
-- Vérification des conditions de libération
-- Appel de la fonction releaseFunds
-- Distribution des fonds aux parties
-- Gestion des litiges en cours
-
-#### **Synchronisation backend ↔ blockchain**
-- Reconciliation régulière des données
-- Détection et correction des divergences
-- Audit de la cohérence des données
-- Reporting de la santé de la synchronisation
-
----
-
-## 🛠️ Technologies Maîtrisées - Backend
-
-### **Frameworks & Librairies**
-- **Spring Boot 3.x** - Framework principal
-- **Spring Cloud** - Gateway, Config, Eureka, Circuit Breaker
-- **Spring Security** - Authentification et autorisation
-- **Spring Data JPA** - Persistance des données
-- **Spring WebSocket** - Communication temps réel
-- **Spring Batch** - Traitement par lots (optionnel)
-
-### **Base de Données & Cache**
-- **MySQL 8.0** - Base de données relationnelle principale
-- **Hibernate** - ORM avec cache de second niveau
-- **Redis** - Cache distribué et session storage
-
-### **Message Brokers & Communication**
-- **RabbitMQ** - Message broker pour communication asynchrone
-- **STOMP Protocol** - Protocole pour WebSocket
-
-### **Blockchain Integration**
-- **Web3j** - Client Java pour Ethereum
-- **Solidity ABI** - Interface avec smart contracts
-- **Infura/Alchemy** - Nodes Ethereum managés
-
-### **External Services Integration**
-- **JavaMail** - Envoi d'emails SMTP
-- **Twilio SDK** - Envoi de SMS
-- **AWS S3 SDK** - Stockage de fichiers cloud
-
-### **Sécurité**
-- **JWT (JSON Web Tokens)** - Authentification stateless
-- **BCrypt** - Hashing des mots de passe
-- **Spring Security OAuth2** - Authentification tierce (optionnel)
-- **Rate Limiting** - Protection contre les abus
-
-### **Monitoring & Observability**
-- **Spring Boot Actuator** - Métriques d'application
-- **Logback/SLF4J** - Logging structuré
-
----
-
-## 📊 Statistiques de Contribution Backend
-
-### **Volumes de Code**
-- **Lignes de code total** : ~40,000+ (backend uniquement)
-- **Classes Java** : 150+
-- **Interfaces** : 80+
-- **Tests unitaires** : 200+
-- **Tests d'intégration** : 50+
-
-### **API Endpoints**
-- **Endpoints REST** : 100+ endpoints
-- **WebSocket endpoints** : 15+
-- **Rate limiting rules** : 20+ règles configurées
-- **API documentation** : Swagger/OpenAPI complète
-
-### **Performances**
-- **Temps de réponse moyen** : < 200ms (API Gateway)
-- **Disponibilité cible** : 99.9%
-- **Scalabilité** : Horizontal scaling supporté
-- **Throughput** : 1000+ req/sec par instance
-
-### **Sécurité**
-- **JWT token lifetime** : 15 minutes (access), 7 jours (refresh)
-- **BCrypt rounds** : 10 (équilibre sécurité/performance)
-- **Rate limiting** : 100 req/min par utilisateur
-- **Input validation** : Validation sur tous les endpoints
-
----
-
-## 🏆 Architecture Patterns Implementés
-
-### **Design Patterns**
-- **Repository Pattern** - Abstraction de l'accès aux données
-- **Service Pattern** - Logique métier encapsulée
-- **DTO Pattern** - Transfert de données optimisé
-- **Factory Pattern** - Création d'objets complexes
-- **Strategy Pattern** - Algorithmes interchangeables
-- **Observer Pattern** - Événements et notifications
-
-### **Microservices Patterns**
-- **API Gateway Pattern** - Point d'entrée unique
-- **Circuit Breaker Pattern** - Tolérance aux pannes
-- **Service Discovery Pattern** - Découverte dynamique
-- **Config Server Pattern** - Configuration centralisée
 ---
 
 ## 🎨 Frontend Architecture
@@ -685,6 +302,313 @@ Conception et implémentation d'une architecture modulaire et évolutive basée 
 - **State Management** optimisé avec Redux Toolkit
 
 ---
+---
+# Frontend
+![Angular](https://img.shields.io/badge/Angular-18.2-DD0031?style=flat&logo=angular)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?style=flat&logo=typescript)
+![NgRx](https://img.shields.io/badge/NgRx-18.0-BA2BD2?style=flat&logo=ngrx)
+![Ethereum](https://img.shields.io/badge/Ethereum-Sepolia-3C3C3D?style=flat&logo=ethereum)
+![Material](https://img.shields.io/badge/Material_UI-18.2-0081CB?style=flat&logo=material-ui)
+
+---
+
+## 📋 Table des matières
+
+- [🎯 Fonctionnalités](#-fonctionnalités)
+- [🛠️ Stack Technique](#️-stack-technique)
+- [🏗️ Architecture](#️-architecture)
+- [📁 Structure du Projet](#-structure-du-projet)
+- [📸 Aperçu](#-aperçu)
+
+---
+
+## 🎯 Fonctionnalités
+
+### 🔐 Authentification Web3
+- ✅ Connexion/Inscription avec **MetaMask**
+- ✅ Signature de message pour authentification
+- ✅ Gestion des wallets Ethereum
+- ✅ Vérification d'email
+
+### 🏡 Gestion des Propriétés
+- ✅ Recherche avancée avec filtres (lieu, prix, équipements, type)
+- ✅ Autocomplete intelligent de localisation
+- ✅ Vue détaillée avec galerie photos
+- ✅ Carte interactive (Leaflet)
+- ✅ Système d'avis et notes
+- ✅ Suggestion de prix par IA
+
+### 🏠 Espace Propriétaire (Host)
+- ✅ Tableau de bord avec statistiques
+- ✅ Création de propriété (wizard multi-étapes)
+- ✅ Gestion du calendrier de disponibilité
+- ✅ Édition modulaire des informations
+- ✅ Gestion des réservations reçues
+- ✅ Upload de photos (S3)
+
+### 📅 Réservations
+- ✅ Réservation instantanée ou sur demande
+- ✅ Calcul automatique des prix (nuits, frais, réductions)
+- ✅ Paiement en **ETH** via MetaMask
+- ✅ Système d'escrow blockchain
+- ✅ Check-in / Check-out
+- ✅ Historique des réservations (à venir, passées, annulées)
+- ✅ Annulation avec remboursement
+
+### 💬 Messagerie Temps Réel
+- ✅ Chat WebSocket entre hôte et locataire
+- ✅ Indicateurs de présence (en ligne/hors ligne)
+- ✅ Compteur de messages non lus
+- ✅ Statut de lecture des messages
+- ✅ Conversations liées aux réservations
+
+### 🔔 Notifications
+- ✅ Notifications en temps réel
+- ✅ Badge avec compteur de non-lus
+- ✅ Marquer comme lu
+- ✅ Historique complet
+
+### ⭐ Système d'Avis
+- ✅ Notation par critères (propreté, emplacement, communication...)
+- ✅ Commentaires détaillés
+- ✅ Statistiques globales par propriété
+- ✅ Modification/Suppression d'avis
+
+### 👤 Profil Utilisateur
+- ✅ Informations personnelles
+- ✅ Gestion des langues parlées
+- ✅ Photo de profil
+- ✅ Historique des avis
+- ✅ Mode hôte / invité
+
+---
+
+## 🛠️ Stack Technique
+
+### Frontend Core
+- **Framework** : Angular 18.2
+- **Language** : TypeScript 5.5
+- **State Management** : NgRx 18.0 (Store, Effects, Selectors)
+- **UI Library** : Angular Material 18.2
+- **Styling** : SCSS
+
+### Blockchain & Web3
+- **Library** : Ethers.js 6.13
+- **Network** : Sepolia Testnet
+- **Wallet** : MetaMask
+
+### Cartographie
+- **Maps** : ngx-leaflet 18.0 + Leaflet 1.9
+- **Geocoding** : Google Maps API
+
+### Communication
+- **HTTP Client** : Axios 1.13
+- **Real-time** : Socket.io-client 4.8
+- **WebSocket** : Native WebSocket API
+
+### Backend Integration
+- **API Gateway** : Spring Cloud Gateway (port 8080)
+
+---
+
+## 🏗️ Architecture
+
+### Architecture Frontend
+
+```
+Frontend (Angular 18)
+├── Core Layer
+│   ├── Services (API, Auth, Web3, WebSocket...)
+│   ├── Guards (auth, noAuth)
+│   ├── Models (TypeScript interfaces)
+│   └── Pipes (EthPrice)
+│
+├── State Management (NgRx)
+│   ├── Auth Store
+│   ├── Booking Store
+│   ├── Listings Store
+│   ├── Messaging Store
+│   ├── Notifications Store
+│   └── Payment Store
+│
+├── Features (Smart Components)
+│   ├── Home
+│   ├── Auth (Login, Register)
+│   ├── Listings (Search, Filters)
+│   ├── Property Detail
+│   ├── Booking Management
+│   ├── Host Dashboard
+│   ├── Messages
+│   └── Profile
+│
+└── Shared (Presentational Components)
+    ├── Navbar
+    ├── Footer
+    ├── Search Bar
+    ├── Property Card
+    ├── Notification Bell
+    └── Reviews
+```
+
+### Communication avec le Backend
+
+```
+Angular App
+    ↓
+API Gateway (http://localhost:8080/api)
+    ↓
+Microservices (8081-8089)
+    ↓
+Bases de données (PostgreSQL, MongoDB)
+    ↓
+Blockchain (Sepolia Testnet)
+```
+
+---
+
+## 📁 Structure du Projet
+
+```
+src/
+├── app/
+│   ├── core/                          # Services, Guards, Models
+│   │   ├── guards/                    # auth.guard, noAuth.guard
+│   │   ├── models/                    # 19 modèles TypeScript
+│   │   ├── pipes/                     # eth-price.pipe
+│   │   └── services/                  # 15+ services
+│   │       ├── api.service.ts
+│   │       ├── auth.service.ts
+│   │       ├── booking.service.ts
+│   │       ├── property.service.ts
+│   │       ├── payment.service.ts
+│   │       ├── web3.service.ts
+│   │       ├── websocket.service.ts
+│   │       └── ...
+│   │
+│   ├── features/                      # Composants métier
+│   │   ├── home/
+│   │   ├── auth/
+│   │   │   ├── login/
+│   │   │   └── register/
+│   │   ├── listing/
+│   │   │   ├── listings.component.ts
+│   │   │   ├── filters-modal/
+│   │   │   └── property-card/
+│   │   ├── property-detail/
+│   │   │   ├── property-detail.component.ts
+│   │   │   ├── booking-card/
+│   │   │   └── payment-modal/
+│   │   ├── my-bookings/
+│   │   │   ├── my-bookings.component.ts
+│   │   │   ├── booking-card/
+│   │   │   ├── booking-detail-dialog/
+│   │   │   └── review-form/
+│   │   ├── host/
+│   │   │   ├── host-layout/
+│   │   │   ├── host-properties/
+│   │   │   ├── property-wizard/
+│   │   │   ├── host-property-detail/
+│   │   │   └── host-bookings/
+│   │   ├── messages/
+│   │   │   ├── chat-view/
+│   │   │   ├── conversations-list/
+│   │   │   └── message-badge/
+│   │   └── profile/
+│   │       ├── profile.component.ts
+│   │       ├── profile-info/
+│   │       ├── profile-languages/
+│   │       └── profile-reviews/
+│   │
+│   ├── shared/                        # Composants réutilisables
+│   │   └── components/
+│   │       ├── navbar/
+│   │       ├── footer/
+│   │       ├── search-bar/
+│   │       ├── notification-bell/
+│   │       ├── about/
+│   │       ├── contact/
+│   │       ├── faq/
+│   │       ├── trust-safety/
+│   │       ├── how-it-works/
+│   │       └── become-host/
+│   │
+│   ├── store/                         # NgRx State Management
+│   │   ├── auth/
+│   │   │   ├── auth.actions.ts
+│   │   │   ├── auth.effects.ts
+│   │   │   ├── auth.reducer.ts
+│   │   │   └── auth.selectors.ts
+│   │   ├── booking/
+│   │   ├── listings/
+│   │   ├── messaging/
+│   │   ├── notifications/
+│   │   └── payment/
+│   │
+│   ├── app.routes.ts                  # Configuration du routing
+│   ├── app.component.ts
+│   └── app.config.ts
+│
+├── environments/
+│   ├── environment.ts                 # Config développement
+│   └── environment.prod.ts            # Config production
+│
+├── styles.scss                        # Styles globaux
+└── index.html
+```
+
+---
+
+
+## 📸 Aperçu
+
+### Page d'Accueil
+- Hero section avec search bar
+- Destinations populaires
+- Propriétés mises en avant
+- Section "Pourquoi nous choisir"
+- Footer informatif
+
+### Recherche et Filtres
+- Barre de recherche intelligente
+- Filtres avancés (prix, type, équipements, règles)
+- Cartes de propriétés avec photos
+- Pagination et tri
+
+### Détail de Propriété
+- Galerie photos
+- Informations complètes
+- Carte de localisation
+- Calendrier de disponibilité
+- Section réservation
+- Avis clients
+
+### Paiement
+- Modal de paiement step-by-step
+- Vérification du solde ETH
+- Intégration MetaMask
+- Confirmation blockchain
+- Tracking de transaction
+
+### Espace Hôte
+- Dashboard avec statistiques
+- Gestion des propriétés
+- Calendrier de réservations
+- Messagerie avec clients
+- Édition complète des annonces
+
+### Messagerie
+- Liste des conversations
+- Chat en temps réel
+- Indicateurs de présence
+- Notifications de nouveaux messages
+
+---
+### Documentation Technique
+Pour une documentation technique complète (architecture détaillée, services, store NgRx, composants), consultez :
+📖 **[README-DETAILED.md](./README-DETAILED.md)**
+ 
+---
+  
 
 ## ⛓ Blockchain Implementation
 
@@ -855,4 +779,3 @@ Merci à toute l'équipe de développement pour leur contribution exceptionnelle
 
 **Dernière mise à jour** : Janvier 2026  
 **Version** : 1.0.0  
-**Statut** : En développement actif 🚧
