@@ -26,7 +26,7 @@
 ## 🎯 Vue d'ensemble
 
 Cette plateforme révolutionne le marché de la location immobilière en combinant :
-- **Interface moderne** : React avec Material-UI
+- **Interface moderne** : Angular avec Material-UI
 - **Architecture microservices** : Évolutivité et maintenabilité
 - **Blockchain Ethereum** : Paiements sécurisés via smart contracts
 - **Communication temps réel** : Chat intégré
