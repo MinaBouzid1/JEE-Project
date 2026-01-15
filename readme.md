@@ -147,7 +147,7 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 ---
 
-### ⛓ Blockchain Developer
+### ⛓ Blockchain And AI  Engineer
 **Nom** : Ikrame Houzane 
 
 **Rôle** : Blockchain & AI Engineer
