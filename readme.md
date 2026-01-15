@@ -1143,6 +1143,32 @@ Ces modèles nécessitent des volumes de données importants, structurés et exp
 - **Auto-documenté** : Swagger UI générée automatiquement
 - **Ultra-rapide** : Prédictions < 50ms
 - **Scalable** : Architecture microservices
+## 🔧 Tech Stack
+
+### Backend & API
+| Technology | Version | Usage |
+|---|---|---|
+| **FastAPI** | 0.124.0 | Framework web moderne asynchrone |
+| **Uvicorn** | 0.38.0 | Serveur ASGI haute performance |
+| **Pydantic** | 2.12.5 | Validation données et sérialisation |
+| **Python** | 3.10+ | Langage principal |
+
+### Machine Learning & Data Science
+| Technology | Version | Usage |
+|---|---|---|
+| **scikit-learn** | 1.8.0 | Algorithmes ML (GradientBoosting, RandomForest, KMeans) |
+| **XGBoost** | 3.1.2 | Boosting avancé (optionnel) |
+| **pandas** | 2.3.3 | Manipulation et analyse de données |
+| **NumPy** | 2.3.5 | Calculs vectorisés haute performance |
+| **SciPy** | 1.16.3 | Fonctions scientifiques avancées |
+
+### Visualisation & Analyse
+| Technology | Version | Usage |
+|---|---|---|
+| **Matplotlib** | 3.10.8 | Graphiques statistiques |
+| **Seaborn** | 0.13.2 | Visualisations statistiques élaborées |
+| **Plotly** | 6.5.0 | Graphiques interactifs |
+| **Jupyter** | N/A | Notebooks d'analyse exploratoire |
 
 ## 🏗️ Architecture
 
@@ -1172,7 +1198,7 @@ Ces modèles nécessitent des volumes de données importants, structurés et exp
 │  └──────────────┴──────────────┴──────────────────────┘  │
 │                                                          │
 │  ┌──────────────────────────────────────────────────┐    │
-│  │  ML Models (4 × .pkl)    │ Datasets (3 × CSV)   │     │
+│  │  ML Models (4 × .pkl)    │ Datasets (3 × CSV)    │    │
 │  └──────────────────────────────────────────────────┘    │
 └──────────────────────────────────────────────────────────┘
 ```
