@@ -16,8 +16,6 @@
 - [Architecture](#-architecture)
 - [Technologies](#-technologies)
 - [Équipe de Développement](#-équipe-de-développement)
-- [Architecture & Backend Engineer - Responsabilités Détaillées](#-architecture--backend-engineer---responsabilités-détaillées)
-- [Microservices](#-microservices)
 - [Infrastructure](#-infrastructure)
 - [Blockchain](#-blockchain)
 - [Installation](#-installation)
@@ -132,9 +130,6 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 ### 🎨 Architecture & Backend Engineer
 **Nom** : Bouzid Mina
 ---
-
-## 🏆 Architecture & Backend Engineer - Responsabilités Détaillées
-
 ### 🎯 Architecture & Infrastructure
 
 ✅ **Conception de l'architecture microservices 5 couches**  
