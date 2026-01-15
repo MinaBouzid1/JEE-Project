@@ -178,7 +178,7 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 <img width="342" height="296" alt="image" src="https://github.com/user-attachments/assets/8b64f32b-d360-46bf-ae93-9ce5cd2adb97" />
 
-### Package Users:
+### 📁 Package Users:
 
 **Diagramme de Classes** 
 
@@ -192,7 +192,7 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 <img width="501" height="291" alt="image" src="https://github.com/user-attachments/assets/06a92f90-d362-4db6-8ff7-248cc298d95e" />
 
-### Package Réservations:
+### 📁 Package Réservations:
 
 **Diagramme d’activités**
 
@@ -202,7 +202,7 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 <img width="609" height="388" alt="image" src="https://github.com/user-attachments/assets/e8bba779-bf0a-431e-9f8e-99acea2d30c3" />
 
-### Package Annonces:
+### 📁 Package Annonces:
 
 **Diagramme des cas d’utilisation**
 
@@ -212,7 +212,7 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 <img width="563" height="388" alt="image" src="https://github.com/user-attachments/assets/ec871f3d-605f-492a-89f1-95493fbd3f9d" />
 
-### Package Communication:
+### 📁 Package Communication:
 
 **Diagramme des cas d’utilisation**
 
