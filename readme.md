@@ -149,7 +149,9 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 ### ⛓ Blockchain Developer
 **Nom** : Ikrame Houzane 
+
 **Rôle** : Blockchain & AI Engineer
+
 **Responsabilités** :
 - Conception et développement du contrat principal  
 - Déploiement sur le testnet Sepolia  
