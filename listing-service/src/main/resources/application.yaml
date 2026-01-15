@@ -5,7 +5,7 @@ spring:
   application:
       name: listing-service
   datasource:
-    url: jdbc:mysql://localhost:3306/rental_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:4306/rental_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -19,12 +19,16 @@ spring:
       hibernate:
         format_sql: true
 
-
   # Pour éviter les problèmes de redémarrage avec DevTools
   devtools:
     restart:
       enabled: true
-  # configuration eureka
+
+  # Configuration AI Service
+  ai:
+    service:
+      url: http://localhost:8090
+
 eureka:
   client:
     enabled: true

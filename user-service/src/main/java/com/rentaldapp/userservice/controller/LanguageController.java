@@ -16,7 +16,7 @@ public class LanguageController {
     @Autowired
     private LanguageService languageService;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<LanguageDTO>> getAllLanguages() {
         List<LanguageDTO> languages = languageService.getAllLanguages();
         return ResponseEntity.ok(languages);
