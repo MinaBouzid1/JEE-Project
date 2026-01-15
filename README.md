@@ -2066,7 +2066,7 @@ class PricePredictionRequest(BaseModel):
 | Kubernetes                 | EKS 1.32 minimal (1–2 nœuds) + logging complet + OIDC                         | Futur-proof pour scaling horizontal    |
 
 ## 📂 Organisation des fichiers Terraform
-
+```
 Fichiers principaux :
 ├── main.tf                     # Configuration provider & tags par défaut
 ├── variables.tf                # Variables principales + locals.microservices
@@ -2097,7 +2097,7 @@ Fichiers principaux :
 ├── jenkins_ec2.tf              # Instance Jenkins t3.micro + SSM + user_data
 │
 ├── cloudwatch_.tf             # Logs, Dashboard, 2 alarmes (ALB 5XX + RDS CPU)
-
+```
 
 ## 🔐 Points de sécurité importants
 
