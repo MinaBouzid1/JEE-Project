@@ -196,7 +196,7 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 ---
 
-## 🔧 Backend 
+## 🔧 Backend Architecture
 
 ### Conception de l'Architecture Microservices
 Conception et implémentation d'une architecture modulaire et évolutive basée sur les principes des microservices, permettant une scalabilité horizontale et une maintenabilité optimale.
@@ -272,7 +272,7 @@ Conception et implémentation d'une architecture modulaire et évolutive basée 
 
 ---
 
-# Frontend
+# Frontend Architecture
 ![Angular](https://img.shields.io/badge/Angular-18.2-DD0031?style=flat&logo=angular)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?style=flat&logo=typescript)
 ![NgRx](https://img.shields.io/badge/NgRx-18.0-BA2BD2?style=flat&logo=ngrx)
