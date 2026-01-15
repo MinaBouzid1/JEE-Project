@@ -36,9 +36,6 @@
 - [Frontend Architecture](#-frontend-architecture)
 - [Blockchain And AI Implementation](#-blockchainandai-implementation)
 - [Cloud & DevOps](#-cloud--devops)
-- [Infrastructure](#-infrastructure)
-- [Installation](#-installation)
-- [Licence](#-licence)
 
 ---
 
