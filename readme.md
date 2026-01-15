@@ -105,44 +105,6 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 ---
 
-## 🛠 Technologies
-
-### Backend
-- **Framework** : Spring Boot 3.x
-- **Langage** : Java 17
-- **Build Tool** : Maven
-- **Base de données** : MySQL 8.0
-- **Message Broker** : RabbitMQ
-- **Cache** : Redis (optionnel)
-- **Service Discovery** : Netflix Eureka
-- **Configuration** : Spring Cloud Config
-- **API Gateway** : Spring Cloud Gateway
-- **Blockchain** : Web3j (Java Ethereum Client)
-
-### Frontend
-- **Framework** : Angular 18.2 avec TypeScript
-- **State Management** : NgRx 18.0
-- **UI Library** : Angular Material 18.2
-- **Blockchain** : Web3.js / Ethers.js
-- **Maps** : ngx-leaflet 18.0
-- **Real-time** : Socket.io-client 4.8
-- **HTTP Client** : Axios 1.13
-  
-### Blockchain
-- **Network** : Ethereum (Sepolia Testnet / Mainnet)
-- **Smart Contracts** : Solidity 0.8.x
-- **Development** : Hardhat
-- **Node Provider** : Infura / Alchemy
-- **Wallet** : MetaMask
-
-### DevOps
-- **Containerization** : Docker
-- **Orchestration** : Docker Compose / Kubernetes
-- **CI/CD** : GitHub Actions / Jenkins
-- **Monitoring** : Prometheus + Grafana
-- **Logging** : ELK Stack (Elasticsearch, Logstash, Kibana)
-
----
 
 ## 👥 Équipe de Développement
 
