@@ -538,7 +538,7 @@ Conception et implémentation d'une architecture modulaire et évolutive basée 
 ---
 
 ### ⚛️ Frontend Developer
-**Nom** : [À compléter]
+**Nom** : Allali Fatima-ezzahra
 **Rôle** : Développeur Frontend
 
 
@@ -557,6 +557,343 @@ Conception et implémentation d'une architecture modulaire et évolutive basée 
 
 
 ---
+# Frontend
+![Angular](https://img.shields.io/badge/Angular-18.2-DD0031?style=flat&logo=angular)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?style=flat&logo=typescript)
+![NgRx](https://img.shields.io/badge/NgRx-18.0-BA2BD2?style=flat&logo=ngrx)
+![Ethereum](https://img.shields.io/badge/Ethereum-Sepolia-3C3C3D?style=flat&logo=ethereum)
+![Material](https://img.shields.io/badge/Material_UI-18.2-0081CB?style=flat&logo=material-ui)
+
+---
+
+## 📋 Table des matières
+
+- [🎯 Fonctionnalités](#-fonctionnalités)
+- [🛠️ Stack Technique](#️-stack-technique)
+- [🏗️ Architecture](#️-architecture)
+- [🚀 Installation](#-installation)
+- [📁 Structure du Projet](#-structure-du-projet)
+- [🔑 Variables d'Environnement](#-variables-denvironnement)
+- [📸 Aperçu](#-aperçu)
+- [📚 Documentation](#-documentation)
+
+---
+
+## 🎯 Fonctionnalités
+
+### 🔐 Authentification Web3
+- ✅ Connexion/Inscription avec **MetaMask**
+- ✅ Signature de message pour authentification
+- ✅ Gestion des wallets Ethereum
+- ✅ Vérification d'email
+
+### 🏡 Gestion des Propriétés
+- ✅ Recherche avancée avec filtres (lieu, prix, équipements, type)
+- ✅ Autocomplete intelligent de localisation
+- ✅ Vue détaillée avec galerie photos
+- ✅ Carte interactive (Leaflet)
+- ✅ Système d'avis et notes
+- ✅ Suggestion de prix par IA
+
+### 🏠 Espace Propriétaire (Host)
+- ✅ Tableau de bord avec statistiques
+- ✅ Création de propriété (wizard multi-étapes)
+- ✅ Gestion du calendrier de disponibilité
+- ✅ Édition modulaire des informations
+- ✅ Gestion des réservations reçues
+- ✅ Upload de photos (S3)
+
+### 📅 Réservations
+- ✅ Réservation instantanée ou sur demande
+- ✅ Calcul automatique des prix (nuits, frais, réductions)
+- ✅ Paiement en **ETH** via MetaMask
+- ✅ Système d'escrow blockchain
+- ✅ Check-in / Check-out
+- ✅ Historique des réservations (à venir, passées, annulées)
+- ✅ Annulation avec remboursement
+
+### 💬 Messagerie Temps Réel
+- ✅ Chat WebSocket entre hôte et locataire
+- ✅ Indicateurs de présence (en ligne/hors ligne)
+- ✅ Compteur de messages non lus
+- ✅ Statut de lecture des messages
+- ✅ Conversations liées aux réservations
+
+### 🔔 Notifications
+- ✅ Notifications en temps réel
+- ✅ Badge avec compteur de non-lus
+- ✅ Marquer comme lu
+- ✅ Historique complet
+
+### ⭐ Système d'Avis
+- ✅ Notation par critères (propreté, emplacement, communication...)
+- ✅ Commentaires détaillés
+- ✅ Statistiques globales par propriété
+- ✅ Modification/Suppression d'avis
+
+### 👤 Profil Utilisateur
+- ✅ Informations personnelles
+- ✅ Gestion des langues parlées
+- ✅ Photo de profil
+- ✅ Historique des avis
+- ✅ Mode hôte / invité
+
+---
+
+## 🛠️ Stack Technique
+
+### Frontend Core
+- **Framework** : Angular 18.2
+- **Language** : TypeScript 5.5
+- **State Management** : NgRx 18.0 (Store, Effects, Selectors)
+- **UI Library** : Angular Material 18.2
+- **Styling** : SCSS
+
+### Blockchain & Web3
+- **Library** : Ethers.js 6.13
+- **Network** : Sepolia Testnet
+- **Wallet** : MetaMask
+
+### Cartographie
+- **Maps** : ngx-leaflet 18.0 + Leaflet 1.9
+- **Geocoding** : Google Maps API
+
+### Communication
+- **HTTP Client** : Axios 1.13
+- **Real-time** : Socket.io-client 4.8
+- **WebSocket** : Native WebSocket API
+
+### Backend Integration
+- **API Gateway** : Spring Cloud Gateway (port 8080)
+- **Microservices** : 9 services Spring Boot
+  - User Service (8081)
+  - Listing Service (8082)
+  - Booking Service (8083)
+  - Payment Service (8084)
+  - Messaging Service (8085)
+  - Notification Service (8086)
+  - Review Service (8087)
+  - Media Service (8088)
+  - Blockchain Service (8089)
+
+---
+
+## 🏗️ Architecture
+
+### Architecture Frontend
+
+```
+Frontend (Angular 18)
+├── Core Layer
+│   ├── Services (API, Auth, Web3, WebSocket...)
+│   ├── Guards (auth, noAuth)
+│   ├── Models (TypeScript interfaces)
+│   └── Pipes (EthPrice)
+│
+├── State Management (NgRx)
+│   ├── Auth Store
+│   ├── Booking Store
+│   ├── Listings Store
+│   ├── Messaging Store
+│   ├── Notifications Store
+│   └── Payment Store
+│
+├── Features (Smart Components)
+│   ├── Home
+│   ├── Auth (Login, Register)
+│   ├── Listings (Search, Filters)
+│   ├── Property Detail
+│   ├── Booking Management
+│   ├── Host Dashboard
+│   ├── Messages
+│   └── Profile
+│
+└── Shared (Presentational Components)
+    ├── Navbar
+    ├── Footer
+    ├── Search Bar
+    ├── Property Card
+    ├── Notification Bell
+    └── Reviews
+```
+
+### Communication avec le Backend
+
+```
+Angular App
+    ↓
+API Gateway (http://localhost:8080/api)
+    ↓
+Microservices (8081-8089)
+    ↓
+Bases de données (PostgreSQL, MongoDB)
+    ↓
+Blockchain (Sepolia Testnet)
+```
+
+### Flux de Paiement Blockchain
+
+```
+1. User clique "Réserver"
+   ↓
+2. Vérification du solde ETH
+   ↓
+3. Ouverture de MetaMask
+   ↓
+4. User signe la transaction
+   ↓
+5. Transaction envoyée on-chain
+   ↓
+6. Polling de confirmation (max 60s)
+   ↓
+7. Backend confirme la réservation
+   ↓
+8. Escrow actif (fonds bloqués)
+   ↓
+9. Check-out → Libération escrow
+```
+
+---
+
+## 📁 Structure du Projet
+
+```
+src/
+├── app/
+│   ├── core/                          # Services, Guards, Models
+│   │   ├── guards/                    # auth.guard, noAuth.guard
+│   │   ├── models/                    # 19 modèles TypeScript
+│   │   ├── pipes/                     # eth-price.pipe
+│   │   └── services/                  # 15+ services
+│   │       ├── api.service.ts
+│   │       ├── auth.service.ts
+│   │       ├── booking.service.ts
+│   │       ├── property.service.ts
+│   │       ├── payment.service.ts
+│   │       ├── web3.service.ts
+│   │       ├── websocket.service.ts
+│   │       └── ...
+│   │
+│   ├── features/                      # Composants métier
+│   │   ├── home/
+│   │   ├── auth/
+│   │   │   ├── login/
+│   │   │   └── register/
+│   │   ├── listing/
+│   │   │   ├── listings.component.ts
+│   │   │   ├── filters-modal/
+│   │   │   └── property-card/
+│   │   ├── property-detail/
+│   │   │   ├── property-detail.component.ts
+│   │   │   ├── booking-card/
+│   │   │   └── payment-modal/
+│   │   ├── my-bookings/
+│   │   │   ├── my-bookings.component.ts
+│   │   │   ├── booking-card/
+│   │   │   ├── booking-detail-dialog/
+│   │   │   └── review-form/
+│   │   ├── host/
+│   │   │   ├── host-layout/
+│   │   │   ├── host-properties/
+│   │   │   ├── property-wizard/
+│   │   │   ├── host-property-detail/
+│   │   │   └── host-bookings/
+│   │   ├── messages/
+│   │   │   ├── chat-view/
+│   │   │   ├── conversations-list/
+│   │   │   └── message-badge/
+│   │   └── profile/
+│   │       ├── profile.component.ts
+│   │       ├── profile-info/
+│   │       ├── profile-languages/
+│   │       └── profile-reviews/
+│   │
+│   ├── shared/                        # Composants réutilisables
+│   │   └── components/
+│   │       ├── navbar/
+│   │       ├── footer/
+│   │       ├── search-bar/
+│   │       ├── notification-bell/
+│   │       ├── about/
+│   │       ├── contact/
+│   │       ├── faq/
+│   │       ├── trust-safety/
+│   │       ├── how-it-works/
+│   │       └── become-host/
+│   │
+│   ├── store/                         # NgRx State Management
+│   │   ├── auth/
+│   │   │   ├── auth.actions.ts
+│   │   │   ├── auth.effects.ts
+│   │   │   ├── auth.reducer.ts
+│   │   │   └── auth.selectors.ts
+│   │   ├── booking/
+│   │   ├── listings/
+│   │   ├── messaging/
+│   │   ├── notifications/
+│   │   └── payment/
+│   │
+│   ├── app.routes.ts                  # Configuration du routing
+│   ├── app.component.ts
+│   └── app.config.ts
+│
+├── environments/
+│   ├── environment.ts                 # Config développement
+│   └── environment.prod.ts            # Config production
+│
+├── styles.scss                        # Styles globaux
+└── index.html
+```
+
+---
+
+
+## 📸 Aperçu
+
+### Page d'Accueil
+- Hero section avec search bar
+- Destinations populaires
+- Propriétés mises en avant
+- Section "Pourquoi nous choisir"
+- Footer informatif
+
+### Recherche et Filtres
+- Barre de recherche intelligente
+- Filtres avancés (prix, type, équipements, règles)
+- Cartes de propriétés avec photos
+- Pagination et tri
+
+### Détail de Propriété
+- Galerie photos
+- Informations complètes
+- Carte de localisation
+- Calendrier de disponibilité
+- Section réservation
+- Avis clients
+
+### Paiement
+- Modal de paiement step-by-step
+- Vérification du solde ETH
+- Intégration MetaMask
+- Confirmation blockchain
+- Tracking de transaction
+
+### Espace Hôte
+- Dashboard avec statistiques
+- Gestion des propriétés
+- Calendrier de réservations
+- Messagerie avec clients
+- Édition complète des annonces
+
+### Messagerie
+- Liste des conversations
+- Chat en temps réel
+- Indicateurs de présence
+- Notifications de nouveaux messages
+
+---
+
+
 
 ## 📊 Métriques du Projet
 
