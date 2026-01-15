@@ -1,9 +1,8 @@
 # Config Server - Rental Platform (Spring Boot 3.5.8)
 
-## 📋 Description  -  to know more about this if  someone wants to test it 
+## 📋 Description  -  
 Serveur de configuration centralisé pour la plateforme de location décentralisée. Gère toutes les configurations des microservices via un dépôt Git local.
 
-NOTE : while creating this microservice i didnt find the same  version i was working with  so i worked with this one (it won't cause a problem )
 **Version Spring Boot** : 3.5.8   
 **Version Spring Cloud** : 2023.0.0
 
