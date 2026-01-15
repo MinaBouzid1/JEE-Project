@@ -977,9 +977,13 @@ npx hardhat run scripts/interactions/stressTestRental.js --network sepolia
 
 Pour l'intégration avec le backend, on a fait tout un microservice: blockchain-service. 
 ##### Fichiers Livrés au Backend
+
 ✅ Adresse du contrat déployé
+
 ✅ ABI (Application Binary Interface)
+
 ✅ Documentation des fonctions
+
 ✅ Scripts d'interaction
 
 #### Services disponibles
@@ -1917,18 +1921,6 @@ class PricePredictionRequest(BaseModel):
                 "occupancy_rate": 0.72
             }
         }
-```
-
-### Rate Limiting
-
-```bash
-# Installation
-pip install slowapi
-
-# Configuration recommandée
-/price/predict: 100 requêtes/minute
-/scoring/predict: 200 requêtes/minute
-/recommend/predict: 150 requêtes/minute
 ```
 
 ---
