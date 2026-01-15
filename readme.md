@@ -268,9 +268,9 @@ Conception et implémentation d'une architecture modulaire et évolutive basée 
 - Création de réservations on-chain
 - Synchronisation backend ↔ blockchain
 
----
 
 ---
+
 
 # Frontend Architecture
 ![Angular](https://img.shields.io/badge/Angular-18.2-DD0031?style=flat&logo=angular)
@@ -381,8 +381,6 @@ Conception et implémentation d'une architecture modulaire et évolutive basée 
 ---
 
 ## 🏗️ Architecture
-
-### Architecture Frontend
 
 ```
 Frontend (Angular 18)
