@@ -573,7 +573,6 @@ Conception et implémentation d'une architecture modulaire et évolutive basée 
 - **Spring Security** - Authentification et autorisation
 - **Spring Data JPA** - Persistance des données
 - **Spring WebSocket** - Communication temps réel
-- **Spring Batch** - Traitement par lots (optionnel)
 
 ### **Base de Données & Cache**
 - **MySQL 8.0** - Base de données relationnelle principale
@@ -583,8 +582,7 @@ Conception et implémentation d'une architecture modulaire et évolutive basée 
 ### **Message Brokers & Communication**
 - **RabbitMQ** - Message broker pour communication asynchrone
 - **STOMP Protocol** - Protocole pour WebSocket
-- **Apache Kafka** - Alternative pour event streaming (optionnel)
-
+  
 ### **Blockchain Integration**
 - **Web3j** - Client Java pour Ethereum
 - **Solidity ABI** - Interface avec smart contracts
@@ -646,7 +644,6 @@ Conception et implémentation d'une architecture modulaire et évolutive basée 
 - **Circuit Breaker Pattern** - Tolérance aux pannes
 - **Service Discovery Pattern** - Découverte dynamique
 - **Config Server Pattern** - Configuration centralisée
-- **Saga Pattern** - Transactions distribuées
 
 ### **Event-Driven Patterns**
 - **Event Sourcing** - Persistance basée sur événements
