@@ -571,11 +571,8 @@ Conception et implémentation d'une architecture modulaire et évolutive basée 
 - [🎯 Fonctionnalités](#-fonctionnalités)
 - [🛠️ Stack Technique](#️-stack-technique)
 - [🏗️ Architecture](#️-architecture)
-- [🚀 Installation](#-installation)
 - [📁 Structure du Projet](#-structure-du-projet)
-- [🔑 Variables d'Environnement](#-variables-denvironnement)
 - [📸 Aperçu](#-aperçu)
-- [📚 Documentation](#-documentation)
 
 ---
 
