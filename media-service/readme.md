@@ -66,14 +66,14 @@ SOURCE /chemin/vers/rental_db.sql;
 DB_HOST=localhost
 DB_PORT=3306
 DB_NAME=rental_db
-DB_USER=root
-DB_PASSWORD=root
+DB_USER=db_name 
+DB_PASSWORD=db_password
 
 # AWS (Pas de credentials nécessaires en local)
 AWS_REGION=eu-west-3
-S3_PROPERTIES_BUCKET=real-estate-dapp-properties-images-dev
-S3_USERS_BUCKET=real-estate-dapp-users-photos-dev
-CLOUDFRONT_URL=https://dynu4ij1ldniw.cloudfront.net
+S3_PROPERTIES_BUCKET=name
+S3_USERS_BUCKET=name
+CLOUDFRONT_URL=name
 
 # EUREKA
 EUREKA_SERVER_URL=http://localhost:8761/eureka
