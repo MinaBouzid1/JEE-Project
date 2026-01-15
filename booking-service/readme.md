@@ -36,12 +36,6 @@ Service de gestion des réservations pour la plateforme de location décentralis
 - **Message Broker :** RabbitMQ
 - **Sécurité :** JWT + Spring Security
 
-### Modèle de Données
-- **Booking** - Réservation principale
-- **BookingStatus** - Historique des statuts
-- **BookingRequest** - Demandes de réservation
-- **CancellationPolicy** - Politiques d'annulation
-- **PriceBreakdown** - Détail des prix
 
 🔄 Flux de réservation
 text
