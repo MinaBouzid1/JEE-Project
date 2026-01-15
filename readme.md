@@ -28,7 +28,7 @@
 - [Technologies](#-technologies)
 - [Équipe de Développement](#-équipe-de-développement)
   - [Backend Engineer](#-backend-engineer)
-  - [Blockchain and AI Enginner](#-blockchainandaiengineer-developer)
+  - [Blockchain and AI Enginner](#-blockchain-and-ai-engineer)
   - [Frontend Developer](#-frontend-developer)
   - [Cloud Engineer](#-cloud-engineer)
   - [DevOps Engineer](#-devops-engineer)
