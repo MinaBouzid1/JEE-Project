@@ -6,8 +6,17 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)](https://angular.io/)
 [![Ethereum](https://img.shields.io/badge/Ethereum-Blockchain-purple.svg)](https://ethereum.org/)
-https://img.shields.io/badge/FastAPI-0.124.0-009688.svg?logo=fastapi&logoColor=white
-https://img.shields.io/badge/Uvicorn-0.38.0-00B4AB.svg
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.124.0-009688.svg)](https://fastapi.tiangolo.com/)
+[![Uvicorn](https://img.shields.io/badge/Uvicorn-0.38.0-00B4AB.svg)](https://www.uvicorn.org/)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB.svg)](https://www.python.org/)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.8.0-F7931E.svg)](https://scikit-learn.org/)
+[![pandas](https://img.shields.io/badge/pandas-2.3.3-150458.svg)](https://pandas.pydata.org/)
+[![NumPy](https://img.shields.io/badge/NumPy-2.3.5-013243.svg)](https://numpy.org/)
+[![SciPy](https://img.shields.io/badge/SciPy-1.16.3-8CAAE6.svg)](https://scipy.org/)
+[![Matplotlib](https://img.shields.io/badge/Matplotlib-3.10.8-11557C.svg)](https://matplotlib.org/)
+[![Seaborn](https://img.shields.io/badge/Seaborn-0.13.2-6C8EB0.svg)](https://seaborn.pydata.org/)
+[![Plotly](https://img.shields.io/badge/Plotly-6.5.0-3F4F75.svg)](https://plotly.com/)
+[![Jupyter](https://img.shields.io/badge/Jupyter-F37626.svg)](https://jupyter.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-orange.svg)](https://www.mysql.com/)
 
 ---
