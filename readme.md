@@ -196,6 +196,8 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 ---
 
+
+
 ## 🔧 Backend Architecture
 
 ### Conception de l'Architecture Microservices
@@ -270,6 +272,8 @@ Conception et implémentation d'une architecture modulaire et évolutive basée 
 
 
 ---
+
+
 
 
 # Frontend Architecture
@@ -570,11 +574,15 @@ src/
 - Notifications de nouveaux messages
 
 ---
-### Documentation Technique
+##### Documentation Technique
 Pour une documentation technique complète (architecture détaillée, services, store NgRx, composants), consultez :
 📖 **[README-DETAILED.md](./README-DETAILED.md)**
  
 ---
+
+
+
+
   
 
 ## ⛓ Blockchain Implementation
