@@ -69,7 +69,7 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                     FRONTEND LAYER                          │
-│Angular 18.2+ TypeScript+ NgRx 18.0 + Material-UI + Web3.js  │
+│Angular + TypeScript+ NgRx + Angular Material + Ethers.js    │
 └─────────────────────────────────────────────────────────────┘
                             ↓ HTTPS
 ┌─────────────────────────────────────────────────────────────┐
@@ -138,9 +138,9 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 **Responsabilités** :
 - Développement de l'interface Angular avec TypeScript
-- Intégration Web3.js et MetaMask
-- Développement des composants Material-UI
-- Cartographie avec React-Leaflet
+- Intégration Ethers.js et MetaMask
+- Développement des composants Angular Material
+- Cartographie avec ngx-leaflet
 - Gestion d'état avec NgRx (Store, Effects, Selectors)
 
 
@@ -299,7 +299,8 @@ Conception et implémentation d'une architecture modulaire et évolutive basée 
 
 
 
-# Frontend Architecture
+# 🎨 Frontend Architecture
+
 ![Angular](https://img.shields.io/badge/Angular-18.2-DD0031?style=flat&logo=angular)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?style=flat&logo=typescript)
 ![NgRx](https://img.shields.io/badge/NgRx-18.0-BA2BD2?style=flat&logo=ngrx)
