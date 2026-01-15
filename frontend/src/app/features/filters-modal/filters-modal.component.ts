@@ -16,11 +16,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 // Models
-import { PropertySearchFilters } from './../../core/models/property.model';
-import { Amenity } from './../../core/models/amenity.model';
+import { PropertySearchFilters } from '../../core/models/property.model';
+import { Amenity } from '../../core/models/amenity.model';
 
 // Services
-import { AmenityService } from './../../core/services/amenity.service';
+import { AmenityService } from '../../core/services/amenity.service';
 
 /**
  * ============================

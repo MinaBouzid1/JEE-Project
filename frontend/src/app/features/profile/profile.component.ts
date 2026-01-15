@@ -27,9 +27,9 @@ import {
 import { selectCurrentUser } from '../../store/auth/auth.selectors';
 
 // Child Components
-import { ProfileInfoComponent } from '../../features/profile-info/profile-info.component';
-import { ProfileLanguagesComponent } from '../../features/profile-languages/profile-languages.component';
-import { ProfileReviewsComponent } from '../../features/profile-reviews/profile-reviews.component';
+import { ProfileInfoComponent } from '../profile-info/profile-info.component';
+import { ProfileLanguagesComponent } from '../profile-languages/profile-languages.component';
+import { ProfileReviewsComponent } from '../profile-reviews/profile-reviews.component';
 import {MatBadge} from "@angular/material/badge";
 
 import { RouterLink } from '@angular/router'; // ✅ AJOUTER pour routerLink

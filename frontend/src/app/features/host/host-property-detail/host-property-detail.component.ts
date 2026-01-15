@@ -18,8 +18,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { AvailabilityCalendarComponent } from '../../host/availability-calendar/availability-calendar.component';
-import { AmenitiesManagerComponent } from '../../host/amenities-manager/amenities-manager.component';
+import { AvailabilityCalendarComponent } from '../availability-calendar/availability-calendar.component';
+import { AmenitiesManagerComponent } from '../amenities-manager/amenities-manager.component';
 import { PropertyService } from '../../../core/services/property.service';
 import { PropertyDetail, PropertyPhoto, PropertyAmenity } from '../../../core/models/property-detail.model';
 import { PricePredictionResponse } from '../../../core/models/price-prediction.model';
@@ -27,7 +27,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { switchMap, tap, catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { DiscountsManagerComponent } from "../discounts-manager/discounts-manager.component";
-import { PhotosManagerComponent } from '../../host/photos-manager/photos-manager.component';
+import { PhotosManagerComponent } from '../photos-manager/photos-manager.component';
 import { EthPricePipe } from "../../../core/pipes/eth-price.pipe";
 
 interface SelectOption {

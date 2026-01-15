@@ -1,7 +1,7 @@
 // ------------------------
 // On importe Angular Material et on l'appelle "mat"
 // ------------------------
-@use '@angular/material' as mat;
+@use 'material/index' as mat;
 
 // ------------------------
 // Couleurs personnalisées de l'application

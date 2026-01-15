@@ -86,7 +86,7 @@ export const routes: Routes = [
       },
       {
         path: 'bookings/:id',
-        loadComponent: () => import('./features/host/host-bookings//host-booking-detail/host-booking-detail.component').then(m => m.HostBookingDetailComponent),
+        loadComponent: () => import('./features/host/host-bookings/host-booking-detail/host-booking-detail.component').then(m => m.HostBookingDetailComponent),
         data: { title: 'Reservation Details' }
       },
 

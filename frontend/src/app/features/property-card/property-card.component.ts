@@ -7,8 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 
 // Models
-import { PropertyCard } from './../../core/models/property-card.model';
-import { PropertySearchResultDTO } from './../../core/models/property.model';
+import { PropertyCard } from '../../core/models/property-card.model';
+import { PropertySearchResultDTO } from '../../core/models/property.model';
 import {EthPricePipe} from "../../core/pipes/eth-price.pipe";
 
 /**
