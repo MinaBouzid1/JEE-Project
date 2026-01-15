@@ -133,8 +133,11 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 ---
 
 ### ⚛️ Frontend Developer
+
 **Nom** : Allali Fatima-ezzahra 
-**Rôle** : Développeur Frontend  
+
+**Rôle** : Développeur Frontend 
+
 **Responsabilités** :
 - Développement de l'interface Angular avec TypeScript
 - Intégration Web3.js et MetaMask
