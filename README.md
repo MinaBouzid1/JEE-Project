@@ -131,7 +131,7 @@ Cette plateforme révolutionne le marché de la location immobilière en combina
 
 ---
 
-### ⚛️ Frontend Developer   
+ ### ⚛️ Frontend Developer  
 
 **Nom** : Allali Fatima-ezzahra 
 **Rôle** : Développeur Frontend  
