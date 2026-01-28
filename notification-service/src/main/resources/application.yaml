@@ -26,8 +26,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: fatimaezzahraallai4@gmail.com
-    password: gtee htfd lpwl lswd
+    username: ur_email
+    password: password
     properties:
       mail:
         smtp:
@@ -76,9 +76,9 @@ eureka:
 
 # Twilio Configuration (pour SMS)
 twilio:
-  account-sid: ACb40aaed57bd1f5f08d89b1b912559b78
-  auth-token: 09d28f38519895c26ad9e1d5610f9230
-  phone-number: +1 267 314 8246
+  account-sid: sid
+  auth-token: token
+  phone-number: number
 
 
 # Actuator
